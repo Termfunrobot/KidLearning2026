@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidLearning - ประถมสนุกเรียน & ทดลองเรียนฟรี</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;800&display=swap');
+        body { font-family: 'Kanit', sans-serif; background: #fffcf2; min-height: 100vh; }
+        
+        .primary-auth-bg { 
+            background: linear-gradient(135deg, #ffcc33 0%, #ff9933 50%, #ff6600 100%);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; 
+            position: relative; overflow: hidden;
+        }
+        .bubble { position: absolute; background: rgba(255,255,255,0.2); border-radius: 50%; z-index: 0; }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.95); border-radius: 40px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+            width: 100%; max-width: 420px; overflow: hidden; border: 8px solid #ffffff;
+            position: relative; z-index: 10;
+        }
+        
+        .hidden-section { display: none !important; }
+        #messageBox { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 20px; color: white; z-index: 1000; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); font-weight: bold; }
+        
+        .primary-btn { background: #ff6600; color: white; border-bottom: 5px solid #cc5200; transition: all 0.1s; }
+        .primary-btn:active { transform: translateY(3px); border-bottom: 2px solid #cc5200; }
+
+        .menu-card { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 4px solid #f1f5f9; cursor: pointer; border-radius: 30px; }
+        .menu-card:not(.locked):hover { transform: scale(1.05); border-color: #ff9933; background-color: #fffaf0; }
+        .locked { opacity: 0.5; cursor: not-allowed !important; filter: grayscale(0.8); }
+        
+        /* Banner Style */
+        .free-trial-banner {
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 6px solid white;
+            box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.4);
+        }
+        .free-trial-banner:hover { transform: scale(1.02); }
+        .free-trial-banner::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .loader { border-top-color: #ff6600; animation: spinner 0.8s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="messageBox"></div>
+
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-md z-[9999] hidden flex flex-col items-center justify-center">
+        <div class="loader ease-linear rounded-full border-4 border-gray-200 h-16 w-16 mb-4"></div>
+        <p class="text-orange-600 font-bold text-xl">กำลังประมวลผล...</p>
+    </div>
+
+    <!-- Section: Auth -->
+    <div id="authWrapper" class="primary-auth-bg">
+        <div class="bubble w-20 h-20 top-10 left-10"></div>
+        <div class="bubble w-32 h-32 bottom-20 right-10"></div>
+        <div class="glass-card p-8 md:p-12">
+            <div id="loginSection">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner border-4 border-white">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-orange-600">KidLearning</h2>
+                    <p class="text-gray-500 font-medium">เข้าสู่โลกแห่งการเรียนรู้!</p>
+                </div>
+                <form id="loginForm" class="space-y-5">
+                    <input type="email" id="loginEmail" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="อีเมล">
+                    <input type="password" id="loginPassword" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="รหัสผ่าน">
+                    <button type="submit" class="w-full primary-btn text-white font-bold py-4 rounded-2xl text-xl shadow-lg">เข้าสู่ห้องเรียน</button>
+                </form>
+                <div class="mt-8 text-center space-y-4">
+                    <p class="text-sm font-bold text-gray-500">ยังไม่มีไอดี? <a href="#" onclick="toggleSection('register')" class="text-blue-500 underline">สมัครที่นี่</a></p>
+                    <button onclick="toggleSection('admin-verify')" class="text-xs text-gray-300">แผงควบคุมครู</button>
+                </div>
+            </div>
+
+            <div id="registerSection" class="hidden-section">
+                <h2 class="text-2xl font-black text-center mb-6 text-orange-600">สมัครสมาชิกใหม่</h2>
+                <form id="registerForm" class="space-y-4">
+                    <input type="text" id="regName" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="ชื่อ-นามสกุล">
+                    <input type="email" id="regEmail" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="อีเมล">
+                    <input type="password" id="regPassword" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="รหัสผ่าน">
+                    <button type="submit" class="w-full primary-btn text-white font-bold py-4 rounded-2xl text-lg shadow-lg">ยืนยันสมัคร</button>
+                </form>
+                <button onclick="toggleSection('login')" class="w-full mt-4 text-gray-400 font-bold">กลับหน้าล็อกอิน</button>
+            </div>
+
+            <div id="adminVerifySection" class="hidden-section text-center">
+                <h2 class="text-xl font-bold mb-4">Admin Only</h2>
+                <input type="password" id="adminPasswordInput" class="w-full px-5 py-4 bg-gray-100 border-2 border-orange-200 rounded-2xl mb-4 text-center text-2xl tracking-[1em]" placeholder="••••">
+                <button onclick="checkAdminPassword()" class="w-full bg-slate-800 text-white font-bold py-4 rounded-2xl">ยืนยัน</button>
+                <button onclick="toggleSection('login')" class="mt-4 text-gray-400 font-bold">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Student Dashboard -->
+    <div id="mainContent" class="hidden-section flex flex-col min-h-screen">
+        <header class="bg-white border-b-4 border-orange-100 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+            <h1 class="text-2xl font-black text-orange-500 flex items-center gap-2">
+                <i class="fas fa-rocket"></i> KidLearning
+            </h1>
+            <div class="flex items-center gap-4">
+                <div id="userNameDisplay" class="font-bold text-gray-800 hidden sm:block"></div>
+                <button onclick="logout()" class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto p-6 flex-grow w-full">
+            <div id="termSelectionContainer">
+                
+                <!-- NEW: Large Free Trial Banner -->
+                <div id="freeTrialBanner" onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner mb-10 p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="text-center md:text-left z-10">
+                        <span class="bg-yellow-400 text-indigo-900 px-4 py-1 rounded-full font-black text-xs uppercase mb-3 inline-block">Free Trial</span>
+                        <h2 class="text-4xl md:text-5xl font-black mb-2">ทดลองเรียนฟรี! 🌈</h2>
+                        <p class="text-lg opacity-90 font-medium">รวมบทเรียนสนุกๆ เข้าเรียนได้ทันที ไม่ต้องรออนุมัติ</p>
+                    </div>
+                    <div class="text-6xl md:text-8xl animate-bounce z-10">
+                        <i class="fas fa-gift text-yellow-300"></i>
+                    </div>
+                </div>
+
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-black text-gray-800 mb-2">ยินดีต้อนรับเข้าสู่บทเรียน!</h2>
+                    <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
+                </div>
+                
+                <!-- Grid: Regular Classes (Excluded 'special' from here) -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="termCardsGrid"></div>
+            </div>
+
+            <div id="contentDashboard" class="hidden-section">
+                <div class="flex items-center justify-between mb-8 bg-white p-6 rounded-3xl shadow-sm border-2 border-orange-50">
+                    <h3 id="currentTermView" class="text-2xl font-black text-orange-600"></h3>
+                    <button onclick="backToTerms()" class="bg-gray-100 text-gray-600 px-6 py-2 rounded-2xl font-bold hover:bg-gray-200 transition">
+                        <i class="fas fa-chevron-left"></i> กลับ
+                    </button>
+                </div>
+                <div id="dynamicUnitGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Section: Admin Management -->
+    <div id="adminSection" class="hidden-section p-4 md:p-10 bg-slate-100 min-h-screen">
+        <div class="max-w-6xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
+            <div class="bg-slate-800 p-8 text-white flex justify-between items-center">
+                <h2 class="text-2xl font-bold">Admin Panel</h2>
+                <button onclick="logout()" class="bg-white/10 px-6 py-2 rounded-xl font-bold">ออก</button>
+            </div>
+            <div class="flex gap-4 px-8 py-4 border-b">
+                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2">จัดการนักเรียน</button>
+                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2">จัดการบทเรียน</button>
+            </div>
+            <div id="tabContentUsers" class="p-6">
+                <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userTableBody"></tbody></table></div>
+            </div>
+            <div id="tabContentUnits" class="hidden-section p-6">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-slate-50 p-6 rounded-3xl border">
+                        <h3 class="font-bold mb-4">เพิ่มบทเรียน</h3>
+                        <div class="space-y-4">
+                            <input type="text" id="unitName" class="w-full p-4 rounded-xl border" placeholder="ชื่อบทเรียน">
+                            <select id="unitTerm" class="w-full p-4 rounded-xl border"></select>
+                            <input type="url" id="unitLink" class="w-full p-4 rounded-xl border" placeholder="URL ลิงก์">
+                            <button onclick="saveUnitGS()" class="w-full primary-btn py-4 rounded-xl font-bold">บันทึก</button>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 overflow-x-auto border rounded-3xl">
+                        <table class="w-full text-left"><tbody id="unitTableBody"></tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbwYT7qoGdfoLwH9LKUzLPhA3aalgi4cFjBcwtRZ2dGGMV1IzWsHxuoK0dCXahdGmnHomw/exec";
+
+        // ระดับชั้นหลัก (ไม่รวม special เพราะดึงไปทำแบนเนอร์แล้ว)
+        const TERMS = [
+            { id: 'an1', name: 'อนุบาล 1', icon: 'fa-baby', color: 'bg-pink-100 text-pink-500' },
+            { id: 'an2', name: 'อนุบาล 2', icon: 'fa-shapes', color: 'bg-pink-100 text-pink-500' },
+            { id: 'an3', name: 'อนุบาล 3', icon: 'fa-puzzle-piece', color: 'bg-pink-100 text-pink-500' },
+            { id: 'p1', name: 'ป.1', icon: 'fa-pencil-alt', color: 'bg-yellow-100 text-yellow-600' },
+            { id: 'p2', name: 'ป.2', icon: 'fa-book-open', color: 'bg-yellow-100 text-yellow-600' },
+            { id: 'p3', name: 'ป.3', icon: 'fa-calculator', color: 'bg-yellow-100 text-yellow-600' },
+            { id: 'p4', name: 'ป.4', icon: 'fa-flask', color: 'bg-orange-100 text-orange-600' },
+            { id: 'p5', name: 'ป.5', icon: 'fa-globe-asia', color: 'bg-orange-100 text-orange-600' },
+            { id: 'p6', name: 'ป.6', icon: 'fa-microscope', color: 'bg-orange-100 text-orange-600' }
+        ];
+
+        let currentUser = null;
+
+        async function callApi(params) {
+            showLoading(true);
+            const query = new URLSearchParams(params).toString();
+            try {
+                const response = await fetch(`${scriptUrl}?${query}`);
+                const data = await response.json();
+                showLoading(false);
+                return data;
+            } catch (e) {
+                showLoading(false);
+                showMessage("ผิดพลาด!", "error");
+                return { status: "error" };
+            }
+        }
+
+        function showLoading(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
+        function showMessage(m, t='success') {
+            const b = document.getElementById('messageBox');
+            b.innerText = m; b.style.display = 'block';
+            b.style.backgroundColor = t === 'success' ? '#10B981' : '#EF4444';
+            setTimeout(() => b.style.display = 'none', 3000);
+        }
+
+        function toggleSection(s) {
+            document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection').forEach(el => el.classList.add('hidden-section'));
+            if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
+            else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
+            else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
+            else if (s === 'menu') { document.getElementById('mainContent').classList.remove('hidden-section'); renderTermCards(); }
+            else if (s === 'admin') { document.getElementById('adminSection').classList.remove('hidden-section'); refreshAdminUsers(); initAdminSelect(); }
+        }
+
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const res = await callApi({ action: 'login', email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value });
+            if (res.status === 'success') {
+                currentUser = res.data;
+                document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
+                toggleSection('menu');
+            } else showMessage(res.message, 'error');
+        };
+
+        document.getElementById('registerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const res = await callApi({ action: 'register', name: document.getElementById('regName').value, email: document.getElementById('regEmail').value, password: document.getElementById('regPassword').value });
+            if (res.status === 'success') { showMessage("สมัครแล้ว! ล็อกอินเลย"); toggleSection('login'); } 
+            else showMessage(res.message, 'error');
+        };
+
+        function checkAdminPassword() {
+            if (document.getElementById('adminPasswordInput').value === "1471200") toggleSection('admin');
+            else showMessage("รหัสไม่ถูกนะ", "error");
+        }
+
+        function renderTermCards() {
+            const grid = document.getElementById('termCardsGrid');
+            grid.innerHTML = TERMS.map(t => {
+                const hasAccess = currentUser.permissions.includes(t.id);
+                return `
+                <div onclick="selectTerm('${t.id}', '${t.name}')" class="menu-card bg-white p-6 text-center shadow-md ${!hasAccess ? 'locked' : ''}">
+                    <div class="w-12 h-12 ${t.color} rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl shadow-sm border-2 border-white"><i class="fas ${t.icon}"></i></div>
+                    <div class="font-black text-gray-700 text-sm">${t.name}</div>
+                    ${!hasAccess ? '<div class="text-[9px] text-gray-300 mt-2 font-bold uppercase">ยังไม่เปิด</div>' : '<div class="text-[9px] text-orange-500 mt-2 font-bold uppercase">เข้าเรียน</div>'}
+                </div>`;
+            }).join('');
+        }
+
+        async function selectTerm(id, name) {
+            // IF special, always allow access
+            if (id !== 'special' && !currentUser.permissions.includes(id)) {
+                return showMessage("ห้องเรียนนี้ต้องขออนุญาตคุณครูก่อนนะจ๊ะ", "error");
+            }
+            
+            document.getElementById('termSelectionContainer').classList.add('hidden-section');
+            document.getElementById('contentDashboard').classList.remove('hidden-section');
+            document.getElementById('currentTermView').innerHTML = id === 'special' ? `🎁 ${name}` : `<i class="fas fa-graduation-cap"></i> ${name}`;
+            
+            const res = await callApi({ action: 'getUnitsByTerm', termId: id });
+            const grid = document.getElementById('dynamicUnitGrid');
+            grid.innerHTML = res.data.length ? res.data.map(u => `
+                <div onclick="window.open('${u.link}', '_blank')" class="bg-white p-8 rounded-3xl border-4 border-orange-50 hover:border-orange-400 hover:shadow-xl cursor-pointer text-center group transition">
+                    <div class="mb-4 text-indigo-400 group-hover:scale-110 transition duration-300"><i class="fas fa-play-circle text-5xl"></i></div>
+                    <h4 class="font-black text-gray-700 text-lg">${u.name}</h4>
+                    <p class="text-xs text-gray-400 mt-2">คลิกเพื่อเริ่มบทเรียน</p>
+                </div>
+            `).join('') : '<p class="col-span-full text-center text-gray-400 py-10 font-bold">ยังไม่มีบทเรียนในห้องนี้</p>';
+        }
+
+        function backToTerms() {
+            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
+            document.getElementById('contentDashboard').classList.add('hidden-section');
+        }
+
+        // Admin Management
+        async function refreshAdminUsers() {
+            const res = await callApi({ action: 'getUsers' });
+            if (res.status === 'success') {
+                document.getElementById('userTableBody').innerHTML = res.data.map(u => `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-4"><div class="font-bold">${u.name}</div><div class="text-xs text-slate-400">${u.email}</div></td>
+                        <td class="p-4">
+                            <div class="flex flex-wrap gap-1">
+                                ${TERMS.map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${u.permissions.includes(t.id) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-slate-400'}">${t.name}</button>`).join('')}
+                            </div>
+                        </td>
+                        <td class="p-4 text-center"><button onclick="deleteUserGS('${u.email}')" class="text-red-300"><i class="fas fa-trash-alt"></i></button></td>
+                    </tr>`).join('');
+            }
+        }
+
+        window.updatePermGS = async (e, t) => { await callApi({ action: 'updatePermissions', email: e, termId: t }); refreshAdminUsers(); };
+        window.deleteUserGS = async (e) => { if(confirm('ลบ?')) { await callApi({ action: 'deleteUser', email: e }); refreshAdminUsers(); } };
+
+        function initAdminSelect() {
+            const allOptions = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
+            document.getElementById('unitTerm').innerHTML = allOptions.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+            refreshAdminUnits();
+        }
+
+        async function refreshAdminUnits() {
+            const res = await callApi({ action: 'getUnits' });
+            if (res.status === 'success') {
+                const all = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
+                document.getElementById('unitTableBody').innerHTML = res.data.map(u => `
+                    <tr class="border-b">
+                        <td class="p-4 font-bold text-slate-700">${u.name}</td>
+                        <td class="p-4 text-xs font-bold text-orange-600">${all.find(t=>t.id===u.term)?.name || u.term}</td>
+                        <td class="p-4 text-center"><button onclick="deleteUnitGS('${u.id}')" class="text-red-400"><i class="fas fa-trash"></i></button></td>
+                    </tr>`).join('');
+            }
+        }
+
+        window.saveUnitGS = async () => {
+            const name = document.getElementById('unitName').value;
+            const term = document.getElementById('unitTerm').value;
+            const link = document.getElementById('unitLink').value;
+            if(!name || !link) return showMessage("ไม่ครบ", "error");
+            await callApi({ action: 'addUnit', name, term, link });
+            document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
+            refreshAdminUnits();
+        };
+
+        window.deleteUnitGS = async (id) => { if(confirm('ลบ?')) { await callApi({ action: 'deleteUnit', id }); refreshAdminUnits(); } };
+
+        window.switchAdminTab = (tab) => {
+            document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
+            document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
+        };
+
+        window.logout = () => location.reload();
+    </script>
+</body>
+</html>
