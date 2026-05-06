@@ -23,6 +23,14 @@
             position: relative; z-index: 10;
         }
         
+        /* New Glass Card for Feed */
+        .glass-feed {
+            background: rgba(255, 255, 255, 0.95); border-radius: 40px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+            width: 100%; max-width: 600px; border: 8px solid #ffffff;
+            position: relative; z-index: 10; display: flex; flex-direction: column;
+        }
+
         .hidden-section { display: none !important; }
         #messageBox { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 20px; color: white; z-index: 1000; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); font-weight: bold; }
         
@@ -52,6 +60,11 @@
 
         .loader { border-top-color: #ff6600; animation: spinner 0.8s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Custom Scrollbar for Feed */
+        .feed-scroll::-webkit-scrollbar { width: 6px; }
+        .feed-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .feed-scroll::-webkit-scrollbar-thumb { background: #ffcc33; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -63,11 +76,13 @@
         <p class="text-orange-600 font-bold text-xl">กำลังประมวลผล...</p>
     </div>
 
-    <!-- Section: Auth -->
-    <div id="authWrapper" class="primary-auth-bg">
+    <!-- Section: Auth & News Feed -->
+    <div id="authWrapper" class="primary-auth-bg flex-col lg:flex-row gap-8">
         <div class="bubble w-20 h-20 top-10 left-10"></div>
         <div class="bubble w-32 h-32 bottom-20 right-10"></div>
-        <div class="glass-card p-8 md:p-12">
+        
+        <!-- Left: Login Card -->
+        <div class="glass-card p-8 md:p-12 self-center w-full">
             <div id="loginSection">
                 <div class="text-center mb-8">
                     <div class="w-24 h-24 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner border-4 border-white">
@@ -83,7 +98,11 @@
                 </form>
                 <div class="mt-8 text-center space-y-4">
                     <p class="text-sm font-bold text-gray-500">ยังไม่มีไอดี? <a href="#" onclick="toggleSection('register')" class="text-blue-500 underline">สมัครที่นี่</a></p>
-                    <button onclick="toggleSection('admin-verify')" class="text-xs text-gray-300">แผงควบคุมครู</button>
+                    <div class="flex justify-center gap-4 text-xs font-bold mt-4">
+                        <button onclick="toggleSection('admin-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-user-shield"></i> แอดมินระบบ</button>
+                        <span class="text-gray-300">|</span>
+                        <button onclick="toggleSection('cms-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-edit"></i> จัดการข่าวสาร</button>
+                    </div>
                 </div>
             </div>
 
@@ -99,10 +118,95 @@
             </div>
 
             <div id="adminVerifySection" class="hidden-section text-center">
-                <h2 class="text-xl font-bold mb-4">Admin Only</h2>
+                <h2 class="text-xl font-bold mb-4 text-orange-600">แอดมินระบบ</h2>
                 <input type="password" id="adminPasswordInput" class="w-full px-5 py-4 bg-gray-100 border-2 border-orange-200 rounded-2xl mb-4 text-center text-2xl tracking-[1em]" placeholder="••••">
                 <button onclick="checkAdminPassword()" class="w-full bg-slate-800 text-white font-bold py-4 rounded-2xl">ยืนยัน</button>
                 <button onclick="toggleSection('login')" class="mt-4 text-gray-400 font-bold">ยกเลิก</button>
+            </div>
+
+            <div id="cmsVerifySection" class="hidden-section text-center">
+                <h2 class="text-xl font-bold mb-4 text-orange-600">ระบบจัดการข่าวสาร</h2>
+                <p class="text-xs text-gray-400 mb-4">กรอกรหัสผ่านเพื่อแก้ไขประกาศและหน้าแรก</p>
+                <input type="password" id="cmsPasswordInput" class="w-full px-5 py-4 bg-gray-100 border-2 border-orange-200 rounded-2xl mb-4 text-center text-2xl tracking-[1em]" placeholder="••••">
+                <button onclick="checkCmsPassword()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition">เข้าสู่ระบบอัพเดท</button>
+                <button onclick="toggleSection('login')" class="mt-4 text-gray-400 font-bold">ยกเลิก</button>
+            </div>
+        </div>
+
+        <!-- Right: Public News Feed -->
+        <div class="glass-feed p-6 md:p-8 self-center h-[600px] w-full" id="publicFeedSection">
+            <h2 class="text-2xl font-black text-orange-600 mb-4 flex items-center gap-2 border-b-2 border-orange-100 pb-2">
+                <i class="fas fa-bullhorn text-yellow-500"></i> ข่าวสารและอัพเดทใหม่!
+            </h2>
+            <div id="publicNewsContainer" class="feed-scroll flex-grow overflow-y-auto space-y-4 pr-2">
+                <!-- ข่าวสารจะถูกโหลดมาแสดงที่นี่ -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Content Management System (CMS) -->
+    <div id="cmsSection" class="hidden-section p-4 md:p-10 bg-slate-100 min-h-screen">
+        <div class="max-w-4xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
+            <div class="bg-blue-600 p-8 text-white flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-edit"></i> ระบบอัพเดทข่าวสารหน้าแรก & ห้องเรียน</h2>
+                <button onclick="toggleSection('login')" class="bg-white/20 hover:bg-white/30 transition px-6 py-2 rounded-xl font-bold">ออก</button>
+            </div>
+            
+            <div class="p-8">
+                <!-- ฟอร์มเพิ่ม/แก้ไข -->
+                <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 mb-8">
+                    <h3 class="font-bold text-blue-800 mb-4 text-lg" id="cmsFormTitle">1. เพิ่มข้อความใหม่</h3>
+                    <form id="newsForm" class="space-y-4">
+                        <input type="hidden" id="editNewsId" value="">
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-600 mb-1">ตำแหน่งที่ต้องการแสดง *</label>
+                            <select id="newsLocation" required class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none font-bold text-blue-700">
+                                <option value="login">แสดงที่: 📢 หน้าแรกล็อกอิน (ก่อนเข้าระบบ)</option>
+                                <option value="dashboard">แสดงที่: 🎓 หน้าห้องเรียน (ยินดีต้อนรับเข้าสู่บทเรียน)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-600 mb-1">ข้อความรายละเอียด *</label>
+                            <textarea id="newsText" required class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none min-h-[100px]" placeholder="พิมพ์ข่าวสารหรือประกาศที่นี่..."></textarea>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-600 mb-1">ลิงก์รูปภาพ (ใส่หรือไม่ใส่ก็ได้)</label>
+                                <input type="url" id="newsImage" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-600 mb-1">ลิงก์ YouTube (ใส่หรือไม่ใส่ก็ได้)</label>
+                                <input type="url" id="newsYoutube" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none" placeholder="https://youtu.be/xxxx">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-600 mb-1">โค้ด (ใส่หรือไม่ใส่ก็ได้)</label>
+                            <textarea id="newsCode" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none min-h-[120px] font-mono text-sm bg-slate-800 text-green-400 placeholder-gray-500" placeholder="วางโค้ดตัวอย่างที่ต้องการให้เด็กๆ ดูที่นี่..."></textarea>
+                            <p class="text-xs text-gray-500 mt-1">* ระบบจะแสดงผลโค้ดนี้ในกล่องสไตล์โปรแกรมเมอร์ (Code Block) ให้สวยงาม</p>
+                        </div>
+
+                        <div class="flex gap-4 pt-2">
+                            <button type="submit" id="btnSaveNews" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition shadow-md">
+                                บันทึกประกาศ
+                            </button>
+                            <button type="button" onclick="resetNewsForm()" id="btnCancelEdit" class="hidden flex-1 bg-gray-400 hover:bg-gray-500 text-white font-bold py-4 rounded-xl transition shadow-md">
+                                ยกเลิกการแก้ไข
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- รายการข่าวสาร -->
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-4 text-lg border-b pb-2">รายการประกาศทั้งหมด</h3>
+                    <div id="adminNewsContainer" class="space-y-4">
+                        <!-- รายการจะถูกโหลดมาที่นี่ -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -121,8 +225,6 @@
 
         <main class="max-w-6xl mx-auto p-6 flex-grow w-full">
             <div id="termSelectionContainer">
-                
-                <!-- NEW: Large Free Trial Banner -->
                 <div id="freeTrialBanner" onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner mb-10 p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="text-center md:text-left z-10">
                         <span class="bg-yellow-400 text-indigo-900 px-4 py-1 rounded-full font-black text-xs uppercase mb-3 inline-block">Free Trial</span>
@@ -134,13 +236,18 @@
                     </div>
                 </div>
 
-                <div class="mb-10 text-center">
+                <div class="mb-6 text-center">
                     <h2 class="text-3xl font-black text-gray-800 mb-2">ยินดีต้อนรับเข้าสู่บทเรียน!</h2>
                     <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
                 </div>
                 
-                <!-- Grid: Regular Classes (Excluded 'special' from here) -->
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="termCardsGrid"></div>
+                <!-- เลือกชั้นเรียนย้ายขึ้นมาบนสุดของส่วนนี้ -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="termCardsGrid"></div>
+
+                <!-- Dashboard Announcements / News Feed ถูกย้ายมาอยู่ด้านล่าง -->
+                <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6">
+                    <!-- ประกาศจากแอดมินสำหรับหน้าห้องเรียนจะถูกแทรกที่นี่ -->
+                </div>
             </div>
 
             <div id="contentDashboard" class="hidden-section">
@@ -160,7 +267,7 @@
         <div class="max-w-6xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
             <div class="bg-slate-800 p-8 text-white flex justify-between items-center">
                 <h2 class="text-2xl font-bold">Admin Panel</h2>
-                <button onclick="logout()" class="bg-white/10 px-6 py-2 rounded-xl font-bold">ออก</button>
+                <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold">ออก</button>
             </div>
             <div class="flex gap-4 px-8 py-4 border-b">
                 <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2">จัดการนักเรียน</button>
@@ -188,10 +295,10 @@
         </div>
     </div>
 
+    <!-- Script หลักของระบบทั้งหมด -->
     <script>
         const scriptUrl = "https://script.google.com/macros/s/AKfycbwYT7qoGdfoLwH9LKUzLPhA3aalgi4cFjBcwtRZ2dGGMV1IzWsHxuoK0dCXahdGmnHomw/exec";
 
-        // ระดับชั้นหลัก (ไม่รวม special เพราะดึงไปทำแบนเนอร์แล้ว)
         const TERMS = [
             { id: 'an1', name: 'อนุบาล 1', icon: 'fa-baby', color: 'bg-pink-100 text-pink-500' },
             { id: 'an2', name: 'อนุบาล 2', icon: 'fa-shapes', color: 'bg-pink-100 text-pink-500' },
@@ -206,6 +313,227 @@
 
         let currentUser = null;
 
+        // --- ระบบข่าวสาร (CMS) แบบ Local Storage (เก็บในเบราว์เซอร์ + โค้ด HTML) ---
+        
+        const defaultNews = [
+            {
+                id: 'news-default-1',
+                location: 'login', // ตำแหน่ง login หรือ dashboard
+                text: '🎉 ยินดีต้อนรับเข้าสู่ระบบ KidLearning!\nตอนนี้เรามีหมวดหมู่ "ทดลองเรียนฟรี" ให้เด็กๆ เข้าไปใช้งานได้เลย ไม่ต้องรออนุมัติจ้า',
+                imageUrl: '',
+                youtubeUrl: '',
+                codeSnippet: '',
+                timestamp: Date.now()
+            }
+        ];
+
+        // ดึงข้อมูลจาก localStorage หรือใช้ค่าเริ่มต้น
+        let rawNewsData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
+        
+        // แปลงข้อมูลเก่าให้รองรับ location และ codeSnippet ถ้าไม่มี
+        let newsData = (rawNewsData || defaultNews).map(n => ({
+            ...n, 
+            location: n.location || 'login', 
+            codeSnippet: n.codeSnippet || ''
+        }));
+
+        function saveNewsToLocal() {
+            localStorage.setItem('kidlearning_news_data', JSON.stringify(newsData));
+            renderPublicFeed();
+            renderDashboardFeed();
+            renderAdminNews();
+        }
+
+        const getYouTubeEmbedUrl = (url) => {
+            if(!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) {
+                return `https://www.youtube.com/embed/${match[2]}`;
+            }
+            return null;
+        };
+
+        const escapeHtml = (unsafe) => {
+            if (!unsafe) return "";
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        };
+
+        // ฟังก์ชันสร้างการ์ดประกาศ (ใช้ร่วมกันทั้งหน้า Login และ Dashboard)
+        const createNewsCardHTML = (news) => {
+            const dateStr = new Date(news.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+            const ytEmbed = getYouTubeEmbedUrl(news.youtubeUrl);
+            const isDashboard = news.location === 'dashboard';
+            
+            // ปรับสีขอบและการ์ดให้เข้ากับพื้นที่
+            const cardStyle = isDashboard 
+                ? "bg-white p-6 md:p-8 rounded-[30px] border-4 border-indigo-50 shadow-md hover:shadow-lg transition text-left"
+                : "bg-white p-5 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition text-left";
+
+            return `
+            <div class="${cardStyle}">
+                <div class="flex items-center gap-2 text-xs font-bold mb-3 ${isDashboard ? 'text-indigo-500' : 'text-gray-400'}">
+                    <i class="${isDashboard ? 'fas fa-graduation-cap text-lg' : 'far fa-clock'}"></i> 
+                    ${isDashboard ? 'ประกาศจากคุณครู :' : ''} ${dateStr}
+                </div>
+                <p class="text-gray-700 whitespace-pre-wrap font-medium mb-4 ${isDashboard ? 'text-lg' : ''}">${news.text}</p>
+                
+                ${news.imageUrl ? `<img src="${news.imageUrl}" onerror="this.style.display='none'" class="w-full rounded-2xl mb-4 max-h-[400px] object-cover border border-gray-200">` : ''}
+                
+                ${ytEmbed ? `<div class="aspect-video w-full rounded-2xl overflow-hidden mb-4 border border-gray-200 shadow-inner">
+                    <iframe width="100%" height="100%" src="${ytEmbed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>` : ''}
+
+                ${news.codeSnippet ? `
+                <div class="mt-4 text-left">
+                    <div class="bg-slate-700 text-slate-300 text-[10px] uppercase font-bold px-4 py-2 rounded-t-xl w-fit flex items-center gap-2"><i class="fas fa-code"></i> โค้ดตัวอย่าง</div>
+                    <pre class="bg-slate-800 text-green-400 p-4 rounded-b-xl rounded-tr-xl overflow-x-auto font-mono text-sm shadow-inner whitespace-pre-wrap border border-slate-700"><code>${escapeHtml(news.codeSnippet)}</code></pre>
+                </div>` : ''}
+            </div>`;
+        };
+
+        const renderPublicFeed = () => {
+            const container = document.getElementById('publicNewsContainer');
+            const filteredData = newsData.filter(n => n.location === 'login').sort((a, b) => b.timestamp - a.timestamp);
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-300">ยังไม่มีข่าวสารในขณะนี้</div>`;
+                return;
+            }
+            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
+        };
+
+        const renderDashboardFeed = () => {
+            const container = document.getElementById('dashboardNewsContainer');
+            const filteredData = newsData.filter(n => n.location === 'dashboard').sort((a, b) => b.timestamp - a.timestamp);
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = ``; // ซ่อนถ้าไม่มีประกาศ
+                return;
+            }
+            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
+        };
+
+        const renderAdminNews = () => {
+            const container = document.getElementById('adminNewsContainer');
+            if (newsData.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-center py-4">ไม่มีรายการ</p>`;
+                return;
+            }
+
+            const sortedData = [...newsData].sort((a, b) => b.timestamp - a.timestamp);
+
+            container.innerHTML = sortedData.map(news => `
+                <div class="bg-white p-4 rounded-2xl border flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-grow overflow-hidden">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="px-2 py-1 text-[10px] font-bold rounded ${news.location === 'dashboard' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}">
+                                ${news.location === 'dashboard' ? '🎓 หน้าห้องเรียน' : '📢 หน้าแรกล็อกอิน'}
+                            </span>
+                        </div>
+                        <p class="font-bold text-gray-800 line-clamp-2">${news.text}</p>
+                        <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-3">
+                            ${news.imageUrl ? '<span class="text-blue-500"><i class="fas fa-image"></i> รูปภาพ</span>' : ''}
+                            ${news.youtubeUrl ? '<span class="text-red-500"><i class="fab fa-youtube"></i> วิดีโอ</span>' : ''}
+                            ${news.codeSnippet ? '<span class="text-green-600"><i class="fas fa-code"></i> โค้ด</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="flex gap-2 whitespace-nowrap">
+                        <button type="button" onclick="editNewsItem('${news.id}')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition text-sm font-bold">
+                            <i class="fas fa-edit"></i> แก้ไข
+                        </button>
+                        <button type="button" onclick="deleteNewsItem('${news.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition text-sm font-bold">
+                            <i class="fas fa-trash"></i> ลบ
+                        </button>
+                    </div>
+                </div>`).join('');
+        };
+
+        // จัดการ Form ของ CMS
+        document.getElementById('newsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const location = document.getElementById('newsLocation').value;
+            const text = document.getElementById('newsText').value;
+            const imageUrl = document.getElementById('newsImage').value;
+            const youtubeUrl = document.getElementById('newsYoutube').value;
+            const codeSnippet = document.getElementById('newsCode').value;
+            const editId = document.getElementById('editNewsId').value;
+
+            if (editId) {
+                const index = newsData.findIndex(n => n.id === editId);
+                if(index !== -1) {
+                    newsData[index].location = location;
+                    newsData[index].text = text;
+                    newsData[index].imageUrl = imageUrl;
+                    newsData[index].youtubeUrl = youtubeUrl;
+                    newsData[index].codeSnippet = codeSnippet;
+                }
+                window.showMessage("แก้ไขประกาศสำเร็จ");
+            } else {
+                const newItem = {
+                    id: 'news-' + Date.now(),
+                    location: location,
+                    text: text,
+                    imageUrl: imageUrl,
+                    youtubeUrl: youtubeUrl,
+                    codeSnippet: codeSnippet,
+                    timestamp: Date.now()
+                };
+                newsData.push(newItem);
+                window.showMessage("เพิ่มประกาศสำเร็จ");
+            }
+            
+            saveNewsToLocal();
+            window.resetNewsForm();
+        });
+
+        window.editNewsItem = (id) => {
+            const item = newsData.find(n => n.id === id);
+            if(item) {
+                document.getElementById('editNewsId').value = item.id;
+                document.getElementById('newsLocation').value = item.location || 'login';
+                document.getElementById('newsText').value = item.text || '';
+                document.getElementById('newsImage').value = item.imageUrl || '';
+                document.getElementById('newsYoutube').value = item.youtubeUrl || '';
+                document.getElementById('newsCode').value = item.codeSnippet || '';
+                
+                document.getElementById('cmsFormTitle').innerText = "2. แก้ไขประกาศ";
+                document.getElementById('btnSaveNews').innerText = "บันทึกการแก้ไข";
+                document.getElementById('btnCancelEdit').classList.remove('hidden');
+                
+                document.getElementById('cmsSection').scrollIntoView({behavior: 'smooth'});
+            }
+        };
+
+        window.deleteNewsItem = (id) => {
+            if(confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
+                newsData = newsData.filter(n => n.id !== id);
+                saveNewsToLocal();
+                window.showMessage("ลบสำเร็จ");
+            }
+        };
+
+        window.resetNewsForm = () => {
+            document.getElementById('newsForm').reset();
+            document.getElementById('editNewsId').value = "";
+            document.getElementById('cmsFormTitle').innerText = "1. เพิ่มข้อความใหม่";
+            document.getElementById('btnSaveNews').innerText = "บันทึกประกาศ";
+            document.getElementById('btnCancelEdit').classList.add('hidden');
+        };
+
+        // เรียกโหลดข้อมูลข่าวสารเมื่อเปิดเว็บ
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPublicFeed();
+            renderDashboardFeed();
+            renderAdminNews();
+        });
+
+        // --- ระบบ API หลัก (Google Apps Script) เดิม ---
         async function callApi(params) {
             showLoading(true);
             const query = new URLSearchParams(params).toString();
@@ -221,8 +549,8 @@
             }
         }
 
-        function showLoading(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
-        function showMessage(m, t='success') {
+        window.showLoading = function(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
+        window.showMessage = function(m, t='success') {
             const b = document.getElementById('messageBox');
             b.innerText = m; b.style.display = 'block';
             b.style.backgroundColor = t === 'success' ? '#10B981' : '#EF4444';
@@ -230,11 +558,17 @@
         }
 
         function toggleSection(s) {
-            document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection').forEach(el => el.classList.add('hidden-section'));
+            document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
             if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
             else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
             else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'menu') { document.getElementById('mainContent').classList.remove('hidden-section'); renderTermCards(); }
+            else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
+            else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); }
+            else if (s === 'menu') { 
+                document.getElementById('mainContent').classList.remove('hidden-section'); 
+                renderTermCards(); 
+                renderDashboardFeed(); // โหลดประกาศหน้า Dashboard
+            }
             else if (s === 'admin') { document.getElementById('adminSection').classList.remove('hidden-section'); refreshAdminUsers(); initAdminSelect(); }
         }
 
@@ -256,8 +590,17 @@
         };
 
         function checkAdminPassword() {
-            if (document.getElementById('adminPasswordInput').value === "1471200") toggleSection('admin');
-            else showMessage("รหัสไม่ถูกนะ", "error");
+            if (document.getElementById('adminPasswordInput').value === "1471200") {
+                document.getElementById('adminPasswordInput').value = "";
+                toggleSection('admin');
+            } else showMessage("รหัสไม่ถูกต้อง", "error");
+        }
+
+        function checkCmsPassword() {
+            if (document.getElementById('cmsPasswordInput').value === "1471200") {
+                document.getElementById('cmsPasswordInput').value = "";
+                toggleSection('cms');
+            } else showMessage("รหัสอัพเดทไม่ถูกต้อง", "error");
         }
 
         function renderTermCards() {
@@ -274,7 +617,6 @@
         }
 
         async function selectTerm(id, name) {
-            // IF special, always allow access
             if (id !== 'special' && !currentUser.permissions.includes(id)) {
                 return showMessage("ห้องเรียนนี้ต้องขออนุญาตคุณครูก่อนนะจ๊ะ", "error");
             }
@@ -299,7 +641,6 @@
             document.getElementById('contentDashboard').classList.add('hidden-section');
         }
 
-        // Admin Management
         async function refreshAdminUsers() {
             const res = await callApi({ action: 'getUsers' });
             if (res.status === 'success') {
@@ -317,7 +658,7 @@
         }
 
         window.updatePermGS = async (e, t) => { await callApi({ action: 'updatePermissions', email: e, termId: t }); refreshAdminUsers(); };
-        window.deleteUserGS = async (e) => { if(confirm('ลบ?')) { await callApi({ action: 'deleteUser', email: e }); refreshAdminUsers(); } };
+        window.deleteUserGS = async (e) => { if(confirm('ลบผู้ใช้นี้?')) { await callApi({ action: 'deleteUser', email: e }); refreshAdminUsers(); } };
 
         function initAdminSelect() {
             const allOptions = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
@@ -342,13 +683,13 @@
             const name = document.getElementById('unitName').value;
             const term = document.getElementById('unitTerm').value;
             const link = document.getElementById('unitLink').value;
-            if(!name || !link) return showMessage("ไม่ครบ", "error");
+            if(!name || !link) return showMessage("กรอกข้อมูลให้ครบ", "error");
             await callApi({ action: 'addUnit', name, term, link });
             document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
             refreshAdminUnits();
         };
 
-        window.deleteUnitGS = async (id) => { if(confirm('ลบ?')) { await callApi({ action: 'deleteUnit', id }); refreshAdminUnits(); } };
+        window.deleteUnitGS = async (id) => { if(confirm('ลบบทเรียนนี้?')) { await callApi({ action: 'deleteUnit', id }); refreshAdminUnits(); } };
 
         window.switchAdminTab = (tab) => {
             document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
