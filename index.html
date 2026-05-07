@@ -6,11 +6,6 @@
     <title>KidLearning - ประถมสนุกเรียน & ทดลองเรียนฟรี</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- เรียกใช้งาน Firebase แบบ Compat (รองรับการเปิดไฟล์ HTML ในเครื่องโดยตรง) -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;800&display=swap');
         body { font-family: 'Kanit', sans-serif; background: #fffcf2; min-height: 100vh; }
@@ -28,7 +23,6 @@
             position: relative; z-index: 10;
         }
         
-        /* New Glass Card for Feed */
         .glass-feed {
             background: rgba(255, 255, 255, 0.95); border-radius: 40px; 
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
@@ -46,7 +40,6 @@
         .menu-card:not(.locked):hover { transform: scale(1.05); border-color: #ff9933; background-color: #fffaf0; }
         .locked { opacity: 0.5; cursor: not-allowed !important; filter: grayscale(0.8); }
         
-        /* Banner Style */
         .free-trial-banner {
             background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
             border-radius: 40px;
@@ -66,7 +59,6 @@
         .loader { border-top-color: #ff6600; animation: spinner 0.8s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Custom Scrollbar for Feed */
         .feed-scroll::-webkit-scrollbar { width: 6px; }
         .feed-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .feed-scroll::-webkit-scrollbar-thumb { background: #ffcc33; border-radius: 10px; }
@@ -75,6 +67,28 @@
 <body>
 
     <div id="messageBox"></div>
+
+    <div id="firebaseErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl text-center">
+            <div class="text-red-500 text-6xl mb-4"><i class="fas fa-exclamation-triangle"></i></div>
+            <h2 class="text-2xl font-black text-gray-800 mb-4">ฐานข้อมูลถูกล็อค</h2>
+            <p class="text-gray-600 mb-6 font-medium text-left">
+                ระบบไม่สามารถเข้าถึงข้อมูลได้ (Permission Denied) กรุณาปลดล็อคใน Firebase ตามนี้:<br><br>
+                1. ไปที่ Firebase Console -> <b>Realtime Database</b><br>
+                2. เลือกแถบ <b>Rules</b><br>
+                3. เปลี่ยนโค้ดให้เป็นตามนี้แล้วกด Publish:<br>
+                <code class="block bg-gray-100 p-4 rounded-xl mt-2 text-sm text-left text-blue-600 font-mono">
+                {<br>
+                &nbsp;&nbsp;"rules": {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;".read": true,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;".write": true<br>
+                &nbsp;&nbsp;}<br>
+                }
+                </code>
+            </p>
+            <button onclick="document.getElementById('firebaseErrorModal').classList.add('hidden')" class="w-full bg-red-500 text-white font-bold py-4 rounded-xl hover:bg-red-600 transition shadow-lg">รับทราบและปิดหน้าต่าง</button>
+        </div>
+    </div>
 
     <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-md z-[9999] hidden flex flex-col items-center justify-center">
         <div class="loader ease-linear rounded-full border-4 border-gray-200 h-16 w-16 mb-4"></div>
@@ -119,7 +133,7 @@
                     <input type="password" id="regPassword" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="รหัสผ่าน">
                     <button type="submit" class="w-full primary-btn text-white font-bold py-4 rounded-2xl text-lg shadow-lg">ยืนยันสมัคร</button>
                 </form>
-                <button onclick="toggleSection('login')" class="w-full mt-4 text-gray-400 font-bold">กลับหน้าล็อกอิน</button>
+                <button type="button" onclick="toggleSection('login')" class="w-full mt-4 text-gray-400 font-bold">กลับหน้าล็อกอิน</button>
             </div>
 
             <div id="adminVerifySection" class="hidden-section text-center">
@@ -153,12 +167,11 @@
     <div id="cmsSection" class="hidden-section p-4 md:p-10 bg-slate-100 min-h-screen">
         <div class="max-w-4xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
             <div class="bg-blue-600 p-8 text-white flex justify-between items-center">
-                <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-edit"></i> ระบบอัพเดทข่าวสารหน้าแรก & ห้องเรียน (Firebase)</h2>
+                <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-edit"></i> ระบบอัพเดทข่าวสารหน้าแรก & ห้องเรียน</h2>
                 <button onclick="toggleSection('login')" class="bg-white/20 hover:bg-white/30 transition px-6 py-2 rounded-xl font-bold">ออก</button>
             </div>
             
             <div class="p-8">
-                <!-- ฟอร์มเพิ่ม/แก้ไข -->
                 <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 mb-8">
                     <h3 class="font-bold text-blue-800 mb-4 text-lg" id="cmsFormTitle">1. เพิ่มข้อความใหม่</h3>
                     <form id="newsForm" class="space-y-4">
@@ -191,7 +204,6 @@
                         <div>
                             <label class="block text-sm font-bold text-gray-600 mb-1">โค้ด (ใส่หรือไม่ใส่ก็ได้)</label>
                             <textarea id="newsCode" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none min-h-[120px] font-mono text-sm bg-slate-800 text-green-400 placeholder-gray-500" placeholder="วางโค้ดตัวอย่างที่ต้องการให้เด็กๆ ดูที่นี่..."></textarea>
-                            <p class="text-xs text-gray-500 mt-1">* ระบบจะแสดงผลโค้ดนี้ในกล่องสไตล์โปรแกรมเมอร์ (Code Block) ให้สวยงาม</p>
                         </div>
 
                         <div class="flex gap-4 pt-2">
@@ -205,7 +217,6 @@
                     </form>
                 </div>
 
-                <!-- รายการข่าวสาร -->
                 <div>
                     <h3 class="font-bold text-gray-800 mb-4 text-lg border-b pb-2">รายการประกาศทั้งหมด</h3>
                     <div id="adminNewsContainer" class="space-y-4">
@@ -246,10 +257,8 @@
                     <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
                 </div>
                 
-                <!-- เลือกชั้นเรียนย้ายขึ้นมาบนสุดของส่วนนี้ -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="termCardsGrid"></div>
 
-                <!-- Dashboard Announcements / News Feed ถูกย้ายมาอยู่ด้านล่าง -->
                 <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6">
                     <!-- ประกาศจากแอดมินสำหรับหน้าห้องเรียนจะถูกแทรกที่นี่ -->
                 </div>
@@ -271,64 +280,40 @@
     <div id="adminSection" class="hidden-section p-4 md:p-10 bg-slate-100 min-h-screen">
         <div class="max-w-6xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
             <div class="bg-slate-800 p-8 text-white flex justify-between items-center">
-                <h2 class="text-2xl font-bold">Admin Panel <span class="text-sm font-normal text-slate-400 ml-2">(Firebase DB)</span></h2>
-                <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-red-500 transition">ออก</button>
+                <h2 class="text-2xl font-bold">Admin Panel</h2>
+                <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold">ออก</button>
             </div>
             <div class="flex gap-4 px-8 py-4 border-b">
-                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 border-b-2 border-transparent">จัดการนักเรียน</button>
-                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 border-b-2 border-transparent text-indigo-600 border-indigo-600">จัดการบทเรียน</button>
+                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 text-indigo-600">จัดการนักเรียน</button>
+                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 text-gray-400">จัดการบทเรียน</button>
             </div>
-            <div id="tabContentUsers" class="hidden-section p-6">
+            <div id="tabContentUsers" class="p-6">
                 <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userTableBody"></tbody></table></div>
             </div>
-            <div id="tabContentUnits" class="p-6">
+            <div id="tabContentUnits" class="hidden-section p-6">
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="bg-slate-50 p-6 rounded-3xl border h-fit">
+                    <div class="bg-slate-50 p-6 rounded-3xl border">
                         <h3 class="font-bold mb-4">เพิ่มบทเรียน</h3>
                         <div class="space-y-4">
                             <input type="text" id="unitName" class="w-full p-4 rounded-xl border" placeholder="ชื่อบทเรียน">
                             <select id="unitTerm" class="w-full p-4 rounded-xl border"></select>
                             <input type="url" id="unitLink" class="w-full p-4 rounded-xl border" placeholder="URL ลิงก์">
-                            <button onclick="saveUnit()" class="w-full primary-btn py-4 rounded-xl font-bold text-white shadow-md">บันทึก</button>
+                            <button onclick="saveUnitGS()" class="w-full primary-btn py-4 rounded-xl font-bold">บันทึก</button>
                         </div>
                     </div>
-                    <div class="md:col-span-2 overflow-x-auto border rounded-3xl bg-white shadow-sm h-[600px] overflow-y-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-slate-100 text-slate-600 text-sm sticky top-0 z-10">
-                                <tr>
-                                    <th class="p-4">หัวข้อ</th>
-                                    <th class="p-4">ห้องเรียน</th>
-                                    <th class="p-4 text-center">ลบ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="unitTableBody" class="divide-y divide-slate-100"></tbody>
-                        </table>
+                    <div class="md:col-span-2 overflow-x-auto border rounded-3xl">
+                        <table class="w-full text-left"><tbody id="unitTableBody"></tbody></table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Script หลักของระบบทั้งหมด -->
+    <!-- Script หลักของระบบทั้งหมด (เชื่อมต่อ Firebase REST API) -->
     <script>
-        // ==========================================
-        // 1. ตั้งค่าเชื่อมต่อ Firebase Realtime Database
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDv-bFde2DlTg4URK_0spHWubNUf0effpw",
-            authDomain: "tess-71c84.firebaseapp.com",
-            databaseURL: "https://tess-71c84-default-rtdb.asia-southeast1.firebasedatabase.app", 
-            projectId: "tess-71c84",
-            storageBucket: "tess-71c84.firebasestorage.app",
-            messagingSenderId: "626376855040",
-            appId: "1:626376855040:web:9b8181f1a608967f3592e5"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        // URL ของ Firebase Realtime Database ของคุณ
+        const FIREBASE_DB_URL = "https://tess-71c84-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-        // ==========================================
-        // 2. ข้อมูลตั้งต้นของระบบ
-        // ==========================================
         const TERMS = [
             { id: 'an1', name: 'อนุบาล 1', icon: 'fa-baby', color: 'bg-pink-100 text-pink-500' },
             { id: 'an2', name: 'อนุบาล 2', icon: 'fa-shapes', color: 'bg-pink-100 text-pink-500' },
@@ -342,11 +327,9 @@
         ];
 
         let currentUser = null;
-        let newsData = []; // ตัวแปรเก็บข่าวสารที่โหลดจาก Firebase
+        let newsData = [];
 
-        // ==========================================
-        // 3. UI Helpers
-        // ==========================================
+        // --- Helper Functions สำหรับ Firebase REST API ---
         window.showLoading = function(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
         window.showMessage = function(m, t='success') {
             const b = document.getElementById('messageBox');
@@ -355,42 +338,49 @@
             setTimeout(() => b.style.display = 'none', 3000);
         }
 
-        function toggleSection(s) {
-            document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
-            if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
-            else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
-            else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); }
-            else if (s === 'menu') { 
-                document.getElementById('mainContent').classList.remove('hidden-section'); 
-                renderTermCards(); 
-                renderDashboardFeed(); 
+        // แปลง Email ให้ปลอดภัยสำหรับใช้เป็น Key ใน Firebase (ตัดปัญหาตัวพิมพ์เล็กใหญ่และการเว้นวรรค)
+        const sanitizeKey = (email) => email.trim().toLowerCase().replace(/[.#$[\]\/\s]/g, '_');
+        
+        // แปลง Object ที่ได้จาก Firebase ให้กลายเป็น Array 
+        const objToArray = (obj) => {
+            if (!obj || obj.error) return [];
+            if (Array.isArray(obj)) {
+                return obj.map((item, index) => item ? { ...item, id: item.id || String(index) } : null).filter(Boolean);
             }
-            else if (s === 'admin') { 
-                document.getElementById('adminSection').classList.remove('hidden-section'); 
-                switchAdminTab('units'); 
-                initAdminSelect(); 
+            return Object.keys(obj).map(key => ({ ...obj[key], id: key }));
+        };
+
+        // ฟังก์ชันหลักในการเรียกฐานข้อมูล
+        async function fetchDB(path, method = 'GET', data = null) {
+            showLoading(true);
+            try {
+                const options = { method, headers: { 'Content-Type': 'application/json' } };
+                if (data) options.body = JSON.stringify(data);
+                const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, options);
+                const result = await res.json();
+                showLoading(false);
+                
+                // เช็คว่า Firebase อนุญาตให้ดึงข้อมูลหรือไม่ (สำคัญมาก!)
+                if (!res.ok) {
+                    console.error("Firebase Error:", result);
+                    if (result && result.error && result.error.includes("Permission denied")) {
+                        document.getElementById('firebaseErrorModal').classList.remove('hidden');
+                    } else {
+                        showMessage("เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล", "error");
+                    }
+                    return undefined;
+                }
+                return result;
+            } catch (error) {
+                showLoading(false);
+                console.error("Firebase Error:", error);
+                showMessage("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
+                return undefined;
             }
         }
 
-        // ==========================================
-        // 4. ระบบข่าวสาร (CMS) - Firebase Integration
-        // ==========================================
-
-        // อัปเดตข่าวสารแบบ Real-time ทุกครั้งที่มีการเปลี่ยนแปลงใน Firebase
-        db.ref('news').on('value', (snapshot) => {
-            newsData = [];
-            if (snapshot.exists()) {
-                snapshot.forEach(child => {
-                    newsData.push({ id: child.key, ...child.val() });
-                });
-            }
-            renderPublicFeed();
-            renderDashboardFeed();
-            renderAdminNews();
-        });
-
+        // --- ระบบข่าวสาร (CMS) ดึงจาก Firebase ---
+        
         const getYouTubeEmbedUrl = (url) => {
             if(!url) return null;
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -403,12 +393,7 @@
 
         const escapeHtml = (unsafe) => {
             if (!unsafe) return "";
-            return unsafe
-                 .replace(/&/g, "&amp;")
-                 .replace(/</g, "&lt;")
-                 .replace(/>/g, "&gt;")
-                 .replace(/"/g, "&quot;")
-                 .replace(/'/g, "&#039;");
+            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         };
 
         const createNewsCardHTML = (news) => {
@@ -445,7 +430,6 @@
         const renderPublicFeed = () => {
             const container = document.getElementById('publicNewsContainer');
             const filteredData = newsData.filter(n => n.location === 'login').sort((a, b) => b.timestamp - a.timestamp);
-            
             if (filteredData.length === 0) {
                 container.innerHTML = `<div class="p-6 text-center text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-300">ยังไม่มีข่าวสารในขณะนี้</div>`;
                 return;
@@ -456,9 +440,8 @@
         const renderDashboardFeed = () => {
             const container = document.getElementById('dashboardNewsContainer');
             const filteredData = newsData.filter(n => n.location === 'dashboard').sort((a, b) => b.timestamp - a.timestamp);
-            
             if (filteredData.length === 0) {
-                container.innerHTML = ``;
+                container.innerHTML = ``; 
                 return;
             }
             container.innerHTML = filteredData.map(createNewsCardHTML).join('');
@@ -482,24 +465,42 @@
                             </span>
                         </div>
                         <p class="font-bold text-gray-800 line-clamp-2">${news.text}</p>
-                        <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-3">
-                            ${news.imageUrl ? '<span class="text-blue-500"><i class="fas fa-image"></i> รูปภาพ</span>' : ''}
-                            ${news.youtubeUrl ? '<span class="text-red-500"><i class="fab fa-youtube"></i> วิดีโอ</span>' : ''}
-                            ${news.codeSnippet ? '<span class="text-green-600"><i class="fas fa-code"></i> โค้ด</span>' : ''}
-                        </div>
                     </div>
                     <div class="flex gap-2 whitespace-nowrap">
-                        <button type="button" onclick="editNewsItem('${news.id}')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition text-sm font-bold">
-                            <i class="fas fa-edit"></i> แก้ไข
-                        </button>
-                        <button type="button" onclick="deleteNewsItem('${news.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition text-sm font-bold">
-                            <i class="fas fa-trash"></i> ลบ
-                        </button>
+                        <button type="button" onclick="editNewsItem('${news.id}')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition text-sm font-bold">แก้ไข</button>
+                        <button type="button" onclick="deleteNewsItem('${news.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition text-sm font-bold">ลบ</button>
                     </div>
                 </div>`).join('');
         };
 
-        // บันทึกประกาศลง Firebase
+        async function loadNewsData() {
+            const data = await fetchDB('news');
+            
+            if (data === undefined) {
+                // หากติด Permission Denied ให้ดึงข้อมูลจาก Local มาแสดงชั่วคราวและไม่ทำการ POST
+                const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
+                newsData = (localData || []).map(n => ({...n, location: n.location || 'login'}));
+            } else if (data === null) {
+                // ระบบย้ายข้อมูลเก่าอัตโนมัติ: ถ้าใน Firebase ว่างเปล่า ให้ดึงจาก Local Storage เดิมขึ้นมา
+                const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
+                if (localData && localData.length > 0) {
+                    for (let item of localData) {
+                        await fetchDB('news', 'POST', item); // อัพโหลดขึ้น Firebase
+                    }
+                    const newData = await fetchDB('news');
+                    newsData = objToArray(newData).map(n => ({...n, location: n.location || 'login'}));
+                } else {
+                    newsData = [];
+                }
+            } else {
+                newsData = objToArray(data).map(n => ({...n, location: n.location || 'login'}));
+            }
+
+            renderPublicFeed();
+            renderDashboardFeed();
+            renderAdminNews();
+        }
+
         document.getElementById('newsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const location = document.getElementById('newsLocation').value;
@@ -509,23 +510,18 @@
             const codeSnippet = document.getElementById('newsCode').value;
             const editId = document.getElementById('editNewsId').value;
 
-            showLoading(true);
-            try {
-                if (editId) {
-                    await db.ref(`news/${editId}`).update({
-                        location, text, imageUrl, youtubeUrl, codeSnippet
-                    });
-                    window.showMessage("แก้ไขประกาศสำเร็จ");
-                } else {
-                    const newItem = { location, text, imageUrl, youtubeUrl, codeSnippet, timestamp: Date.now() };
-                    await db.ref('news').push(newItem);
-                    window.showMessage("เพิ่มประกาศสำเร็จ");
-                }
-                window.resetNewsForm();
-            } catch (err) {
-                window.showMessage("เกิดข้อผิดพลาดในการบันทึก", "error");
+            const payload = { location, text, imageUrl, youtubeUrl, codeSnippet, timestamp: Date.now() };
+
+            if (editId) {
+                await fetchDB(`news/${editId}`, 'PATCH', payload);
+                showMessage("แก้ไขประกาศสำเร็จ");
+            } else {
+                await fetchDB('news', 'POST', payload);
+                showMessage("เพิ่มประกาศสำเร็จ");
             }
-            showLoading(false);
+            
+            await loadNewsData();
+            window.resetNewsForm();
         });
 
         window.editNewsItem = (id) => {
@@ -541,17 +537,15 @@
                 document.getElementById('cmsFormTitle').innerText = "2. แก้ไขประกาศ";
                 document.getElementById('btnSaveNews').innerText = "บันทึกการแก้ไข";
                 document.getElementById('btnCancelEdit').classList.remove('hidden');
-                
                 document.getElementById('cmsSection').scrollIntoView({behavior: 'smooth'});
             }
         };
 
         window.deleteNewsItem = async (id) => {
             if(confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
-                showLoading(true);
-                await db.ref(`news/${id}`).remove();
-                window.showMessage("ลบสำเร็จ");
-                showLoading(false);
+                await fetchDB(`news/${id}`, 'DELETE');
+                showMessage("ลบสำเร็จ");
+                await loadNewsData();
             }
         };
 
@@ -563,79 +557,77 @@
             document.getElementById('btnCancelEdit').classList.add('hidden');
         };
 
-        // ==========================================
-        // 5. ระบบ Auth (ล็อกอิน / สมัครสมาชิก) - Firebase 
-        // ==========================================
-        document.getElementById('registerForm').onsubmit = async (e) => {
+        // --- Auth Users (Firebase) ---
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            showLoading(true);
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-
-            try {
-                // ใช้ once('value') เพื่อความเสถียรในการดึงข้อมูลแบบ Compat
-                const snapshot = await db.ref('users').orderByChild('email').equalTo(email).once('value');
-                if (snapshot.exists()) {
-                    showMessage("อีเมลนี้ถูกใช้งานแล้ว", "error");
-                } else {
-                    await db.ref('users').push({ name, email, password, permissions: ['special'] });
-                    showMessage("สมัครสำเร็จ! ล็อกอินได้เลย");
-                    document.getElementById('registerForm').reset(); // เคลียร์ช่องกรอกหลังสมัครเสร็จ
-                    toggleSection('login');
-                }
-            } catch (error) {
-                console.error("Firebase Register Error:", error);
-                // แสดงสาเหตุของ Error ออกมาที่หน้าจอเลย
-                showMessage("เกิดข้อผิดพลาด: " + error.message, "error");
-            }
-            showLoading(false);
-        };
-
-        document.getElementById('loginForm').onsubmit = async (e) => {
-            e.preventDefault();
-            showLoading(true);
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+            const safeKey = sanitizeKey(email);
 
-            try {
-                const snapshot = await db.ref('users').orderByChild('email').equalTo(email).once('value');
-                if (snapshot.exists()) {
-                    let userObj = null;
-                    let userId = null;
-                    snapshot.forEach(child => {
-                        userId = child.key;
-                        userObj = child.val();
-                    });
-
-                    if (userObj.password === password) {
-                        currentUser = { id: userId, ...userObj };
-                        if(!currentUser.permissions) currentUser.permissions = []; 
-                        
-                        document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
-                        document.getElementById('loginForm').reset(); // เคลียร์ช่องกรอกหลังเข้าสู่ระบบสำเร็จ
-                        toggleSection('menu');
-                    } else {
-                        showMessage("รหัสผ่านไม่ถูกต้อง", "error");
-                    }
-                } else {
-                    showMessage("ไม่พบอีเมลนี้ในระบบ", "error");
-                }
-            } catch (error) {
-                console.error("Firebase Login Error:", error);
-                showMessage("เกิดข้อผิดพลาด: " + error.message, "error");
+            const user = await fetchDB(`users/${safeKey}`);
+            if (user === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+            
+            if (user === null) {
+                showMessage("ไม่พบบัญชีผู้ใช้นี้ กรุณาสมัครสมาชิกก่อนนะจ๊ะ", 'error');
+            } else if (user.password !== password) {
+                showMessage("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่", 'error');
+            } else {
+                // ล็อกอินสำเร็จ
+                currentUser = user;
+                if (!currentUser.permissions) currentUser.permissions = [];
+                document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
+                toggleSection('menu');
+                document.getElementById('loginForm').reset(); // ล้างรหัสผ่านเผื่อล็อกเอาท์
             }
-            showLoading(false);
-        };
+        });
 
-        // ==========================================
-        // 6. การเข้าสู่หน้าแอดมินต่างๆ
-        // ==========================================
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const safeKey = sanitizeKey(email);
+
+            if(!name || !email || !password) {
+                return showMessage("กรุณากรอกข้อมูลให้ครบถ้วน", 'error');
+            }
+
+            const existingUser = await fetchDB(`users/${safeKey}`);
+            if (existingUser === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+            
+            if (existingUser !== null) {
+                showMessage("อีเมลนี้มีผู้ใช้งานแล้ว", 'error');
+            } else {
+                await fetchDB(`users/${safeKey}`, 'PUT', { name, email, password, permissions: [] });
+                showMessage("สมัครสำเร็จ! กรุณาล็อกอิน");
+                toggleSection('login');
+                document.getElementById('registerForm').reset(); // ล้างแบบฟอร์มสมัคร
+            }
+        });
+
+        // --- ระบบนำทางหน้า ---
+        
+        function toggleSection(s) {
+            document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
+            if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
+            else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
+            else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
+            else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
+            else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); loadNewsData(); /* ดึงข่าวสารใหม่ทุกครั้งที่เปิดหน้าแอดมินข่าว */ }
+            else if (s === 'menu') { 
+                document.getElementById('mainContent').classList.remove('hidden-section'); 
+                renderTermCards(); 
+                renderDashboardFeed(); 
+            }
+            else if (s === 'admin') { document.getElementById('adminSection').classList.remove('hidden-section'); refreshAdminUsers(); initAdminSelect(); }
+        }
+
         function checkAdminPassword() {
             if (document.getElementById('adminPasswordInput').value === "1471200") {
                 document.getElementById('adminPasswordInput').value = "";
                 toggleSection('admin');
-            } else showMessage("รหัสแอดมินไม่ถูกต้อง", "error");
+            } else showMessage("รหัสไม่ถูกต้อง", "error");
         }
 
         function checkCmsPassword() {
@@ -645,13 +637,13 @@
             } else showMessage("รหัสอัพเดทไม่ถูกต้อง", "error");
         }
 
-        // ==========================================
-        // 7. แดชบอร์ดนักเรียน (แสดงบทเรียน) - Firebase
-        // ==========================================
+        // --- Student Dashboard ---
+
         function renderTermCards() {
             const grid = document.getElementById('termCardsGrid');
+            const userPerms = currentUser.permissions || [];
             grid.innerHTML = TERMS.map(t => {
-                const hasAccess = currentUser.permissions.includes(t.id);
+                const hasAccess = userPerms.includes(t.id);
                 return `
                 <div onclick="selectTerm('${t.id}', '${t.name}')" class="menu-card bg-white p-6 text-center shadow-md ${!hasAccess ? 'locked' : ''}">
                     <div class="w-12 h-12 ${t.color} rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl shadow-sm border-2 border-white"><i class="fas ${t.icon}"></i></div>
@@ -662,39 +654,30 @@
         }
 
         async function selectTerm(id, name) {
-            if (id !== 'special' && !currentUser.permissions.includes(id)) {
+            const userPerms = currentUser.permissions || [];
+            if (id !== 'special' && !userPerms.includes(id)) {
                 return showMessage("ห้องเรียนนี้ต้องขออนุญาตคุณครูก่อนนะจ๊ะ", "error");
             }
             
-            showLoading(true);
             document.getElementById('termSelectionContainer').classList.add('hidden-section');
             document.getElementById('contentDashboard').classList.remove('hidden-section');
             document.getElementById('currentTermView').innerHTML = id === 'special' ? `🎁 ${name}` : `<i class="fas fa-graduation-cap"></i> ${name}`;
             
-            try {
-                // โหลดบทเรียนจาก Firebase ตาม term
-                const snapshot = await db.ref('units').orderByChild('term').equalTo(id).get();
-                const grid = document.getElementById('dynamicUnitGrid');
-                
-                if (snapshot.exists()) {
-                    let htmlParts = [];
-                    snapshot.forEach(child => {
-                        const u = child.val();
-                        htmlParts.push(`
-                        <div onclick="window.open('${u.link}', '_blank')" class="bg-white p-8 rounded-3xl border-4 border-orange-50 hover:border-orange-400 hover:shadow-xl cursor-pointer text-center group transition">
-                            <div class="mb-4 text-indigo-400 group-hover:scale-110 transition duration-300"><i class="fas fa-play-circle text-5xl"></i></div>
-                            <h4 class="font-black text-gray-700 text-lg">${u.name}</h4>
-                            <p class="text-xs text-gray-400 mt-2">คลิกเพื่อเริ่มบทเรียน</p>
-                        </div>`);
-                    });
-                    grid.innerHTML = htmlParts.join('');
-                } else {
-                    grid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10 font-bold">ยังไม่มีบทเรียนในห้องนี้</p>';
-                }
-            } catch (err) {
-                showMessage("เกิดข้อผิดพลาดในการโหลดบทเรียน", "error");
-            }
-            showLoading(false);
+            // ดึงข้อมูลบทเรียนจาก Firebase
+            const unitsData = await fetchDB('units');
+            if (unitsData === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+
+            const allUnits = objToArray(unitsData);
+            const filteredUnits = allUnits.filter(u => u.term === id);
+
+            const grid = document.getElementById('dynamicUnitGrid');
+            grid.innerHTML = filteredUnits.length ? filteredUnits.map(u => `
+                <div onclick="window.open('${u.link}', '_blank')" class="bg-white p-8 rounded-3xl border-4 border-orange-50 hover:border-orange-400 hover:shadow-xl cursor-pointer text-center group transition">
+                    <div class="mb-4 text-indigo-400 group-hover:scale-110 transition duration-300"><i class="fas fa-play-circle text-5xl"></i></div>
+                    <h4 class="font-black text-gray-700 text-lg">${u.name}</h4>
+                    <p class="text-xs text-gray-400 mt-2">คลิกเพื่อเริ่มบทเรียน</p>
+                </div>
+            `).join('') : '<p class="col-span-full text-center text-gray-400 py-10 font-bold">ยังไม่มีบทเรียนในห้องนี้</p>';
         }
 
         function backToTerms() {
@@ -702,78 +685,52 @@
             document.getElementById('contentDashboard').classList.add('hidden-section');
         }
 
-        // ==========================================
-        // 8. หน้าแอดมินจัดการ (Users & Units) - Firebase
-        // ==========================================
-        window.switchAdminTab = (tab) => {
-            const tabUsersBtn = document.getElementById('tabUsersBtn');
-            const tabUnitsBtn = document.getElementById('tabUnitsBtn');
-            
-            if(tab === 'users') {
-                tabUsersBtn.classList.add('text-indigo-600', 'border-indigo-600');
-                tabUnitsBtn.classList.remove('text-indigo-600', 'border-indigo-600');
-                document.getElementById('tabContentUsers').classList.remove('hidden-section');
-                document.getElementById('tabContentUnits').classList.add('hidden-section');
-                refreshAdminUsers();
-            } else {
-                tabUnitsBtn.classList.add('text-indigo-600', 'border-indigo-600');
-                tabUsersBtn.classList.remove('text-indigo-600', 'border-indigo-600');
-                document.getElementById('tabContentUnits').classList.remove('hidden-section');
-                document.getElementById('tabContentUsers').classList.add('hidden-section');
-                refreshAdminUnits();
-            }
-        };
+        // --- Admin Management (Users & Units) ---
 
-        // ระบบนักเรียน
         async function refreshAdminUsers() {
-            showLoading(true);
-            const snapshot = await db.ref('users').get();
-            const tbody = document.getElementById('userTableBody');
+            const usersData = await fetchDB('users');
+            if (usersData === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+
+            const users = objToArray(usersData);
             
-            if (snapshot.exists()) {
-                let html = [];
-                snapshot.forEach(child => {
-                    const u = child.val();
-                    const userId = child.key;
-                    const perms = u.permissions || [];
-                    html.push(`
-                    <tr class="border-b hover:bg-slate-50">
-                        <td class="p-4"><div class="font-bold">${u.name}</div><div class="text-xs text-slate-400">${u.email}</div></td>
-                        <td class="p-4">
-                            <div class="flex flex-wrap gap-1">
-                                ${TERMS.map(t => `<button onclick="updatePerm('${userId}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-slate-400 hover:bg-gray-200'}">${t.name}</button>`).join('')}
-                            </div>
-                        </td>
-                        <td class="p-4 text-center"><button onclick="deleteUser('${userId}')" class="text-red-300 hover:text-red-600 transition"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>`);
-                });
-                tbody.innerHTML = html.join('');
-            } else {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center p-4">ยังไม่มีนักเรียน</td></tr>';
-            }
-            showLoading(false);
+            document.getElementById('userTableBody').innerHTML = users.map(u => {
+                const perms = u.permissions || [];
+                return `
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="p-4"><div class="font-bold">${u.name}</div><div class="text-xs text-slate-400">${u.email}</div></td>
+                    <td class="p-4">
+                        <div class="flex flex-wrap gap-1">
+                            ${TERMS.map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-slate-400'}">${t.name}</button>`).join('')}
+                        </div>
+                    </td>
+                    <td class="p-4 text-center"><button onclick="deleteUserGS('${u.email}')" class="text-red-300"><i class="fas fa-trash-alt"></i></button></td>
+                </tr>`
+            }).join('');
         }
 
-        window.updatePerm = async (userId, termId) => {
-            const userPermRef = db.ref(`users/${userId}/permissions`);
-            const snap = await userPermRef.get();
-            let perms = snap.val() || [];
+        window.updatePermGS = async (email, termId) => { 
+            const safeKey = sanitizeKey(email);
+            const user = await fetchDB(`users/${safeKey}`);
+            let perms = user.permissions || [];
             
-            if (perms.includes(termId)) perms = perms.filter(p => p !== termId);
-            else perms.push(termId);
+            if (perms.includes(termId)) {
+                perms = perms.filter(p => p !== termId);
+            } else {
+                perms.push(termId);
+            }
             
-            await userPermRef.set(perms);
+            await fetchDB(`users/${safeKey}/permissions`, 'PUT', perms);
             refreshAdminUsers(); 
         };
 
-        window.deleteUser = async (userId) => { 
+        window.deleteUserGS = async (email) => { 
             if(confirm('ลบผู้ใช้นี้?')) { 
-                await db.ref(`users/${userId}`).remove();
+                const safeKey = sanitizeKey(email);
+                await fetchDB(`users/${safeKey}`, 'DELETE');
                 refreshAdminUsers(); 
             } 
         };
 
-        // ระบบบทเรียน
         function initAdminSelect() {
             const allOptions = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
             document.getElementById('unitTerm').innerHTML = allOptions.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
@@ -781,53 +738,57 @@
         }
 
         async function refreshAdminUnits() {
-            showLoading(true);
-            const snapshot = await db.ref('units').get();
-            const tbody = document.getElementById('unitTableBody');
+            const unitsData = await fetchDB('units');
+            if (unitsData === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+
+            const units = objToArray(unitsData);
             const all = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
             
-            if (snapshot.exists()) {
-                let html = [];
-                snapshot.forEach(child => {
-                    const u = child.val();
-                    const unitId = child.key;
-                    html.push(`
-                    <tr class="border-b hover:bg-slate-50 transition">
-                        <td class="p-4 font-bold text-slate-700">${u.name}</td>
-                        <td class="p-4 text-xs font-bold text-orange-600">${all.find(t=>t.id===u.term)?.name || u.term}</td>
-                        <td class="p-4 text-center"><button onclick="deleteUnit('${unitId}')" class="text-red-400 hover:text-red-600 transition"><i class="fas fa-trash"></i></button></td>
-                    </tr>`);
-                });
-                tbody.innerHTML = html.reverse().join(''); // ล่าสุดอยู่บนสุด
-            } else {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center p-4">ยังไม่มีบทเรียน</td></tr>';
-            }
-            showLoading(false);
+            document.getElementById('unitTableBody').innerHTML = units.map(u => `
+                <tr class="border-b">
+                    <td class="p-4 font-bold text-slate-700">${u.name}</td>
+                    <td class="p-4 text-xs font-bold text-orange-600">${all.find(t=>t.id===u.term)?.name || u.term}</td>
+                    <td class="p-4 text-center"><button onclick="deleteUnitGS('${u.id}')" class="text-red-400"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join('');
         }
 
-        window.saveUnit = async () => {
+        window.saveUnitGS = async () => {
             const name = document.getElementById('unitName').value;
             const term = document.getElementById('unitTerm').value;
             const link = document.getElementById('unitLink').value;
             if(!name || !link) return showMessage("กรอกข้อมูลให้ครบ", "error");
             
-            showLoading(true);
-            await db.ref('units').push({ name, term, link, timestamp: Date.now() });
+            await fetchDB('units', 'POST', { name, term, link });
             
-            document.getElementById('unitName').value = ''; 
-            document.getElementById('unitLink').value = '';
+            document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
             refreshAdminUnits();
         };
 
-        window.deleteUnit = async (unitId) => { 
+        window.deleteUnitGS = async (id) => { 
             if(confirm('ลบบทเรียนนี้?')) { 
-                showLoading(true);
-                await db.ref(`units/${unitId}`).remove();
+                await fetchDB(`units/${id}`, 'DELETE'); 
                 refreshAdminUnits(); 
             } 
         };
 
+        window.switchAdminTab = (tab) => {
+            document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
+            document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
+            
+            // สลับสีปุ่มเมนู
+            document.getElementById('tabUsersBtn').classList.toggle('text-indigo-600', tab === 'users');
+            document.getElementById('tabUsersBtn').classList.toggle('text-gray-400', tab !== 'users');
+            document.getElementById('tabUnitsBtn').classList.toggle('text-indigo-600', tab === 'units');
+            document.getElementById('tabUnitsBtn').classList.toggle('text-gray-400', tab !== 'units');
+        };
+
         window.logout = () => location.reload();
+
+        // โหลดข้อมูลข่าวสารอัตโนมัติเมื่อเปิดหน้าเว็บ
+        window.addEventListener('DOMContentLoaded', () => {
+            loadNewsData();
+        });
+
     </script>
 </body>
 </html>
