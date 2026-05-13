@@ -45,7 +45,7 @@
             box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.15);
         }
         .term-banner:not(.locked):hover { transform: scale(1.02); z-index: 10;}
-        .term-banner.locked { opacity: 0.6; cursor: not-allowed !important; filter: grayscale(0.9); }
+        .term-banner.locked { cursor: pointer; }
         .banner-overlay { background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 100%); position: absolute; inset: 0; z-index: 1; }
         
         .free-trial-banner {
@@ -684,22 +684,30 @@
                 const bgStyle = bgImage ? `background-image: url('${bgImage}'); background-size: cover; background-position: center;` : '';
                 const fallbackClass = bgImage ? '' : t.fallbackBg;
 
+                // กำหนดข้อความปุ่มล็อคตามระดับชั้น
+                let lockedText = "ปลดล็อกเข้าเรียน";
+                if (t.id.startsWith('an')) {
+                    lockedText = "ปลดล็อก 99 บาท";
+                } else if (t.id.startsWith('p')) {
+                    lockedText = "ปลดล็อก 199 บาท";
+                }
+
                 return `
-                <div onclick="selectTerm('${t.id}', '${titleName}')" class="term-banner ${fallbackClass} p-8 md:p-10 min-h-[160px] flex items-center justify-between ${!hasAccess ? 'locked' : ''}" style="${bgStyle}">
+                <div onclick="selectTerm('${t.id}', '${titleName}')" class="term-banner ${fallbackClass} p-8 md:p-12 min-h-[320px] flex items-center justify-between ${!hasAccess ? 'locked' : ''}" style="${bgStyle}">
                     ${bgImage ? '<div class="banner-overlay"></div>' : ''}
                     
-                    <div class="relative z-10 flex items-center gap-6 text-white w-full">
-                        <div class="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-3xl md:text-4xl shadow-inner flex-shrink-0">
+                    <div class="relative z-10 flex items-center gap-8 text-white w-full">
+                        <div class="w-20 h-20 md:w-28 md:h-28 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-4xl md:text-5xl shadow-inner flex-shrink-0">
                             <i class="fas ${hasAccess ? t.icon : 'fa-lock'}"></i>
                         </div>
                         <div class="text-left flex-grow">
-                            <h3 class="text-2xl md:text-4xl font-black drop-shadow-md">${titleName}</h3>
-                            <p class="text-sm md:text-lg opacity-90 font-medium drop-shadow-md mt-1">${subtitle}</p>
+                            <h3 class="text-3xl md:text-5xl font-black drop-shadow-lg">${titleName}</h3>
+                            <p class="text-base md:text-xl opacity-90 font-medium drop-shadow-md mt-2">${subtitle}</p>
                         </div>
                         <div class="hidden md:block">
                             ${hasAccess 
-                                ? '<button class="bg-white text-gray-800 px-6 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 transition">เข้าเรียน <i class="fas fa-arrow-right ml-2"></i></button>' 
-                                : '<span class="bg-black/40 backdrop-blur-sm text-white px-6 py-3 rounded-full font-bold border border-white/30"><i class="fas fa-lock mr-2"></i> ยังไม่เปิด</span>'
+                                ? '<button class="bg-white text-gray-800 px-8 py-4 text-lg rounded-full font-bold shadow-xl hover:bg-gray-100 transition hover:scale-105">เข้าเรียน <i class="fas fa-arrow-right ml-2"></i></button>' 
+                                : '<span class="bg-black/40 backdrop-blur-sm text-white px-8 py-4 text-lg rounded-full font-bold border border-white/30"><i class="fas fa-lock mr-2"></i> ' + lockedText + '</span>'
                             }
                         </div>
                     </div>
