@@ -139,6 +139,25 @@
         <p class="text-orange-600 font-bold text-xl">กำลังประมวลผล...</p>
     </div>
 
+    <!-- Game Over Modal (สรุปคะแนน) -->
+    <div id="gameOverModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-yellow-400 to-orange-500 z-0"></div>
+            <div class="w-24 h-24 bg-white rounded-full mx-auto flex items-center justify-center text-5xl shadow-lg mt-4 mb-6 relative z-10 text-yellow-500">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 class="text-3xl font-black text-gray-800 mb-2 relative z-10">สรุปผลการแข่งขัน!</h2>
+            <p class="text-gray-500 font-medium mb-6 relative z-10">นี่คือคะแนนที่คุณทำได้ในรอบนี้</p>
+            <div class="bg-gray-50 rounded-3xl p-6 mb-8 border-4 border-gray-100 relative z-10">
+                <span id="finalScoreText" class="text-6xl font-black text-indigo-600">0</span>
+                <span class="text-xl text-gray-400 font-bold ml-2">แต้ม</span>
+            </div>
+            <button onclick="closeGameOverModal()" class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl text-xl transition shadow-[0_10px_20px_rgba(239,68,68,0.3)] hover:scale-105 active:scale-95 relative z-10">
+                กลับสู่หน้าหลัก <i class="fas fa-home ml-2"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Section: Auth & News Feed -->
     <div id="authWrapper" class="primary-auth-bg flex-col lg:flex-row gap-8">
         <div class="bubble w-20 h-20 top-10 left-10"></div>
@@ -296,7 +315,7 @@
                         </div>
                         <div class="z-10 flex justify-between items-end mt-auto">
                             <div class="text-4xl animate-bounce"><i class="fas fa-gift text-yellow-300"></i></div>
-                            <button class="bg-white text-indigo-700 px-4 py-2 rounded-full font-bold text-xs shadow-lg hover:scale-105 transition">เริ่ม <i class="fas fa-play ml-1"></i></button>
+                            <button class="bg-white text-indigo-700 px-6 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition">เริ่มเรียน <i class="fas fa-play ml-1"></i></button>
                         </div>
                     </div>
 
@@ -307,9 +326,9 @@
                             <h2 class="text-2xl font-black mb-1">คณิตคิดเร็ว ประถม 50ข้อ ⚡</h2>
                             <p class="text-xs opacity-90 font-medium">ท้าประลอง 50 ข้อ เก็บแต้ม</p>
                         </div>
-                        <div class="z-10 flex flex-col items-end mt-auto">
-                            <div id="topScorerDisplay" class="text-[10px] bg-yellow-300 text-pink-900 px-3 py-1 rounded-lg mb-2 font-black inline-block shadow-lg">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-pink-600 px-4 py-2 rounded-full font-bold text-xs shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-stopwatch text-xl"></i> ประลอง <i class="fas fa-bolt"></i></button>
+                        <div class="z-10 flex flex-col mt-auto w-full">
+                            <div id="topScorerDisplay" class="text-base bg-yellow-300 text-pink-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
+                            <button class="bg-white text-pink-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-stopwatch text-xl"></i> ประลอง <i class="fas fa-bolt"></i></button>
                         </div>
                     </div>
                     
@@ -320,9 +339,9 @@
                             <h2 class="text-2xl font-black mb-1">ทายศัพท์อังกฤษ ประถม 🌟</h2>
                             <p class="text-xs opacity-90 font-medium">สนุกกับคำศัพท์ 50 คำ</p>
                         </div>
-                        <div class="z-10 flex flex-col items-end mt-auto">
-                            <div id="topEngScorerDisplay" class="text-[10px] bg-yellow-300 text-blue-900 px-3 py-1 rounded-lg mb-2 font-black inline-block shadow-lg">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-blue-600 px-4 py-2 rounded-full font-bold text-xs shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-spell-check text-xl"></i> ทายศัพท์ <i class="fas fa-star"></i></button>
+                        <div class="z-10 flex flex-col mt-auto w-full">
+                            <div id="topEngScorerDisplay" class="text-base bg-yellow-300 text-blue-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
+                            <button class="bg-white text-blue-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-spell-check text-xl"></i> ทายศัพท์ <i class="fas fa-star"></i></button>
                         </div>
                     </div>
 
@@ -333,9 +352,9 @@
                             <h2 class="text-2xl font-black mb-1">ตอบปัญหาวิทย์ ประถม 🔬</h2>
                             <p class="text-xs opacity-90 font-medium">ประลองความรู้รอบตัว 50 ข้อ</p>
                         </div>
-                        <div class="z-10 flex flex-col items-end mt-auto">
-                            <div id="topSciScorerDisplay" class="text-[10px] bg-yellow-300 text-emerald-900 px-3 py-1 rounded-lg mb-2 font-black inline-block shadow-lg">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-emerald-600 px-4 py-2 rounded-full font-bold text-xs shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-dna text-xl"></i> แข่งขัน <i class="fas fa-leaf"></i></button>
+                        <div class="z-10 flex flex-col mt-auto w-full">
+                            <div id="topSciScorerDisplay" class="text-base bg-yellow-300 text-emerald-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
+                            <button class="bg-white text-emerald-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-dna text-xl"></i> แข่งขัน <i class="fas fa-leaf"></i></button>
                         </div>
                     </div>
 
@@ -346,9 +365,9 @@
                             <h2 class="text-2xl font-black mb-1">ทายคำราชาศัพท์ ประถม 👑</h2>
                             <p class="text-xs opacity-90 font-medium">ประลองภาษาไทย 50 ข้อ</p>
                         </div>
-                        <div class="z-10 flex flex-col items-end mt-auto">
-                            <div id="topThaiScorerDisplay" class="text-[10px] bg-yellow-300 text-purple-900 px-3 py-1 rounded-lg mb-2 font-black inline-block shadow-lg">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-purple-600 px-4 py-2 rounded-full font-bold text-xs shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-crown text-xl"></i> ทายคำ <i class="fas fa-pen-nib"></i></button>
+                        <div class="z-10 flex flex-col mt-auto w-full">
+                            <div id="topThaiScorerDisplay" class="text-base bg-yellow-300 text-purple-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
+                            <button class="bg-white text-purple-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-crown text-xl"></i> ทายคำ <i class="fas fa-pen-nib"></i></button>
                         </div>
                     </div>
                 </div>
@@ -382,7 +401,7 @@
                     <div class="bg-pink-500 p-6 text-white flex justify-between items-center">
                         <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="mathProgress">ข้อที่ 1 / 50</div>
                         <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="mathTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitMathGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="ออกจากการแข่งขัน"><i class="fas fa-times"></i></button>
+                        <button onclick="quitMathGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
                     </div>
 
                     <div class="p-8 md:p-12 text-center bg-[#fffcf2]">
@@ -405,7 +424,7 @@
                     <div class="bg-blue-500 p-6 text-white flex justify-between items-center">
                         <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="engProgress">ข้อที่ 1 / 50</div>
                         <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="engTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitEngGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="ออกจากการแข่งขัน"><i class="fas fa-times"></i></button>
+                        <button onclick="quitEngGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
                     </div>
 
                     <div class="p-8 md:p-12 text-center bg-[#f0f9ff]">
@@ -429,7 +448,7 @@
                     <div class="bg-emerald-500 p-6 text-white flex justify-between items-center">
                         <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="sciProgress">ข้อที่ 1 / 50</div>
                         <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="sciTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitSciGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="ออกจากการแข่งขัน"><i class="fas fa-times"></i></button>
+                        <button onclick="quitSciGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
                     </div>
 
                     <div class="p-8 md:p-12 text-center bg-[#ecfdf5]">
@@ -452,7 +471,7 @@
                     <div class="bg-purple-500 p-6 text-white flex justify-between items-center">
                         <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="thaiProgress">ข้อที่ 1 / 50</div>
                         <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="thaiTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitThaiGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="ออกจากการแข่งขัน"><i class="fas fa-times"></i></button>
+                        <button onclick="quitThaiGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
                     </div>
 
                     <div class="p-8 md:p-12 text-center bg-[#f5f3ff]">
@@ -614,13 +633,12 @@
             }
         }
 
-        // --- Visitor Stats Logic (New Feature) ---
+        // --- Visitor Stats Logic ---
         const VISITOR_SESSION_ID = 'sess_' + Math.random().toString(36).substr(2, 9);
         let currentTotalVisitors = 0;
         let currentOnlineCount = 0;
 
         async function initVisitorStats() {
-            // เพิ่มยอดผู้เข้าชมรวม
             try {
                 let totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
                 let total = await totalRes.json() || 0;
@@ -629,7 +647,6 @@
                 currentTotalVisitors = total;
             } catch (e) {}
 
-            // อัพเดทสถิติออนไลน์ทุกๆ 15 วินาที
             sendHeartbeat();
             setInterval(sendHeartbeat, 15000);
         }
@@ -637,35 +654,36 @@
         async function sendHeartbeat() {
             const now = Date.now();
             try {
-                // ส่งสัญญาณว่าเรายังออนไลน์อยู่
                 await fetch(`${FIREBASE_DB_URL}/stats/online/${VISITOR_SESSION_ID}.json`, { method: 'PUT', body: JSON.stringify(now) });
-
-                // ดึงข้อมูลออนไลน์ทั้งหมดมานับ และเคลียร์คนที่หายไปเกิน 30 วินาที
                 const onlineRes = await fetch(`${FIREBASE_DB_URL}/stats/online.json`);
                 const onlineData = await onlineRes.json() || {};
                 
-                // เช็คยอดวิวรวมล่าสุดเพื่ออัพเดทหน้าจอ
                 const totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
                 currentTotalVisitors = await totalRes.json() || currentTotalVisitors;
 
                 let count = 0;
-                const cutoff = now - 30000; // 30 วิ
+                const cutoff = now - 30000; 
                 for(let key in onlineData) {
                     if(onlineData[key] > cutoff) count++;
-                    else {
-                        // ลบ session ที่หลุดการเชื่อมต่อ
-                        fetch(`${FIREBASE_DB_URL}/stats/online/${key}.json`, { method: 'DELETE' });
-                    }
+                    else { fetch(`${FIREBASE_DB_URL}/stats/online/${key}.json`, { method: 'DELETE' }); }
                 }
                 currentOnlineCount = count;
 
-                // อัพเดท UI
                 document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
                 document.getElementById('statOnlineVal').innerText = currentOnlineCount.toLocaleString();
-
             } catch(e) {}
         }
 
+        // --- UI Modal Functions ---
+        window.showGameOverModal = (score) => {
+            document.getElementById('finalScoreText').innerText = score;
+            document.getElementById('gameOverModal').classList.remove('hidden');
+        };
+
+        window.closeGameOverModal = () => {
+            document.getElementById('gameOverModal').classList.add('hidden');
+            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
+        };
 
         // --- Math Game Variables & Logic ---
         let mathQuestionsPool = [];
@@ -714,7 +732,7 @@
             const display = document.getElementById('topScorerDisplay');
             const data = await fetchDB('mathLeaderboard'); 
             if(data) {
-                let scores = objToArray(data).filter(s => s.name); // กรองเอาเฉพาะข้อมูลที่มีชื่อ
+                let scores = objToArray(data).filter(s => s.name); 
                 if(scores.length > 0) {
                     scores.sort((a,b) => b.score - a.score);
                     display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
@@ -785,15 +803,9 @@
                 else if (timeElapsed <= 20.0) pointsEarned = 5;
                 else pointsEarned = 0;
                 
-                if (pointsEarned > 0) {
-                    showMessage(`+${pointsEarned} คะแนน! (ใช้เวลา ${timeElapsed.toFixed(1)} วิ)`, 'success');
-                } else {
-                    showMessage(`ถูกต้อง แต่หมดเวลา! (0 คะแนน)`, 'error');
-                }
             } else {
                 btnElement.classList.replace('math-option-btn', 'bg-red-500');
                 btnElement.classList.add('text-white', 'border-red-600');
-                showMessage(`ตอบผิด! (0 คะแนน)`, 'error');
             }
 
             mathScoreTotal += pointsEarned;
@@ -806,26 +818,23 @@
         };
 
         window.quitMathGame = () => {
-            if(confirm("คุณต้องการออกจากการแข่งขันใช่หรือไม่? (คะแนนรอบนี้จะไม่ถูกบันทึก)")) {
-                clearInterval(visualTimerInterval);
-                document.getElementById('mathGameDashboard').classList.add('hidden-section');
-                document.getElementById('termSelectionContainer').classList.remove('hidden-section');
+            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
+                endMathGame();
             }
         };
 
         async function endMathGame() {
             clearInterval(visualTimerInterval);
             document.getElementById('mathGameDashboard').classList.add('hidden-section');
-            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
             
-            showMessage(`จบเกม! คุณทำได้ ${mathScoreTotal} คะแนน 🎉`);
+            // แสดงหน้าต่างคะแนนรวม
+            showGameOverModal(mathScoreTotal);
             
             const safeKey = sanitizeKey(currentUser.email);
             const ts = Date.now();
             
             await fetchDB(`users/${safeKey}/mathHistory/${ts}`, 'PUT', { score: mathScoreTotal, date: ts });
             
-            // ปรับแก้ให้เซฟลง List รวมใน Leaderboard แทนการเซฟทับตัวเดิม
             const payload = { id: safeKey, name: currentUser.name, score: mathScoreTotal, date: ts };
             await fetchDB(`mathLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
             
@@ -957,15 +966,9 @@
                 else if (timeElapsed <= 20.0) pointsEarned = 5;
                 else pointsEarned = 0;
                 
-                if (pointsEarned > 0) {
-                    showMessage(`+${pointsEarned} คะแนน! (ใช้เวลา ${timeElapsed.toFixed(1)} วิ)`, 'success');
-                } else {
-                    showMessage(`ถูกต้อง แต่หมดเวลา! (0 คะแนน)`, 'error');
-                }
             } else {
                 btnElement.classList.replace('eng-option-btn', 'bg-red-500');
                 btnElement.classList.add('text-white', 'border-red-600');
-                showMessage(`ตอบผิด! (0 คะแนน)`, 'error');
                 
                 Array.from(document.getElementById('engOptions').children).forEach(btn => {
                     if(btn.innerText === correctOpt) {
@@ -985,19 +988,16 @@
         };
 
         window.quitEngGame = () => {
-            if(confirm("คุณต้องการออกจากการแข่งขันใช่หรือไม่? (คะแนนรอบนี้จะไม่ถูกบันทึก)")) {
-                clearInterval(engVisualTimerInterval);
-                document.getElementById('engGameDashboard').classList.add('hidden-section');
-                document.getElementById('termSelectionContainer').classList.remove('hidden-section');
+            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
+                endEngGame();
             }
         };
 
         async function endEngGame() {
             clearInterval(engVisualTimerInterval);
             document.getElementById('engGameDashboard').classList.add('hidden-section');
-            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
             
-            showMessage(`จบเกมทายศัพท์! คุณทำได้ ${engScoreTotal} คะแนน 🎉`);
+            showGameOverModal(engScoreTotal);
             
             const safeKey = sanitizeKey(currentUser.email);
             const ts = Date.now();
@@ -1170,15 +1170,9 @@
                 else if (timeElapsed <= 20.0) pointsEarned = 5;
                 else pointsEarned = 0;
                 
-                if (pointsEarned > 0) {
-                    showMessage(`+${pointsEarned} คะแนน! (ใช้เวลา ${timeElapsed.toFixed(1)} วิ)`, 'success');
-                } else {
-                    showMessage(`ถูกต้อง แต่หมดเวลา! (0 คะแนน)`, 'error');
-                }
             } else {
                 btnElement.classList.replace('sci-option-btn', 'bg-red-500');
                 btnElement.classList.add('text-white', 'border-red-600');
-                showMessage(`ตอบผิด! (0 คะแนน)`, 'error');
                 
                 Array.from(document.getElementById('sciOptions').children).forEach(btn => {
                     if(btn.innerText === correctOpt) {
@@ -1198,19 +1192,16 @@
         };
 
         window.quitSciGame = () => {
-            if(confirm("คุณต้องการออกจากการแข่งขันใช่หรือไม่? (คะแนนรอบนี้จะไม่ถูกบันทึก)")) {
-                clearInterval(sciVisualTimerInterval);
-                document.getElementById('sciGameDashboard').classList.add('hidden-section');
-                document.getElementById('termSelectionContainer').classList.remove('hidden-section');
+            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
+                endSciGame();
             }
         };
 
         async function endSciGame() {
             clearInterval(sciVisualTimerInterval);
             document.getElementById('sciGameDashboard').classList.add('hidden-section');
-            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
             
-            showMessage(`จบเกมวิทยาศาสตร์! คุณทำได้ ${sciScoreTotal} คะแนน 🎉`);
+            showGameOverModal(sciScoreTotal);
             
             const safeKey = sanitizeKey(currentUser.email);
             const ts = Date.now();
@@ -1401,17 +1392,10 @@
                 else if (timeElapsed <= 20.0) pointsEarned = 5;
                 else pointsEarned = 0;
                 
-                if (pointsEarned > 0) {
-                    showMessage(`+${pointsEarned} คะแนน! (ใช้เวลา ${timeElapsed.toFixed(1)} วิ)`, 'success');
-                } else {
-                    showMessage(`ถูกต้อง แต่หมดเวลา! (0 คะแนน)`, 'error');
-                }
             } else {
                 btnElement.classList.replace('thai-option-btn', 'bg-red-500');
                 btnElement.classList.add('text-white', 'border-red-600');
-                showMessage(`ตอบผิด! (0 คะแนน)`, 'error');
                 
-                // เฉลยข้อถูก
                 Array.from(document.getElementById('thaiOptions').children).forEach(btn => {
                     if(btn.innerText === correctOpt) {
                         btn.classList.replace('thai-option-btn', 'bg-green-400');
@@ -1430,19 +1414,16 @@
         };
 
         window.quitThaiGame = () => {
-            if(confirm("คุณต้องการออกจากการแข่งขันใช่หรือไม่? (คะแนนรอบนี้จะไม่ถูกบันทึก)")) {
-                clearInterval(thaiVisualTimerInterval);
-                document.getElementById('thaiGameDashboard').classList.add('hidden-section');
-                document.getElementById('termSelectionContainer').classList.remove('hidden-section');
+            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
+                endThaiGame();
             }
         };
 
         async function endThaiGame() {
             clearInterval(thaiVisualTimerInterval);
             document.getElementById('thaiGameDashboard').classList.add('hidden-section');
-            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
             
-            showMessage(`จบเกมภาษาไทย! คุณทำได้ ${thaiScoreTotal} คะแนน 🎉`);
+            showGameOverModal(thaiScoreTotal);
             
             const safeKey = sanitizeKey(currentUser.email);
             const ts = Date.now();
