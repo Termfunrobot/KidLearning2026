@@ -36,9 +36,17 @@
         .primary-btn { background: #ff6600; color: white; border-bottom: 5px solid #cc5200; transition: all 0.1s; }
         .primary-btn:active { transform: translateY(3px); border-bottom: 2px solid #cc5200; }
 
-        .menu-card { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 4px solid #f1f5f9; cursor: pointer; border-radius: 30px; }
-        .menu-card:not(.locked):hover { transform: scale(1.05); border-color: #ff9933; background-color: #fffaf0; }
-        .locked { opacity: 0.5; cursor: not-allowed !important; filter: grayscale(0.8); }
+        /* Banner Style */
+        .term-banner { 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; border-radius: 40px; 
+            position: relative; overflow: hidden;
+            border: 6px solid white;
+            box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.15);
+        }
+        .term-banner:not(.locked):hover { transform: scale(1.02); z-index: 10;}
+        .term-banner.locked { opacity: 0.6; cursor: not-allowed !important; filter: grayscale(0.9); }
+        .banner-overlay { background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 100%); position: absolute; inset: 0; z-index: 1; }
         
         .free-trial-banner {
             background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
@@ -241,7 +249,7 @@
 
         <main class="max-w-6xl mx-auto p-6 flex-grow w-full">
             <div id="termSelectionContainer">
-                <div id="freeTrialBanner" onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner mb-10 p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                <div id="freeTrialBanner" onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner mb-6 p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="text-center md:text-left z-10">
                         <span class="bg-yellow-400 text-indigo-900 px-4 py-1 rounded-full font-black text-xs uppercase mb-3 inline-block">Free Trial</span>
                         <h2 class="text-4xl md:text-5xl font-black mb-2">ทดลองเรียนฟรี! 🌈</h2>
@@ -252,14 +260,15 @@
                     </div>
                 </div>
 
-                <div class="mb-6 text-center">
+                <div class="mb-6 mt-8 text-center">
                     <h2 class="text-3xl font-black text-gray-800 mb-2">ยินดีต้อนรับเข้าสู่บทเรียน!</h2>
                     <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
                 </div>
                 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="termCardsGrid"></div>
+                <!-- เปลี่ยนจาก Grid เล็กๆ เป็น Flex แนวตั้ง (แบนเนอร์เรียงลงมา) -->
+                <div class="flex flex-col gap-6 mb-12" id="termCardsGrid"></div>
 
-                <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6">
+                <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6 mt-10">
                     <!-- ประกาศจากแอดมินสำหรับหน้าห้องเรียนจะถูกแทรกที่นี่ -->
                 </div>
             </div>
@@ -281,15 +290,19 @@
         <div class="max-w-6xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
             <div class="bg-slate-800 p-8 text-white flex justify-between items-center">
                 <h2 class="text-2xl font-bold">Admin Panel</h2>
-                <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold">ออก</button>
+                <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">ออก</button>
             </div>
-            <div class="flex gap-4 px-8 py-4 border-b">
-                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 text-indigo-600">จัดการนักเรียน</button>
-                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 text-gray-400">จัดการบทเรียน</button>
+            <!-- เพิ่มแท็บ จัดการแบนเนอร์ -->
+            <div class="flex flex-wrap gap-2 px-8 py-4 border-b bg-gray-50">
+                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 rounded-lg text-indigo-600 bg-indigo-50">จัดการนักเรียน</button>
+                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200">จัดการบทเรียน</button>
+                <button onclick="switchAdminTab('banners')" id="tabBannersBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200">จัดการแบนเนอร์ชั้นเรียน</button>
             </div>
+            
             <div id="tabContentUsers" class="p-6">
                 <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userTableBody"></tbody></table></div>
             </div>
+            
             <div id="tabContentUnits" class="hidden-section p-6">
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="bg-slate-50 p-6 rounded-3xl border">
@@ -306,6 +319,17 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ส่วนแก้ไขแบนเนอร์ -->
+            <div id="tabContentBanners" class="hidden-section p-6">
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">ตั้งค่าแบนเนอร์สำหรับแต่ละระดับชั้น</h3>
+                    <p class="text-gray-500 text-sm">ข้อความและรูปภาพเหล่านี้จะไปแสดงบนแบนเนอร์ขนาดใหญ่ในหน้าแรกของเด็กๆ</p>
+                </div>
+                <div id="adminBannersList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- ฟอร์มแบนเนอร์จะถูกโหลดมาที่นี่ -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -314,20 +338,26 @@
         // URL ของ Firebase Realtime Database ของคุณ
         const FIREBASE_DB_URL = "https://tess-71c84-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-        const TERMS = [
-            { id: 'an1', name: 'อนุบาล 1', icon: 'fa-baby', color: 'bg-pink-100 text-pink-500' },
-            { id: 'an2', name: 'อนุบาล 2', icon: 'fa-shapes', color: 'bg-pink-100 text-pink-500' },
-            { id: 'an3', name: 'อนุบาล 3', icon: 'fa-puzzle-piece', color: 'bg-pink-100 text-pink-500' },
-            { id: 'p1', name: 'ป.1', icon: 'fa-pencil-alt', color: 'bg-yellow-100 text-yellow-600' },
-            { id: 'p2', name: 'ป.2', icon: 'fa-book-open', color: 'bg-yellow-100 text-yellow-600' },
-            { id: 'p3', name: 'ป.3', icon: 'fa-calculator', color: 'bg-yellow-100 text-yellow-600' },
-            { id: 'p4', name: 'ป.4', icon: 'fa-flask', color: 'bg-orange-100 text-orange-600' },
-            { id: 'p5', name: 'ป.5', icon: 'fa-globe-asia', color: 'bg-orange-100 text-orange-600' },
-            { id: 'p6', name: 'ป.6', icon: 'fa-microscope', color: 'bg-orange-100 text-orange-600' }
+        // ข้อมูลหลักของระบบ (ID จะต้องคงไว้เพื่อใช้กับระบบ Permission)
+        const BASE_TERMS = [
+            { id: 'an1', defaultName: 'อนุบาล 1', icon: 'fa-baby', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
+            { id: 'an2', defaultName: 'อนุบาล 2', icon: 'fa-shapes', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
+            { id: 'an3', defaultName: 'อนุบาล 3', icon: 'fa-puzzle-piece', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
+            { id: 'p1', defaultName: 'ประถมศึกษาปีที่ 1', icon: 'fa-pencil-alt', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
+            { id: 'p2', defaultName: 'ประถมศึกษาปีที่ 2', icon: 'fa-book-open', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
+            { id: 'p3', defaultName: 'ประถมศึกษาปีที่ 3', icon: 'fa-calculator', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
+            { id: 'p4', defaultName: 'ประถมศึกษาปีที่ 4', icon: 'fa-flask', fallbackBg: 'bg-gradient-to-r from-green-400 to-emerald-500' },
+            { id: 'p5', defaultName: 'ประถมศึกษาปีที่ 5', icon: 'fa-globe-asia', fallbackBg: 'bg-gradient-to-r from-blue-400 to-indigo-500' },
+            { id: 'p6', defaultName: 'ประถมศึกษาปีที่ 6', icon: 'fa-microscope', fallbackBg: 'bg-gradient-to-r from-purple-400 to-fuchsia-500' }
         ];
 
         let currentUser = null;
         let newsData = [];
+        let termSettingsData = {}; // เก็บข้อมูลแบนเนอร์ที่แก้ไขจาก Admin
+        let customTermsData = [];  // เก็บข้อมูลห้องเรียนที่สร้างขึ้นมาใหม่
+        
+        // ฟังก์ชันสำหรับรวมห้องเรียนทั้งหมด (ห้องเรียนพื้นฐาน + ห้องเรียนที่สร้างใหม่)
+        const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
         // --- Helper Functions สำหรับ Firebase REST API ---
         window.showLoading = function(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
@@ -338,10 +368,8 @@
             setTimeout(() => b.style.display = 'none', 3000);
         }
 
-        // แปลง Email ให้ปลอดภัยสำหรับใช้เป็น Key ใน Firebase (ตัดปัญหาตัวพิมพ์เล็กใหญ่และการเว้นวรรค)
         const sanitizeKey = (email) => email.trim().toLowerCase().replace(/[.#$[\]\/\s]/g, '_');
         
-        // แปลง Object ที่ได้จาก Firebase ให้กลายเป็น Array 
         const objToArray = (obj) => {
             if (!obj || obj.error) return [];
             if (Array.isArray(obj)) {
@@ -350,7 +378,6 @@
             return Object.keys(obj).map(key => ({ ...obj[key], id: key }));
         };
 
-        // ฟังก์ชันหลักในการเรียกฐานข้อมูล
         async function fetchDB(path, method = 'GET', data = null) {
             showLoading(true);
             try {
@@ -360,7 +387,6 @@
                 const result = await res.json();
                 showLoading(false);
                 
-                // เช็คว่า Firebase อนุญาตให้ดึงข้อมูลหรือไม่ (สำคัญมาก!)
                 if (!res.ok) {
                     console.error("Firebase Error:", result);
                     if (result && result.error && result.error.includes("Permission denied")) {
@@ -379,7 +405,18 @@
             }
         }
 
-        // --- ระบบข่าวสาร (CMS) ดึงจาก Firebase ---
+        // --- โหลดข้อมูลตั้งค่าแบนเนอร์ และ ห้องเรียนใหม่ ---
+        async function loadTermSettings() {
+            // โหลดแบนเนอร์
+            const settingsData = await fetchDB('termSettings');
+            termSettingsData = settingsData || {};
+
+            // โหลดห้องเรียนที่แอดมินสร้างใหม่
+            const customData = await fetchDB('customTerms');
+            customTermsData = objToArray(customData) || [];
+        }
+
+        // --- ระบบข่าวสาร (CMS) ---
         
         const getYouTubeEmbedUrl = (url) => {
             if(!url) return null;
@@ -475,27 +512,14 @@
 
         async function loadNewsData() {
             const data = await fetchDB('news');
-            
             if (data === undefined) {
-                // หากติด Permission Denied ให้ดึงข้อมูลจาก Local มาแสดงชั่วคราวและไม่ทำการ POST
                 const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
                 newsData = (localData || []).map(n => ({...n, location: n.location || 'login'}));
             } else if (data === null) {
-                // ระบบย้ายข้อมูลเก่าอัตโนมัติ: ถ้าใน Firebase ว่างเปล่า ให้ดึงจาก Local Storage เดิมขึ้นมา
-                const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
-                if (localData && localData.length > 0) {
-                    for (let item of localData) {
-                        await fetchDB('news', 'POST', item); // อัพโหลดขึ้น Firebase
-                    }
-                    const newData = await fetchDB('news');
-                    newsData = objToArray(newData).map(n => ({...n, location: n.location || 'login'}));
-                } else {
-                    newsData = [];
-                }
+                newsData = [];
             } else {
                 newsData = objToArray(data).map(n => ({...n, location: n.location || 'login'}));
             }
-
             renderPublicFeed();
             renderDashboardFeed();
             renderAdminNews();
@@ -566,19 +590,18 @@
             const safeKey = sanitizeKey(email);
 
             const user = await fetchDB(`users/${safeKey}`);
-            if (user === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+            if (user === undefined) return;
             
             if (user === null) {
                 showMessage("ไม่พบบัญชีผู้ใช้นี้ กรุณาสมัครสมาชิกก่อนนะจ๊ะ", 'error');
             } else if (user.password !== password) {
                 showMessage("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่", 'error');
             } else {
-                // ล็อกอินสำเร็จ
                 currentUser = user;
                 if (!currentUser.permissions) currentUser.permissions = [];
                 document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
                 toggleSection('menu');
-                document.getElementById('loginForm').reset(); // ล้างรหัสผ่านเผื่อล็อกเอาท์
+                document.getElementById('loginForm').reset();
             }
         });
 
@@ -589,12 +612,10 @@
             const password = document.getElementById('regPassword').value;
             const safeKey = sanitizeKey(email);
 
-            if(!name || !email || !password) {
-                return showMessage("กรุณากรอกข้อมูลให้ครบถ้วน", 'error');
-            }
+            if(!name || !email || !password) return showMessage("กรุณากรอกข้อมูลให้ครบถ้วน", 'error');
 
             const existingUser = await fetchDB(`users/${safeKey}`);
-            if (existingUser === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+            if (existingUser === undefined) return;
             
             if (existingUser !== null) {
                 showMessage("อีเมลนี้มีผู้ใช้งานแล้ว", 'error');
@@ -602,25 +623,32 @@
                 await fetchDB(`users/${safeKey}`, 'PUT', { name, email, password, permissions: [] });
                 showMessage("สมัครสำเร็จ! กรุณาล็อกอิน");
                 toggleSection('login');
-                document.getElementById('registerForm').reset(); // ล้างแบบฟอร์มสมัคร
+                document.getElementById('registerForm').reset();
             }
         });
 
         // --- ระบบนำทางหน้า ---
         
-        function toggleSection(s) {
+        async function toggleSection(s) {
             document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
             if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
             else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
             else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
             else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); loadNewsData(); /* ดึงข่าวสารใหม่ทุกครั้งที่เปิดหน้าแอดมินข่าว */ }
+            else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); loadNewsData(); }
             else if (s === 'menu') { 
+                await loadTermSettings(); // โหลดข้อมูลแบนเนอร์และห้องเรียนที่แอดมินสร้างใหม่ก่อนแสดง
                 document.getElementById('mainContent').classList.remove('hidden-section'); 
                 renderTermCards(); 
                 renderDashboardFeed(); 
             }
-            else if (s === 'admin') { document.getElementById('adminSection').classList.remove('hidden-section'); refreshAdminUsers(); initAdminSelect(); }
+            else if (s === 'admin') { 
+                await loadTermSettings(); 
+                document.getElementById('adminSection').classList.remove('hidden-section'); 
+                refreshAdminUsers(); 
+                initAdminSelect(); 
+                renderAdminBanners();
+            }
         }
 
         function checkAdminPassword() {
@@ -642,13 +670,39 @@
         function renderTermCards() {
             const grid = document.getElementById('termCardsGrid');
             const userPerms = currentUser.permissions || [];
-            grid.innerHTML = TERMS.map(t => {
+            
+            // ใช้ getAllTerms() เพื่อดึงห้องเรียนทั้งหมดมาแสดงผล
+            grid.innerHTML = getAllTerms().map(t => {
                 const hasAccess = userPerms.includes(t.id);
+                // ดึงการตั้งค่า (ถ้ามี) ถ้าไม่มีให้ใช้ค่าเริ่มต้น
+                const settings = termSettingsData[t.id] || {};
+                const titleName = settings.title || t.defaultName;
+                const subtitle = settings.subtitle || 'เข้าสู่บทเรียนและแบบทดสอบ';
+                const bgImage = settings.imageUrl || '';
+                
+                // รูปแบบ Background (ถ้ารูปมีปัญหา หรือไม่ได้ใส่ ให้ใช้สี Fallback)
+                const bgStyle = bgImage ? `background-image: url('${bgImage}'); background-size: cover; background-position: center;` : '';
+                const fallbackClass = bgImage ? '' : t.fallbackBg;
+
                 return `
-                <div onclick="selectTerm('${t.id}', '${t.name}')" class="menu-card bg-white p-6 text-center shadow-md ${!hasAccess ? 'locked' : ''}">
-                    <div class="w-12 h-12 ${t.color} rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl shadow-sm border-2 border-white"><i class="fas ${t.icon}"></i></div>
-                    <div class="font-black text-gray-700 text-sm">${t.name}</div>
-                    ${!hasAccess ? '<div class="text-[9px] text-gray-300 mt-2 font-bold uppercase">ยังไม่เปิด</div>' : '<div class="text-[9px] text-orange-500 mt-2 font-bold uppercase">เข้าเรียน</div>'}
+                <div onclick="selectTerm('${t.id}', '${titleName}')" class="term-banner ${fallbackClass} p-8 md:p-10 min-h-[160px] flex items-center justify-between ${!hasAccess ? 'locked' : ''}" style="${bgStyle}">
+                    ${bgImage ? '<div class="banner-overlay"></div>' : ''}
+                    
+                    <div class="relative z-10 flex items-center gap-6 text-white w-full">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-3xl md:text-4xl shadow-inner flex-shrink-0">
+                            <i class="fas ${hasAccess ? t.icon : 'fa-lock'}"></i>
+                        </div>
+                        <div class="text-left flex-grow">
+                            <h3 class="text-2xl md:text-4xl font-black drop-shadow-md">${titleName}</h3>
+                            <p class="text-sm md:text-lg opacity-90 font-medium drop-shadow-md mt-1">${subtitle}</p>
+                        </div>
+                        <div class="hidden md:block">
+                            ${hasAccess 
+                                ? '<button class="bg-white text-gray-800 px-6 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 transition">เข้าเรียน <i class="fas fa-arrow-right ml-2"></i></button>' 
+                                : '<span class="bg-black/40 backdrop-blur-sm text-white px-6 py-3 rounded-full font-bold border border-white/30"><i class="fas fa-lock mr-2"></i> ยังไม่เปิด</span>'
+                            }
+                        </div>
+                    </div>
                 </div>`;
             }).join('');
         }
@@ -663,9 +717,8 @@
             document.getElementById('contentDashboard').classList.remove('hidden-section');
             document.getElementById('currentTermView').innerHTML = id === 'special' ? `🎁 ${name}` : `<i class="fas fa-graduation-cap"></i> ${name}`;
             
-            // ดึงข้อมูลบทเรียนจาก Firebase
             const unitsData = await fetchDB('units');
-            if (unitsData === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+            if (unitsData === undefined) return;
 
             const allUnits = objToArray(unitsData);
             const filteredUnits = allUnits.filter(u => u.term === id);
@@ -685,14 +738,36 @@
             document.getElementById('contentDashboard').classList.add('hidden-section');
         }
 
-        // --- Admin Management (Users & Units) ---
+        // --- Admin Management (Users, Units, Banners) ---
 
+        window.switchAdminTab = (tab) => {
+            document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
+            document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
+            document.getElementById('tabContentBanners').classList.toggle('hidden-section', tab !== 'banners');
+            
+            const activeClass = ['text-indigo-600', 'bg-indigo-50'];
+            const inactiveClass = ['text-gray-500', 'hover:bg-gray-200'];
+
+            const setBtnStyle = (btnId, isActive) => {
+                const btn = document.getElementById(btnId);
+                if(isActive) {
+                    btn.classList.add(...activeClass); btn.classList.remove(...inactiveClass);
+                } else {
+                    btn.classList.add(...inactiveClass); btn.classList.remove(...activeClass);
+                }
+            };
+
+            setBtnStyle('tabUsersBtn', tab === 'users');
+            setBtnStyle('tabUnitsBtn', tab === 'units');
+            setBtnStyle('tabBannersBtn', tab === 'banners');
+        };
+
+        // Users
         async function refreshAdminUsers() {
             const usersData = await fetchDB('users');
-            if (usersData === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+            if (usersData === undefined) return;
 
             const users = objToArray(usersData);
-            
             document.getElementById('userTableBody').innerHTML = users.map(u => {
                 const perms = u.permissions || [];
                 return `
@@ -700,7 +775,7 @@
                     <td class="p-4"><div class="font-bold">${u.name}</div><div class="text-xs text-slate-400">${u.email}</div></td>
                     <td class="p-4">
                         <div class="flex flex-wrap gap-1">
-                            ${TERMS.map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-slate-400'}">${t.name}</button>`).join('')}
+                            ${getAllTerms().map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-slate-400'}">${termSettingsData[t.id]?.title || t.defaultName}</button>`).join('')}
                         </div>
                     </td>
                     <td class="p-4 text-center"><button onclick="deleteUserGS('${u.email}')" class="text-red-300"><i class="fas fa-trash-alt"></i></button></td>
@@ -718,7 +793,6 @@
             } else {
                 perms.push(termId);
             }
-            
             await fetchDB(`users/${safeKey}/permissions`, 'PUT', perms);
             refreshAdminUsers(); 
         };
@@ -731,25 +805,34 @@
             } 
         };
 
+        // Units
         function initAdminSelect() {
-            const allOptions = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
-            document.getElementById('unitTerm').innerHTML = allOptions.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+            const allOptions = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
+            document.getElementById('unitTerm').innerHTML = allOptions.map(t => {
+                // แสดงชื่อที่ถูกตั้งค่าไว้ถ้ามี
+                const customTitle = termSettingsData[t.id]?.title;
+                return `<option value="${t.id}">${customTitle || t.defaultName}</option>`;
+            }).join('');
             refreshAdminUnits();
         }
 
         async function refreshAdminUnits() {
             const unitsData = await fetchDB('units');
-            if (unitsData === undefined) return; // หยุดการทำงานถ้าติด Error Permission
+            if (unitsData === undefined) return;
 
             const units = objToArray(unitsData);
-            const all = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
+            const all = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
             
-            document.getElementById('unitTableBody').innerHTML = units.map(u => `
+            document.getElementById('unitTableBody').innerHTML = units.map(u => {
+                const termInfo = all.find(t=>t.id===u.term);
+                const termName = termSettingsData[u.term]?.title || termInfo?.defaultName || u.term;
+                return `
                 <tr class="border-b">
                     <td class="p-4 font-bold text-slate-700">${u.name}</td>
-                    <td class="p-4 text-xs font-bold text-orange-600">${all.find(t=>t.id===u.term)?.name || u.term}</td>
+                    <td class="p-4 text-xs font-bold text-orange-600">${termName}</td>
                     <td class="p-4 text-center"><button onclick="deleteUnitGS('${u.id}')" class="text-red-400"><i class="fas fa-trash"></i></button></td>
-                </tr>`).join('');
+                </tr>`;
+            }).join('');
         }
 
         window.saveUnitGS = async () => {
@@ -759,7 +842,6 @@
             if(!name || !link) return showMessage("กรอกข้อมูลให้ครบ", "error");
             
             await fetchDB('units', 'POST', { name, term, link });
-            
             document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
             refreshAdminUnits();
         };
@@ -771,20 +853,123 @@
             } 
         };
 
-        window.switchAdminTab = (tab) => {
-            document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
-            document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
+        // Banners 
+        function renderAdminBanners() {
+            const container = document.getElementById('adminBannersList');
             
-            // สลับสีปุ่มเมนู
-            document.getElementById('tabUsersBtn').classList.toggle('text-indigo-600', tab === 'users');
-            document.getElementById('tabUsersBtn').classList.toggle('text-gray-400', tab !== 'users');
-            document.getElementById('tabUnitsBtn').classList.toggle('text-indigo-600', tab === 'units');
-            document.getElementById('tabUnitsBtn').classList.toggle('text-gray-400', tab !== 'units');
+            let htmlContent = getAllTerms().map(t => {
+                const settings = termSettingsData[t.id] || {};
+                const currentTitle = settings.title || t.defaultName;
+                const currentSub = settings.subtitle || 'เข้าสู่บทเรียนและแบบทดสอบ';
+                const currentImg = settings.imageUrl || '';
+                
+                // เช็คว่าห้องเรียนนี้แอดมินสร้างใหม่เองหรือไม่ (ถ้าใช่ จะให้ลบได้)
+                const isCustom = t.id.startsWith('custom_');
+
+                return `
+                <div class="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden">
+                    ${isCustom ? `
+                        <button onclick="deleteCustomTerm('${t.id}')" class="absolute top-4 right-4 text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 w-8 h-8 rounded-full transition flex items-center justify-center" title="ลบห้องเรียนนี้">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    ` : ''}
+                    <div class="flex items-center gap-2 mb-4 pr-10">
+                        <div class="w-10 h-10 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-lg"><i class="fas ${t.icon}"></i></div>
+                        <h4 class="font-black text-lg text-gray-800 line-clamp-1">รหัส: ${t.id} <span class="text-xs text-gray-400 font-normal">(${t.defaultName})</span></h4>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ชื่อแสดงผล</label>
+                            <input type="text" id="banner_title_${t.id}" value="${currentTitle}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น อนุบาล 1">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">คำอธิบาย</label>
+                            <input type="text" id="banner_sub_${t.id}" value="${currentSub}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น เข้าสู่บทเรียนแสนสนุก">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ลิงก์ภาพพื้นหลัง (URL)</label>
+                            <input type="url" id="banner_img_${t.id}" value="${currentImg}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="ปล่อยว่างเพื่อใช้สีปกติ">
+                        </div>
+                        <button onclick="saveBannerSetting('${t.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition mt-2 shadow-md">บันทึกแบนเนอร์นี้</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // ปุ่มสร้างห้องเรียนใหม่ (แสดงต่อท้าย)
+            htmlContent += `
+            <div class="col-span-1 md:col-span-2 mt-2">
+                <button onclick="createNewCustomTerm()" class="w-full border-4 border-dashed border-indigo-200 text-indigo-500 hover:border-indigo-400 hover:bg-indigo-50 font-black py-8 rounded-3xl transition duration-300 flex items-center justify-center gap-3 text-xl">
+                    <i class="fas fa-plus-circle text-3xl"></i> เพิ่มห้องเรียน / ระดับชั้นใหม่
+                </button>
+            </div>
+            `;
+
+            container.innerHTML = htmlContent;
+        }
+
+        window.saveBannerSetting = async (termId) => {
+            const title = document.getElementById(`banner_title_${termId}`).value;
+            const subtitle = document.getElementById(`banner_sub_${termId}`).value;
+            const imageUrl = document.getElementById(`banner_img_${termId}`).value;
+
+            const payload = { title, subtitle, imageUrl };
+            
+            await fetchDB(`termSettings/${termId}`, 'PUT', payload);
+            showMessage("บันทึกการตั้งค่าแบนเนอร์สำเร็จ");
+            
+            await loadTermSettings();
+            initAdminSelect();
+            refreshAdminUsers(); // อัพเดทชื่อในหน้า User Permission ด้วย
+        };
+
+        // --- เพิ่ม/ลบ ห้องเรียนใหม่ ---
+        window.createNewCustomTerm = async () => {
+            const name = prompt("กรุณาตั้งชื่อห้องเรียนหรือระดับชั้นใหม่ (เช่น มัธยมศึกษาปีที่ 1):");
+            if (!name || name.trim() === '') return;
+
+            const newId = 'custom_' + Date.now();
+            const payload = {
+                id: newId,
+                defaultName: name.trim(),
+                icon: 'fa-star', // ไอคอนตั้งต้น
+                fallbackBg: 'bg-gradient-to-r from-teal-400 to-emerald-400' // สีพื้นหลังตั้งต้น
+            };
+
+            await fetchDB(`customTerms/${newId}`, 'PUT', payload);
+            
+            // สร้างค่าแบนเนอร์ตั้งต้นให้ด้วยเลย
+            await fetchDB(`termSettings/${newId}`, 'PUT', {
+                title: name.trim(),
+                subtitle: 'เข้าสู่บทเรียนและแบบทดสอบ',
+                imageUrl: ''
+            });
+
+            showMessage("สร้างห้องเรียนใหม่สำเร็จ!");
+            
+            await loadTermSettings();
+            renderAdminBanners();
+            initAdminSelect();
+            refreshAdminUsers(); 
+        };
+
+        window.deleteCustomTerm = async (id) => {
+            if(confirm("คุณต้องการลบห้องเรียนนี้ใช่หรือไม่? (ข้อมูลแบนเนอร์จะหายไปทั้งหมด แต่บทเรียนย่อยอาจจะยังคงค้างอยู่ในระบบ)")) {
+                await fetchDB(`customTerms/${id}`, 'DELETE');
+                await fetchDB(`termSettings/${id}`, 'DELETE');
+                
+                showMessage("ลบห้องเรียนสำเร็จ");
+
+                await loadTermSettings();
+                renderAdminBanners();
+                initAdminSelect();
+                refreshAdminUsers();
+            }
         };
 
         window.logout = () => location.reload();
 
-        // โหลดข้อมูลข่าวสารอัตโนมัติเมื่อเปิดหน้าเว็บ
+        // โหลดข้อมูลอัตโนมัติเมื่อเปิดหน้าเว็บ
         window.addEventListener('DOMContentLoaded', () => {
             loadNewsData();
         });
