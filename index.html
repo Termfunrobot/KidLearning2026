@@ -48,7 +48,7 @@
         .term-banner.locked { cursor: pointer; }
         .banner-overlay { background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 100%); position: absolute; inset: 0; z-index: 1; }
         
-        .free-trial-banner, .math-game-banner, .eng-game-banner, .sci-game-banner, .thai-game-banner {
+        .free-trial-banner, .math-game-banner, .eng-game-banner, .sci-game-banner, .thai-game-banner, .kdg-game-banner {
             border-radius: 40px;
             position: relative;
             overflow: hidden;
@@ -56,28 +56,15 @@
             transition: transform 0.3s ease;
             border: 6px solid white;
         }
-        .free-trial-banner {
-            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
-            box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.4);
-        }
-        .math-game-banner {
-            background: linear-gradient(90deg, #ec4899 0%, #f43f5e 100%);
-            box-shadow: 0 20px 30px -10px rgba(236, 72, 153, 0.4);
-        }
-        .eng-game-banner {
-            background: linear-gradient(90deg, #0ea5e9 0%, #2563eb 100%);
-            box-shadow: 0 20px 30px -10px rgba(14, 165, 233, 0.4);
-        }
-        .sci-game-banner {
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 20px 30px -10px rgba(16, 185, 129, 0.4);
-        }
-        .thai-game-banner {
-            background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%);
-            box-shadow: 0 20px 30px -10px rgba(139, 92, 246, 0.4);
-        }
-        .free-trial-banner:hover, .math-game-banner:hover, .eng-game-banner:hover, .sci-game-banner:hover, .thai-game-banner:hover { transform: scale(1.02); }
-        .free-trial-banner::after, .math-game-banner::after, .eng-game-banner::after, .sci-game-banner::after, .thai-game-banner::after {
+        .free-trial-banner { background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%); box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.4); }
+        .math-game-banner { background: linear-gradient(90deg, #ec4899 0%, #f43f5e 100%); box-shadow: 0 20px 30px -10px rgba(236, 72, 153, 0.4); }
+        .eng-game-banner { background: linear-gradient(90deg, #0ea5e9 0%, #2563eb 100%); box-shadow: 0 20px 30px -10px rgba(14, 165, 233, 0.4); }
+        .sci-game-banner { background: linear-gradient(90deg, #10b981 0%, #059669 100%); box-shadow: 0 20px 30px -10px rgba(16, 185, 129, 0.4); }
+        .thai-game-banner { background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 20px 30px -10px rgba(139, 92, 246, 0.4); }
+        .kdg-game-banner { background: linear-gradient(90deg, #f97316 0%, #ea580c 100%); box-shadow: 0 20px 30px -10px rgba(249, 115, 22, 0.4); }
+
+        .free-trial-banner:hover, .math-game-banner:hover, .eng-game-banner:hover, .sci-game-banner:hover, .thai-game-banner:hover, .kdg-game-banner:hover { transform: scale(1.02); }
+        .free-trial-banner::after, .math-game-banner::after, .eng-game-banner::after, .sci-game-banner::after, .thai-game-banner::after, .kdg-game-banner::after {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
@@ -90,7 +77,7 @@
         .feed-scroll::-webkit-scrollbar-thumb { background: #ffcc33; border-radius: 10px; }
 
         /* Game Styles */
-        .math-option-btn, .eng-option-btn, .sci-option-btn, .thai-option-btn {
+        .math-option-btn, .eng-option-btn, .sci-option-btn, .thai-option-btn, .kdg-option-btn {
             background: #ffffff; color: #1f2937; border: 4px solid #e5e7eb;
             transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
@@ -98,7 +85,8 @@
         .eng-option-btn:hover { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); }
         .sci-option-btn:hover { border-color: #10b981; background: #ecfdf5; transform: translateY(-2px); }
         .thai-option-btn:hover { border-color: #8b5cf6; background: #f5f3ff; transform: translateY(-2px); }
-        .math-option-btn:active, .eng-option-btn:active, .sci-option-btn:active, .thai-option-btn:active { transform: translateY(2px); }
+        .kdg-option-btn:hover { border-color: #f97316; background: #fff7ed; transform: translateY(-2px); }
+        .math-option-btn:active, .eng-option-btn:active, .sci-option-btn:active, .thai-option-btn:active, .kdg-option-btn:active { transform: translateY(2px); }
     </style>
 </head>
 <body>
@@ -305,6 +293,7 @@
 
         <main class="max-w-7xl mx-auto p-6 flex-grow w-full">
             <div id="termSelectionContainer">
+                <!-- ปรับเป็น 3 คอลัมน์ จะได้แสดง 6 แบนเนอร์ได้สวยๆ (2 แถว) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     <!-- Free Trial Banner -->
                     <div onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner p-6 text-white flex flex-col justify-between h-full">
@@ -316,6 +305,19 @@
                         <div class="z-10 flex justify-between items-end mt-auto">
                             <div class="text-4xl animate-bounce"><i class="fas fa-gift text-yellow-300"></i></div>
                             <button class="bg-white text-indigo-700 px-6 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition">เริ่มเรียน <i class="fas fa-play ml-1"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Kindergarten Game Banner (NEW) -->
+                    <div onclick="startKdgGame()" class="kdg-game-banner p-6 text-white flex flex-col justify-between h-full">
+                        <div class="z-10 mb-4">
+                            <span class="bg-white text-orange-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-baby text-orange-500"></i> Kids Game</span>
+                            <h2 class="text-2xl font-black mb-1">ตอบคำถาม อนุบาล 🧸</h2>
+                            <p class="text-xs opacity-90 font-medium">20 ข้อ ฟังเสียง เลือกรูปภาพ</p>
+                        </div>
+                        <div class="z-10 flex flex-col mt-auto w-full">
+                            <div id="topKdgScorerDisplay" class="text-base bg-yellow-300 text-orange-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
+                            <button class="bg-white text-orange-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-volume-up text-xl"></i> เล่นเกม <i class="fas fa-gamepad"></i></button>
                         </div>
                     </div>
 
@@ -393,6 +395,33 @@
                     </button>
                 </div>
                 <div id="dynamicUnitGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- Kindergarten Game Dashboard -->
+            <div id="kdgGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
+                <div class="w-full max-w-3xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-orange-100 relative">
+                    <div class="bg-orange-500 p-6 text-white flex justify-between items-center">
+                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="kdgProgress">ข้อที่ 1 / 20</div>
+                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="kdgTotalScore">0</span> คะแนน</div>
+                        <button onclick="quitKdgGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
+                    </div>
+
+                    <div class="p-8 md:p-12 text-center bg-[#fff7ed]">
+                        <div class="text-sm font-bold text-orange-500 mb-2">เวลาที่ใช้: <span id="kdgTimerDisplay" class="text-xl">0.0</span> วินาที</div>
+                        
+                        <div class="bg-white py-8 px-6 rounded-3xl shadow-sm border-4 border-orange-100 mb-10 mt-4 flex flex-col items-center justify-center relative">
+                            <button onclick="replayKdgAudio()" class="absolute top-4 right-4 bg-blue-100 text-blue-600 hover:bg-blue-200 w-12 h-12 rounded-full flex items-center justify-center text-xl transition shadow-sm" title="ฟังอีกครั้ง">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <p class="text-sm text-gray-400 font-bold mb-2 uppercase tracking-widest">ฟังคำถามแล้วเลือกภาพ</p>
+                            <h2 id="kdgQText" class="text-3xl md:text-5xl font-black text-orange-600 tracking-wider mt-2 px-12 leading-tight">คำถามอนุบาล?</h2>
+                        </div>
+
+                        <div id="kdgOptions" class="grid grid-cols-2 gap-4 md:gap-6">
+                            <!-- Buttons generated by JS -->
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Math Game Dashboard -->
@@ -540,6 +569,7 @@
             <!-- ส่วนดูสถิติการแข่งขัน (Leaderboards) -->
             <div id="tabContentLeaderboards" class="hidden-section p-6">
                 <div class="flex flex-wrap gap-3 mb-6">
+                    <button onclick="loadAdminLeaderboard('kdg')" class="bg-orange-100 text-orange-700 px-5 py-3 rounded-xl font-bold hover:bg-orange-200 transition shadow-sm"><i class="fas fa-baby"></i> อนุบาล</button>
                     <button onclick="loadAdminLeaderboard('math')" class="bg-pink-100 text-pink-700 px-5 py-3 rounded-xl font-bold hover:bg-pink-200 transition shadow-sm"><i class="fas fa-calculator"></i> คณิตคิดเร็ว</button>
                     <button onclick="loadAdminLeaderboard('eng')" class="bg-blue-100 text-blue-700 px-5 py-3 rounded-xl font-bold hover:bg-blue-200 transition shadow-sm"><i class="fas fa-globe"></i> ภาษาอังกฤษ</button>
                     <button onclick="loadAdminLeaderboard('sci')" class="bg-emerald-100 text-emerald-700 px-5 py-3 rounded-xl font-bold hover:bg-emerald-200 transition shadow-sm"><i class="fas fa-flask"></i> วิทยาศาสตร์</button>
@@ -684,6 +714,208 @@
             document.getElementById('gameOverModal').classList.add('hidden');
             document.getElementById('termSelectionContainer').classList.remove('hidden-section');
         };
+
+        // --- Text-to-Speech Helper ---
+        window.speakText = (text) => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); 
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'th-TH'; 
+                msg.rate = 0.85; // ช้าลงนิดหน่อยให้เด็กฟังง่าย
+                window.speechSynthesis.speak(msg);
+            }
+        };
+
+        // --- Kindergarten Game Variables & Logic (NEW) ---
+        const KDG_QUESTION_DB = [
+            { q: "สัตว์ตัวไหนคือ สุนัข?", a: "🐶", options: ["🐱", "🐭", "🐰", "🐶"] },
+            { q: "สัตว์ตัวไหนคือ แมว?", a: "🐱", options: ["🐱", "🐷", "🐸", "🐻"] },
+            { q: "สัตว์ตัวไหนคือ ช้าง?", a: "🐘", options: ["🐎", "🐘", "🐪", "🐅"] },
+            { q: "สัตว์ตัวไหนคือ ปลา?", a: "🐟", options: ["🐙", "🐟", "🐢", "🦀"] },
+            { q: "สัตว์ตัวไหนคือ นก?", a: "🐦", options: ["🦋", "🐛", "🐦", "🐝"] },
+            { q: "ผลไม้ชนิดใดคือ แอปเปิ้ล?", a: "🍎", options: ["🍌", "🍉", "🍇", "🍎"] },
+            { q: "ผลไม้ชนิดใดคือ กล้วย?", a: "🍌", options: ["🍓", "🍌", "🍒", "🥭"] },
+            { q: "ผลไม้ชนิดใดคือ แตงโม?", a: "🍉", options: ["🍉", "🍍", "🥑", "🍑"] },
+            { q: "ผลไม้ชนิดใดคือ ส้ม?", a: "🍊", options: ["🍊", "🍋", "🍈", "🥝"] },
+            { q: "ยานพาหนะใดคือ รถยนต์?", a: "🚗", options: ["✈️", "🚂", "🚲", "🚗"] },
+            { q: "ยานพาหนะใดคือ รถไฟ?", a: "🚂", options: ["🚂", "🚁", "⛵", "🚀"] },
+            { q: "ยานพาหนะใดคือ เครื่องบิน?", a: "✈️", options: ["🚤", "✈️", "🛸", "🚜"] },
+            { q: "อะไรคือ พระอาทิตย์?", a: "☀️", options: ["🌙", "⭐", "☁️", "☀️"] },
+            { q: "อะไรคือ ดอกไม้?", a: "🌸", options: ["🌲", "🌵", "🌸", "🍄"] },
+            { q: "สิ่งใดคือ หนังสือ?", a: "📖", options: ["✏️", "🎒", "📖", "✂️"] },
+            { q: "สีใดคือ สีแดง?", a: "🔴", options: ["🔵", "🟢", "🟡", "🔴"] },
+            { q: "สีใดคือ สีน้ำเงิน?", a: "🔵", options: ["🔴", "🟢", "🔵", "🟣"] },
+            { q: "สีใดคือ สีเขียว?", a: "🟢", options: ["🟢", "🟠", "⚪", "🟤"] },
+            { q: "อะไรคือ เสื้อ?", a: "👕", options: ["👖", "👗", "👟", "👕"] },
+            { q: "อะไรคือ รองเท้า?", a: "👟", options: ["🧢", "🧦", "👟", "🧤"] },
+            { q: "สัตว์ตัวไหนคือ ลิง?", a: "🐒", options: ["🦍", "🦧", "🐒", "🐕"] },
+            { q: "สัตว์ตัวไหนคือ หมู?", a: "🐷", options: ["🐮", "🐷", "🐴", "🦌"] },
+            { q: "สัตว์ตัวไหนคือ กบ?", a: "🐸", options: ["🐸", "🐊", "🐍", "🦎"] },
+            { q: "ผลไม้ชนิดใดคือ สตรอว์เบอร์รี?", a: "🍓", options: ["🫐", "🍓", "🍅", "🥥"] },
+            { q: "สิ่งใดคือ ดินสอ?", a: "✏️", options: ["📏", "✏️", "🖋️", "🖍️"] },
+            { q: "ยานพาหนะใดคือ จักรยาน?", a: "🚲", options: ["🏍️", "🛴", "🚲", "🛺"] },
+            { q: "อะไรคือ กางเกง?", a: "👖", options: ["👔", "🩳", "👖", "👘"] },
+            { q: "อะไรคือ พระจันทร์?", a: "🌙", options: ["☀️", "⚡", "🌙", "☄️"] },
+            { q: "สีใดคือ สีเหลือง?", a: "🟡", options: ["🟣", "🟡", "⚫", "🔴"] },
+            { q: "สัตว์ตัวไหนคือ ไก่?", a: "🐔", options: ["🐧", "🦆", "🐔", "🦉"] }
+        ];
+
+        let activeKdgQuestions = [];   
+        let currentKdgQIndex = 0;
+        let kdgScoreTotal = 0;
+        let kdgQuestionStartTime = 0;
+        let kdgVisualTimerInterval = null;
+        let isKdgAnswering = false;
+        let currentKdgQuestionText = "";
+
+        function generateKdgPool() {
+            let shuffledQuestions = [...KDG_QUESTION_DB].sort(() => Math.random() - 0.5);
+            activeKdgQuestions = shuffledQuestions.slice(0, 20).map(qData => {
+                return {
+                    q: qData.q,
+                    a: qData.a,
+                    options: [...qData.options].sort(() => Math.random() - 0.5)
+                };
+            });
+        }
+
+        async function fetchTopKdgScorer() {
+            const display = document.getElementById('topKdgScorerDisplay');
+            const data = await fetchDB('kdgLeaderboard'); 
+            if(data) {
+                let scores = objToArray(data).filter(s => s.name);
+                if(scores.length > 0) {
+                    scores.sort((a,b) => b.score - a.score);
+                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
+                    return;
+                }
+            }
+            display.innerText = "🏆 ยังไม่มีแชมป์";
+        }
+
+        window.startKdgGame = () => {
+            document.getElementById('termSelectionContainer').classList.add('hidden-section');
+            document.getElementById('contentDashboard').classList.add('hidden-section');
+            document.getElementById('kdgGameDashboard').classList.remove('hidden-section');
+            
+            generateKdgPool();
+            
+            currentKdgQIndex = 0;
+            kdgScoreTotal = 0;
+            document.getElementById('kdgTotalScore').innerText = kdgScoreTotal;
+            
+            loadKdgQuestion();
+        };
+
+        window.replayKdgAudio = () => {
+            if (currentKdgQuestionText) {
+                speakText(currentKdgQuestionText);
+            }
+        };
+
+        function loadKdgQuestion() {
+            if (currentKdgQIndex >= 20 || currentKdgQIndex >= activeKdgQuestions.length) {
+                endKdgGame();
+                return;
+            }
+
+            isKdgAnswering = false;
+            const qData = activeKdgQuestions[currentKdgQIndex];
+            currentKdgQuestionText = qData.q;
+            
+            document.getElementById('kdgProgress').innerText = `ข้อที่ ${currentKdgQIndex + 1} / 20`;
+            document.getElementById('kdgQText').innerText = qData.q;
+            
+            const optionsDiv = document.getElementById('kdgOptions');
+            optionsDiv.innerHTML = '';
+            
+            qData.options.forEach(opt => {
+                optionsDiv.innerHTML += `<button onclick="submitKdgAnswer('${opt}', '${qData.a}', this)" class="kdg-option-btn text-7xl md:text-8xl py-6 md:py-10 rounded-3xl w-full h-full flex items-center justify-center transition-transform hover:scale-105">${opt}</button>`;
+            });
+
+            // อ่านคำถาม
+            setTimeout(() => { replayKdgAudio(); }, 300);
+
+            kdgQuestionStartTime = Date.now();
+            clearInterval(kdgVisualTimerInterval);
+            document.getElementById('kdgTimerDisplay').innerText = "0.0";
+            kdgVisualTimerInterval = setInterval(() => {
+                let seconds = ((Date.now() - kdgQuestionStartTime) / 1000).toFixed(1);
+                document.getElementById('kdgTimerDisplay').innerText = seconds;
+            }, 100);
+        }
+
+        window.submitKdgAnswer = (selectedOpt, correctOpt, btnElement) => {
+            if(isKdgAnswering) return; 
+            isKdgAnswering = true;
+            clearInterval(kdgVisualTimerInterval);
+            window.speechSynthesis.cancel(); // หยุดเสียงถ้าตอบแล้ว
+            
+            const timeElapsed = (Date.now() - kdgQuestionStartTime) / 1000;
+            let pointsEarned = 0;
+
+            if (selectedOpt === correctOpt) {
+                btnElement.classList.replace('kdg-option-btn', 'bg-green-400');
+                btnElement.classList.add('border-green-500', 'shadow-[0_0_20px_rgba(74,222,128,0.5)]');
+                
+                if (timeElapsed <= 3.0) pointsEarned = 10;
+                else if (timeElapsed <= 4.0) pointsEarned = 9;
+                else if (timeElapsed <= 5.0) pointsEarned = 8;
+                else if (timeElapsed <= 10.0) pointsEarned = 7;
+                else if (timeElapsed <= 20.0) pointsEarned = 5;
+                else pointsEarned = 0;
+                
+                if (pointsEarned > 0) {
+                    showMessage(`เก่งมาก! +${pointsEarned} คะแนน!`, 'success');
+                } else {
+                    showMessage(`ถูกต้อง แต่หมดเวลา! (0 คะแนน)`, 'error');
+                }
+            } else {
+                btnElement.classList.replace('kdg-option-btn', 'bg-red-400');
+                btnElement.classList.add('border-red-500');
+                showMessage(`ตอบผิดจ้า! (0 คะแนน)`, 'error');
+                
+                Array.from(document.getElementById('kdgOptions').children).forEach(btn => {
+                    if(btn.innerText === correctOpt) {
+                        btn.classList.replace('kdg-option-btn', 'bg-green-200');
+                        btn.classList.add('border-green-400');
+                    }
+                });
+            }
+
+            kdgScoreTotal += pointsEarned;
+            document.getElementById('kdgTotalScore').innerText = kdgScoreTotal;
+
+            setTimeout(() => {
+                currentKdgQIndex++;
+                loadKdgQuestion();
+            }, 1500);
+        };
+
+        window.quitKdgGame = () => {
+            if(confirm("หนูต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่ไหมจ๊ะ?")) {
+                window.speechSynthesis.cancel();
+                endKdgGame();
+            }
+        };
+
+        async function endKdgGame() {
+            clearInterval(kdgVisualTimerInterval);
+            window.speechSynthesis.cancel();
+            document.getElementById('kdgGameDashboard').classList.add('hidden-section');
+            
+            showGameOverModal(kdgScoreTotal);
+            
+            const safeKey = sanitizeKey(currentUser.email);
+            const ts = Date.now();
+            
+            await fetchDB(`users/${safeKey}/kdgHistory/${ts}`, 'PUT', { score: kdgScoreTotal, date: ts });
+            
+            const payload = { id: safeKey, name: currentUser.name, score: kdgScoreTotal, date: ts };
+            await fetchDB(`kdgLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
+            
+            fetchTopKdgScorer();
+        }
 
         // --- Math Game Variables & Logic ---
         let mathQuestionsPool = [];
@@ -1665,12 +1897,14 @@
             else if (s === 'menu') { 
                 await loadTermSettings(); 
                 document.getElementById('mainContent').classList.remove('hidden-section'); 
+                document.getElementById('kdgGameDashboard').classList.add('hidden-section');
                 document.getElementById('mathGameDashboard').classList.add('hidden-section');
                 document.getElementById('engGameDashboard').classList.add('hidden-section');
                 document.getElementById('sciGameDashboard').classList.add('hidden-section');
                 document.getElementById('thaiGameDashboard').classList.add('hidden-section');
                 document.getElementById('termSelectionContainer').classList.remove('hidden-section');
                 
+                fetchTopKdgScorer();
                 fetchTopMathScorer(); 
                 fetchTopEngScorer(); 
                 fetchTopSciScorer(); 
@@ -2004,6 +2238,7 @@
             let dbKey = '';
             let title = '';
             
+            if(subject === 'kdg') { dbKey = 'kdgLeaderboard'; title = '<i class="fas fa-baby text-orange-500"></i> สถิติแข่งขันอนุบาล'; }
             if(subject === 'math') { dbKey = 'mathLeaderboard'; title = '<i class="fas fa-calculator text-pink-500"></i> สถิติแข่งขันคณิตคิดเร็ว'; }
             if(subject === 'eng') { dbKey = 'engLeaderboard'; title = '<i class="fas fa-globe text-blue-500"></i> สถิติแข่งขันภาษาอังกฤษ'; }
             if(subject === 'sci') { dbKey = 'sciLeaderboard'; title = '<i class="fas fa-flask text-emerald-500"></i> สถิติแข่งขันวิทยาศาสตร์'; }
