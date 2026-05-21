@@ -36,35 +36,22 @@
         .primary-btn { background: #ff6600; color: white; border-bottom: 5px solid #cc5200; transition: all 0.1s; }
         .primary-btn:active { transform: translateY(3px); border-bottom: 2px solid #cc5200; }
 
-        /* Banner Style */
-        .term-banner { 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer; border-radius: 40px; 
-            position: relative; overflow: hidden;
-            border: 6px solid white;
-            box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.15);
-        }
-        .term-banner:not(.locked):hover { transform: scale(1.02); z-index: 10;}
-        .term-banner.locked { cursor: pointer; }
-        .banner-overlay { background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 100%); position: absolute; inset: 0; z-index: 1; }
+        .menu-card { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 4px solid #f1f5f9; cursor: pointer; border-radius: 30px; }
+        .menu-card:not(.locked):hover { transform: scale(1.05); border-color: #ff9933; background-color: #fffaf0; }
+        .locked { opacity: 0.5; cursor: not-allowed !important; filter: grayscale(0.8); }
         
-        .free-trial-banner, .math-game-banner, .eng-game-banner, .sci-game-banner, .thai-game-banner, .kdg-game-banner {
+        .free-trial-banner {
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
             border-radius: 40px;
             position: relative;
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.3s ease;
             border: 6px solid white;
+            box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.4);
         }
-        .free-trial-banner { background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%); box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.4); }
-        .math-game-banner { background: linear-gradient(90deg, #ec4899 0%, #f43f5e 100%); box-shadow: 0 20px 30px -10px rgba(236, 72, 153, 0.4); }
-        .eng-game-banner { background: linear-gradient(90deg, #0ea5e9 0%, #2563eb 100%); box-shadow: 0 20px 30px -10px rgba(14, 165, 233, 0.4); }
-        .sci-game-banner { background: linear-gradient(90deg, #10b981 0%, #059669 100%); box-shadow: 0 20px 30px -10px rgba(16, 185, 129, 0.4); }
-        .thai-game-banner { background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 20px 30px -10px rgba(139, 92, 246, 0.4); }
-        .kdg-game-banner { background: linear-gradient(90deg, #f97316 0%, #ea580c 100%); box-shadow: 0 20px 30px -10px rgba(249, 115, 22, 0.4); }
-
-        .free-trial-banner:hover, .math-game-banner:hover, .eng-game-banner:hover, .sci-game-banner:hover, .thai-game-banner:hover, .kdg-game-banner:hover { transform: scale(1.02); }
-        .free-trial-banner::after, .math-game-banner::after, .eng-game-banner::after, .sci-game-banner::after, .thai-game-banner::after, .kdg-game-banner::after {
+        .free-trial-banner:hover { transform: scale(1.02); }
+        .free-trial-banner::after {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
@@ -75,29 +62,20 @@
         .feed-scroll::-webkit-scrollbar { width: 6px; }
         .feed-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .feed-scroll::-webkit-scrollbar-thumb { background: #ffcc33; border-radius: 10px; }
-
-        /* Game Styles */
-        .math-option-btn, .eng-option-btn, .sci-option-btn, .thai-option-btn, .kdg-option-btn {
-            background: #ffffff; color: #1f2937; border: 4px solid #e5e7eb;
-            transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        .math-option-btn:hover { border-color: #f43f5e; background: #fff1f2; transform: translateY(-2px); }
-        .eng-option-btn:hover { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); }
-        .sci-option-btn:hover { border-color: #10b981; background: #ecfdf5; transform: translateY(-2px); }
-        .thai-option-btn:hover { border-color: #8b5cf6; background: #f5f3ff; transform: translateY(-2px); }
-        .kdg-option-btn:hover { border-color: #f97316; background: #fff7ed; transform: translateY(-2px); }
-        .math-option-btn:active, .eng-option-btn:active, .sci-option-btn:active, .thai-option-btn:active, .kdg-option-btn:active { transform: translateY(2px); }
     </style>
 </head>
 <body>
 
     <div id="messageBox"></div>
 
-    <!-- Stats Badge -->
-    <div class="fixed bottom-4 left-4 bg-slate-800/80 backdrop-blur-md text-white px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-[100] visitor-stats-display flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 border border-white/20">
-        <div class="flex items-center gap-2"><i class="fas fa-users text-blue-400"></i> ผู้เข้าชมสะสม: <span id="statTotalVal">...</span></div>
-        <div class="hidden sm:block text-slate-500">|</div>
-        <div class="flex items-center gap-2"><i class="fas fa-circle text-green-400 animate-pulse"></i> กำลังออนไลน์: <span id="statOnlineVal">...</span></div>
+    <!-- Stats Badge (อัปเดตเพิ่มจำนวนสมาชิกและสมาชิกใหม่) -->
+    <div class="fixed bottom-4 left-4 bg-slate-800/80 backdrop-blur-md text-white px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-[100] visitor-stats-display flex flex-wrap items-center gap-2 sm:gap-3 border border-white/20">
+        <div class="flex items-center gap-2" title="ผู้เข้าชมสะสม"><i class="fas fa-users text-blue-400"></i> ผู้เข้าชมสะสม: <span id="statTotalVal">...</span></div>
+        <div class="text-slate-500">|</div>
+        <div class="flex items-center gap-2" title="กำลังออนไลน์"><i class="fas fa-circle text-green-400 animate-pulse"></i> กำลังออนไลน์: <span id="statOnlineVal">...</span></div>
+        <div class="text-slate-500">|</div>
+        <div class="flex items-center gap-2" title="สมาชิกทั้งหมด"><i class="fas fa-user-graduate text-purple-400"></i> สมาชิก: <span id="statTotalMembers">...</span></div>
+        <div class="flex items-center gap-1" title="สมาชิกใหม่"><span id="statNewMembers" class="text-pink-400 bg-pink-900/50 px-2 py-0.5 rounded-md hidden">...</span></div>
     </div>
 
     <div id="firebaseErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] hidden flex items-center justify-center p-4">
@@ -125,25 +103,6 @@
     <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-md z-[9999] hidden flex flex-col items-center justify-center">
         <div class="loader ease-linear rounded-full border-4 border-gray-200 h-16 w-16 mb-4"></div>
         <p class="text-orange-600 font-bold text-xl">กำลังประมวลผล...</p>
-    </div>
-
-    <!-- Game Over Modal (สรุปคะแนน) -->
-    <div id="gameOverModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-yellow-400 to-orange-500 z-0"></div>
-            <div class="w-24 h-24 bg-white rounded-full mx-auto flex items-center justify-center text-5xl shadow-lg mt-4 mb-6 relative z-10 text-yellow-500">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <h2 class="text-3xl font-black text-gray-800 mb-2 relative z-10">สรุปผลการแข่งขัน!</h2>
-            <p class="text-gray-500 font-medium mb-6 relative z-10">นี่คือคะแนนที่คุณทำได้ในรอบนี้</p>
-            <div class="bg-gray-50 rounded-3xl p-6 mb-8 border-4 border-gray-100 relative z-10">
-                <span id="finalScoreText" class="text-6xl font-black text-indigo-600">0</span>
-                <span class="text-xl text-gray-400 font-bold ml-2">แต้ม</span>
-            </div>
-            <button onclick="closeGameOverModal()" class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl text-xl transition shadow-[0_10px_20px_rgba(239,68,68,0.3)] hover:scale-105 active:scale-95 relative z-10">
-                กลับสู่หน้าหลัก <i class="fas fa-home ml-2"></i>
-            </button>
-        </div>
     </div>
 
     <!-- Section: Auth & News Feed -->
@@ -223,7 +182,6 @@
             </div>
             
             <div class="p-8">
-                <!-- ฟอร์มเพิ่มข่าวสาร -->
                 <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 mb-8">
                     <h3 class="font-bold text-blue-800 mb-4 text-lg" id="cmsFormTitle">1. เพิ่มข้อความใหม่</h3>
                     <form id="newsForm" class="space-y-4">
@@ -291,103 +249,32 @@
             </div>
         </header>
 
-        <main class="max-w-7xl mx-auto p-6 flex-grow w-full">
+        <main class="max-w-6xl mx-auto p-6 flex-grow w-full">
             <div id="termSelectionContainer">
-                <!-- ปรับเป็น 3 คอลัมน์ จะได้แสดง 6 แบนเนอร์ได้สวยๆ (2 แถว) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <!-- Free Trial Banner -->
-                    <div onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-yellow-400 text-indigo-900 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm">Free Trial</span>
-                            <h2 class="text-2xl font-black mb-1">ทดลองเรียนฟรี! 🌈</h2>
-                            <p class="text-xs opacity-90 font-medium">เข้าเรียนได้ทันที ไม่ต้องรออนุมัติ</p>
-                        </div>
-                        <div class="z-10 flex justify-between items-end mt-auto">
-                            <div class="text-4xl animate-bounce"><i class="fas fa-gift text-yellow-300"></i></div>
-                            <button class="bg-white text-indigo-700 px-6 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition">เริ่มเรียน <i class="fas fa-play ml-1"></i></button>
-                        </div>
+                <div id="freeTrialBanner" onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner mb-10 p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="text-center md:text-left z-10">
+                        <span class="bg-yellow-400 text-indigo-900 px-4 py-1 rounded-full font-black text-xs uppercase mb-3 inline-block">Free Trial</span>
+                        <h2 class="text-4xl md:text-5xl font-black mb-2">ทดลองเรียนฟรี! 🌈</h2>
+                        <p class="text-lg opacity-90 font-medium">รวมบทเรียนสนุกๆ เข้าเรียนได้ทันที ไม่ต้องรออนุมัติ</p>
                     </div>
-
-                    <!-- Kindergarten Game Banner (NEW) -->
-                    <div onclick="startKdgGame()" class="kdg-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-orange-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-baby text-orange-500"></i> Kids Game</span>
-                            <h2 class="text-2xl font-black mb-1">ตอบคำถาม อนุบาล 🧸</h2>
-                            <p class="text-xs opacity-90 font-medium">20 ข้อ ฟังเสียง เลือกรูปภาพ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topKdgScorerDisplay" class="text-base bg-yellow-300 text-orange-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-orange-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-volume-up text-xl"></i> เล่นเกม <i class="fas fa-gamepad"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Math Speed Game Banner -->
-                    <div onclick="startMathGame()" class="math-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-pink-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-trophy text-yellow-500"></i> Challenge</span>
-                            <h2 class="text-2xl font-black mb-1">คณิตคิดเร็ว ประถม 50ข้อ ⚡</h2>
-                            <p class="text-xs opacity-90 font-medium">ท้าประลอง 50 ข้อ เก็บแต้ม</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topScorerDisplay" class="text-base bg-yellow-300 text-pink-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-pink-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-stopwatch text-xl"></i> ประลอง <i class="fas fa-bolt"></i></button>
-                        </div>
-                    </div>
-                    
-                    <!-- English Vocab Game Banner -->
-                    <div onclick="startEngGame()" class="eng-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-blue-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-globe text-blue-500"></i> Vocabulary</span>
-                            <h2 class="text-2xl font-black mb-1">ทายศัพท์อังกฤษ ประถม 🌟</h2>
-                            <p class="text-xs opacity-90 font-medium">สนุกกับคำศัพท์ 50 คำ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topEngScorerDisplay" class="text-base bg-yellow-300 text-blue-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-blue-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-spell-check text-xl"></i> ทายศัพท์ <i class="fas fa-star"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Science Game Banner -->
-                    <div onclick="startSciGame()" class="sci-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-emerald-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-flask text-emerald-500"></i> Science</span>
-                            <h2 class="text-2xl font-black mb-1">ตอบปัญหาวิทย์ ประถม 🔬</h2>
-                            <p class="text-xs opacity-90 font-medium">ประลองความรู้รอบตัว 50 ข้อ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topSciScorerDisplay" class="text-base bg-yellow-300 text-emerald-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-emerald-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-dna text-xl"></i> แข่งขัน <i class="fas fa-leaf"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Thai Game Banner -->
-                    <div onclick="startThaiGame()" class="thai-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-purple-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-book text-purple-500"></i> Thai Language</span>
-                            <h2 class="text-2xl font-black mb-1">ทายคำราชาศัพท์ ประถม 👑</h2>
-                            <p class="text-xs opacity-90 font-medium">ประลองภาษาไทย 50 ข้อ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topThaiScorerDisplay" class="text-base bg-yellow-300 text-purple-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-purple-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-crown text-xl"></i> ทายคำ <i class="fas fa-pen-nib"></i></button>
-                        </div>
+                    <div class="text-6xl md:text-8xl animate-bounce z-10">
+                        <i class="fas fa-gift text-yellow-300"></i>
                     </div>
                 </div>
 
-                <div class="mb-6 text-center mt-12">
+                <div class="mb-6 text-center">
                     <h2 class="text-3xl font-black text-gray-800 mb-2">ยินดีต้อนรับเข้าสู่บทเรียน!</h2>
                     <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
                 </div>
                 
-                <div class="flex flex-col gap-6 mb-12 max-w-6xl mx-auto" id="termCardsGrid"></div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="termCardsGrid"></div>
 
-                <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6 mt-10">
-                    <!-- ประกาศจากแอดมิน -->
+                <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6">
+                    <!-- ประกาศจากแอดมินสำหรับหน้าห้องเรียนจะถูกแทรกที่นี่ -->
                 </div>
             </div>
 
-            <!-- บทเรียนย่อย -->
-            <div id="contentDashboard" class="hidden-section max-w-6xl mx-auto">
+            <div id="contentDashboard" class="hidden-section">
                 <div class="flex items-center justify-between mb-8 bg-white p-6 rounded-3xl shadow-sm border-2 border-orange-50">
                     <h3 id="currentTermView" class="text-2xl font-black text-orange-600"></h3>
                     <button onclick="backToTerms()" class="bg-gray-100 text-gray-600 px-6 py-2 rounded-2xl font-bold hover:bg-gray-200 transition">
@@ -395,126 +282,6 @@
                     </button>
                 </div>
                 <div id="dynamicUnitGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-            </div>
-
-            <!-- Kindergarten Game Dashboard -->
-            <div id="kdgGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-3xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-orange-100 relative">
-                    <div class="bg-orange-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="kdgProgress">ข้อที่ 1 / 20</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="kdgTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitKdgGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#fff7ed]">
-                        <div class="text-sm font-bold text-orange-500 mb-2">เวลาที่ใช้: <span id="kdgTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-8 px-6 rounded-3xl shadow-sm border-4 border-orange-100 mb-10 mt-4 flex flex-col items-center justify-center relative">
-                            <button onclick="replayKdgAudio()" class="absolute top-4 right-4 bg-blue-100 text-blue-600 hover:bg-blue-200 w-12 h-12 rounded-full flex items-center justify-center text-xl transition shadow-sm" title="ฟังอีกครั้ง">
-                                <i class="fas fa-volume-up"></i>
-                            </button>
-                            <p class="text-sm text-gray-400 font-bold mb-2 uppercase tracking-widest">ฟังคำถามแล้วเลือกภาพ</p>
-                            <h2 id="kdgQText" class="text-3xl md:text-5xl font-black text-orange-600 tracking-wider mt-2 px-12 leading-tight">คำถามอนุบาล?</h2>
-                        </div>
-
-                        <div id="kdgOptions" class="grid grid-cols-2 gap-4 md:gap-6">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Math Game Dashboard -->
-            <div id="mathGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-pink-100 relative">
-                    <div class="bg-pink-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="mathProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="mathTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitMathGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#fffcf2]">
-                        <div class="text-sm font-bold text-pink-500 mb-2">เวลาที่ใช้: <span id="mathTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-12 px-6 rounded-3xl shadow-sm border-4 border-gray-100 mb-10 mt-4">
-                            <h2 id="mathQText" class="text-6xl md:text-8xl font-black text-gray-800 tracking-wider">? + ?</h2>
-                        </div>
-
-                        <div id="mathOptions" class="grid grid-cols-2 gap-4 md:gap-6">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Eng Game Dashboard -->
-            <div id="engGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-blue-100 relative">
-                    <div class="bg-blue-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="engProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="engTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitEngGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#f0f9ff]">
-                        <div class="text-sm font-bold text-blue-500 mb-2">เวลาที่ใช้: <span id="engTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-12 px-6 rounded-3xl shadow-sm border-4 border-gray-100 mb-10 mt-4">
-                            <p class="text-sm text-gray-400 font-bold mb-2 uppercase tracking-widest">แปลคำศัพท์นี้</p>
-                            <h2 id="engQText" class="text-5xl md:text-7xl font-black text-blue-600 tracking-wider capitalize">Word</h2>
-                        </div>
-
-                        <div id="engOptions" class="grid grid-cols-2 gap-4 md:gap-6">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Science Game Dashboard -->
-            <div id="sciGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-3xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-emerald-100 relative">
-                    <div class="bg-emerald-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="sciProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="sciTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitSciGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#ecfdf5]">
-                        <div class="text-sm font-bold text-emerald-500 mb-2">เวลาที่ใช้: <span id="sciTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-10 px-6 rounded-3xl shadow-sm border-4 border-emerald-50 mb-10 mt-4 min-h-[180px] flex items-center justify-center">
-                            <h2 id="sciQText" class="text-2xl md:text-4xl font-black text-emerald-800 tracking-wide leading-relaxed">คำถามวิทยาศาสตร์?</h2>
-                        </div>
-
-                        <div id="sciOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Thai Game Dashboard -->
-            <div id="thaiGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-3xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-purple-100 relative">
-                    <div class="bg-purple-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="thaiProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="thaiTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitThaiGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#f5f3ff]">
-                        <div class="text-sm font-bold text-purple-500 mb-2">เวลาที่ใช้: <span id="thaiTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-10 px-6 rounded-3xl shadow-sm border-4 border-purple-50 mb-10 mt-4 min-h-[180px] flex items-center justify-center">
-                            <h2 id="thaiQText" class="text-2xl md:text-4xl font-black text-purple-800 tracking-wide leading-relaxed">คำถามภาษาไทย?</h2>
-                        </div>
-
-                        <div id="thaiOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
     </div>
@@ -526,18 +293,39 @@
                 <h2 class="text-2xl font-bold">Admin Panel</h2>
                 <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">ออก</button>
             </div>
-            <!-- เพิ่มแท็บ จัดการแบนเนอร์ และ สถิติการแข่งขัน -->
-            <div class="flex flex-wrap gap-2 px-8 py-4 border-b bg-gray-50">
-                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 rounded-lg text-indigo-600 bg-indigo-50 transition">จัดการนักเรียน</button>
-                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการบทเรียน</button>
-                <button onclick="switchAdminTab('banners')" id="tabBannersBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการแบนเนอร์ชั้นเรียน</button>
-                <button onclick="switchAdminTab('leaderboards')" id="tabLeaderboardsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">🏆 สถิติการแข่งขัน</button>
+
+            <!-- ส่วนแสดงสถิติสมาชิก -->
+            <div class="p-8 pb-0">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 flex items-center justify-between shadow-sm">
+                        <div>
+                            <p class="text-sm text-indigo-500 font-bold mb-1">สมาชิกทั้งหมดในระบบ</p>
+                            <h3 class="text-4xl font-black text-indigo-700" id="adminTotalUsers">...</h3>
+                        </div>
+                        <i class="fas fa-users text-5xl text-indigo-200"></i>
+                    </div>
+                    <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 flex items-center justify-between shadow-sm">
+                        <div>
+                            <p class="text-sm text-emerald-500 font-bold mb-1">สมาชิกใหม่ <span class="text-xs text-emerald-400 font-normal">(ตั้งแต่แอดมินเข้าครั้งก่อน)</span></p>
+                            <h3 class="text-4xl font-black text-emerald-700" id="adminNewUsers">...</h3>
+                        </div>
+                        <i class="fas fa-user-plus text-5xl text-emerald-200"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 px-8 py-4 border-b mt-4">
+                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 text-indigo-600 transition">จัดการนักเรียน</button>
+                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 text-gray-400 transition">จัดการบทเรียน</button>
             </div>
             
             <div id="tabContentUsers" class="p-6">
-                <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userTableBody"></tbody></table></div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
             </div>
-            
             <div id="tabContentUnits" class="hidden-section p-6">
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="bg-slate-50 p-6 rounded-3xl border">
@@ -554,46 +342,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ส่วนแก้ไขแบนเนอร์ -->
-            <div id="tabContentBanners" class="hidden-section p-6">
-                <div class="mb-6">
-                    <h3 class="text-xl font-bold text-gray-800">ตั้งค่าแบนเนอร์สำหรับแต่ละระดับชั้น</h3>
-                    <p class="text-gray-500 text-sm">ข้อความและรูปภาพเหล่านี้จะไปแสดงบนแบนเนอร์ขนาดใหญ่ในหน้าแรกของเด็กๆ</p>
-                </div>
-                <div id="adminBannersList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- ฟอร์มแบนเนอร์จะถูกโหลดมาที่นี่ -->
-                </div>
-            </div>
-
-            <!-- ส่วนดูสถิติการแข่งขัน (Leaderboards) -->
-            <div id="tabContentLeaderboards" class="hidden-section p-6">
-                <div class="flex flex-wrap gap-3 mb-6">
-                    <button onclick="loadAdminLeaderboard('kdg')" class="bg-orange-100 text-orange-700 px-5 py-3 rounded-xl font-bold hover:bg-orange-200 transition shadow-sm"><i class="fas fa-baby"></i> อนุบาล</button>
-                    <button onclick="loadAdminLeaderboard('math')" class="bg-pink-100 text-pink-700 px-5 py-3 rounded-xl font-bold hover:bg-pink-200 transition shadow-sm"><i class="fas fa-calculator"></i> คณิตคิดเร็ว</button>
-                    <button onclick="loadAdminLeaderboard('eng')" class="bg-blue-100 text-blue-700 px-5 py-3 rounded-xl font-bold hover:bg-blue-200 transition shadow-sm"><i class="fas fa-globe"></i> ภาษาอังกฤษ</button>
-                    <button onclick="loadAdminLeaderboard('sci')" class="bg-emerald-100 text-emerald-700 px-5 py-3 rounded-xl font-bold hover:bg-emerald-200 transition shadow-sm"><i class="fas fa-flask"></i> วิทยาศาสตร์</button>
-                    <button onclick="loadAdminLeaderboard('thai')" class="bg-purple-100 text-purple-700 px-5 py-3 rounded-xl font-bold hover:bg-purple-200 transition shadow-sm"><i class="fas fa-book"></i> ภาษาไทย</button>
-                </div>
-                
-                <h3 id="adminLbTitle" class="text-2xl font-black text-slate-800 mb-4 border-l-4 border-indigo-500 pl-4">เลือกวิชาด้านบนเพื่อดูสถิติผู้เข้าแข่งขัน</h3>
-                
-                <div class="overflow-x-auto bg-white rounded-3xl border shadow-sm">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-100 text-slate-600 text-sm border-b">
-                            <tr>
-                                <th class="p-5 font-bold">อันดับ</th>
-                                <th class="p-5 font-bold">ชื่อนักเรียน</th>
-                                <th class="p-5 font-bold">คะแนนที่ได้</th>
-                                <th class="p-5 font-bold">วัน-เวลาที่เข้าเล่น</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminLbTableBody" class="divide-y divide-gray-100">
-                            <tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">รอการเลือกวิชา...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -601,24 +349,20 @@
         // URL ของ Firebase Realtime Database
         const FIREBASE_DB_URL = "https://tess-71c84-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-        const BASE_TERMS = [
-            { id: 'an1', defaultName: 'อนุบาล 1', icon: 'fa-baby', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
-            { id: 'an2', defaultName: 'อนุบาล 2', icon: 'fa-shapes', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
-            { id: 'an3', defaultName: 'อนุบาล 3', icon: 'fa-puzzle-piece', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
-            { id: 'p1', defaultName: 'ประถมศึกษาปีที่ 1', icon: 'fa-pencil-alt', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
-            { id: 'p2', defaultName: 'ประถมศึกษาปีที่ 2', icon: 'fa-book-open', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
-            { id: 'p3', defaultName: 'ประถมศึกษาปีที่ 3', icon: 'fa-calculator', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
-            { id: 'p4', defaultName: 'ประถมศึกษาปีที่ 4', icon: 'fa-flask', fallbackBg: 'bg-gradient-to-r from-green-400 to-emerald-500' },
-            { id: 'p5', defaultName: 'ประถมศึกษาปีที่ 5', icon: 'fa-globe-asia', fallbackBg: 'bg-gradient-to-r from-blue-400 to-indigo-500' },
-            { id: 'p6', defaultName: 'ประถมศึกษาปีที่ 6', icon: 'fa-microscope', fallbackBg: 'bg-gradient-to-r from-purple-400 to-fuchsia-500' }
+        const TERMS = [
+            { id: 'an1', name: 'อนุบาล 1', icon: 'fa-baby', color: 'bg-pink-100 text-pink-500' },
+            { id: 'an2', name: 'อนุบาล 2', icon: 'fa-shapes', color: 'bg-pink-100 text-pink-500' },
+            { id: 'an3', name: 'อนุบาล 3', icon: 'fa-puzzle-piece', color: 'bg-pink-100 text-pink-500' },
+            { id: 'p1', name: 'ป.1', icon: 'fa-pencil-alt', color: 'bg-yellow-100 text-yellow-600' },
+            { id: 'p2', name: 'ป.2', icon: 'fa-book-open', color: 'bg-yellow-100 text-yellow-600' },
+            { id: 'p3', name: 'ป.3', icon: 'fa-calculator', color: 'bg-yellow-100 text-yellow-600' },
+            { id: 'p4', name: 'ป.4', icon: 'fa-flask', color: 'bg-orange-100 text-orange-600' },
+            { id: 'p5', name: 'ป.5', icon: 'fa-globe-asia', color: 'bg-orange-100 text-orange-600' },
+            { id: 'p6', name: 'ป.6', icon: 'fa-microscope', color: 'bg-orange-100 text-orange-600' }
         ];
 
         let currentUser = null;
         let newsData = [];
-        let termSettingsData = {}; 
-        let customTermsData = [];  
-        
-        const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
         // --- Helper Functions ---
         window.showLoading = function(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
@@ -633,15 +377,17 @@
         
         const objToArray = (obj) => {
             if (!obj || obj.error) return [];
-            if (Array.isArray(obj)) return obj.map((item, index) => item ? { ...item, id: item.id || String(index) } : null).filter(Boolean);
+            if (Array.isArray(obj)) {
+                return obj.map((item, index) => item ? { ...item, id: item.id || String(index) } : null).filter(Boolean);
+            }
             return Object.keys(obj).map(key => ({ ...obj[key], id: key }));
         };
 
+        // ฟังก์ชันดึงข้อมูลฐานข้อมูล (ไม่แสดงหน้าต่างโหลดหากเป็นระบบเบื้องหลัง)
         async function fetchDB(path, method = 'GET', data = null) {
-            // ไม่แสดง Loading สำหรับระบบ Background (เช่นอัพเดทสถิติคนออนไลน์)
             const isBackground = path.includes('stats/');
             if(!isBackground) showLoading(true);
-            
+
             try {
                 const options = { method, headers: { 'Content-Type': 'application/json' } };
                 if (data) options.body = JSON.stringify(data);
@@ -651,25 +397,31 @@
                 if(!isBackground) showLoading(false);
                 
                 if (!res.ok) {
+                    console.error("Firebase Error:", result);
                     if (result && result.error && result.error.includes("Permission denied")) {
                         document.getElementById('firebaseErrorModal').classList.remove('hidden');
+                    } else if(!isBackground) {
+                        showMessage("เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล", "error");
                     }
                     return undefined;
                 }
                 return result;
             } catch (error) {
                 if(!isBackground) showLoading(false);
+                console.error("Firebase Error:", error);
+                if(!isBackground) showMessage("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
                 return undefined;
             }
         }
 
-        // --- Visitor Stats Logic ---
+        // --- Visitor Stats & Online Checking Logic ---
         const VISITOR_SESSION_ID = 'sess_' + Math.random().toString(36).substr(2, 9);
         let currentTotalVisitors = 0;
         let currentOnlineCount = 0;
 
         async function initVisitorStats() {
             try {
+                // ดึงยอดคนเข้าเว็บ แล้วบวก 1 ทันทีที่เปิดหน้า
                 let totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
                 let total = await totalRes.json() || 0;
                 total++;
@@ -677,6 +429,7 @@
                 currentTotalVisitors = total;
             } catch (e) {}
 
+            // ส่งข้อมูลออนไลน์ให้ฐานข้อมูล และตั้งเวลาอัปเดตต่อเนื่อง
             sendHeartbeat();
             setInterval(sendHeartbeat, 15000);
         }
@@ -684,13 +437,18 @@
         async function sendHeartbeat() {
             const now = Date.now();
             try {
+                // อัปเดตเวลาล่าสุดของตัวเอง
                 await fetch(`${FIREBASE_DB_URL}/stats/online/${VISITOR_SESSION_ID}.json`, { method: 'PUT', body: JSON.stringify(now) });
+                
+                // ดึงรายการคนที่ออนไลน์ทั้งหมด
                 const onlineRes = await fetch(`${FIREBASE_DB_URL}/stats/online.json`);
                 const onlineData = await onlineRes.json() || {};
                 
+                // ดึงยอดเข้าชมรวมเพื่ออัปเดตหน้าจอเผื่อมีคนอื่นเข้า
                 const totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
                 currentTotalVisitors = await totalRes.json() || currentTotalVisitors;
 
+                // นับคนออนไลน์ (หากข้อมูลเก่ากว่า 30 วินาทีให้ลบทิ้ง)
                 let count = 0;
                 const cutoff = now - 30000; 
                 for(let key in onlineData) {
@@ -699,984 +457,64 @@
                 }
                 currentOnlineCount = count;
 
-                document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
-                document.getElementById('statOnlineVal').innerText = currentOnlineCount.toLocaleString();
+                // อัปเดตสถิติสมาชิก (รวมถึงสมาชิกใหม่) เพื่อนำไปโชว์ในแท็บหน้าหลัก
+                const usersRes = await fetch(`${FIREBASE_DB_URL}/users.json`);
+                const usersData = await usersRes.json() || {};
+                const lastLoginRes = await fetch(`${FIREBASE_DB_URL}/stats/lastAdminLogin.json`);
+                const lastAdminLogin = await lastLoginRes.json() || 0;
+
+                const users = objToArray(usersData);
+                let totalMembers = users.length;
+                let newMembers = 0;
+                users.forEach(u => {
+                    if (u.createdAt && u.createdAt > lastAdminLogin) {
+                        newMembers++;
+                    }
+                });
+
+                // แสดงผลบน Floating Badge
+                if (document.getElementById('statTotalVal')) document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
+                if (document.getElementById('statOnlineVal')) document.getElementById('statOnlineVal').innerText = currentOnlineCount.toLocaleString();
+                if (document.getElementById('statTotalMembers')) document.getElementById('statTotalMembers').innerText = totalMembers.toLocaleString();
+                
+                const newMemberSpan = document.getElementById('statNewMembers');
+                if (newMemberSpan) {
+                    if(newMembers > 0) {
+                        newMemberSpan.innerText = `+${newMembers.toLocaleString()} ใหม่`;
+                        newMemberSpan.classList.remove('hidden');
+                    } else {
+                        newMemberSpan.classList.add('hidden');
+                    }
+                }
             } catch(e) {}
         }
 
-        // --- UI Modal Functions ---
-        window.showGameOverModal = (score) => {
-            document.getElementById('finalScoreText').innerText = score;
-            document.getElementById('gameOverModal').classList.remove('hidden');
-        };
+        // --- ระบบอัปเดตสถิติของหน้า Admin ---
+        window.loadAdminStats = async () => {
+            const usersData = await fetchDB('users');
+            if(!usersData) return;
+            const users = objToArray(usersData);
+            
+            const lastLoginData = await fetchDB('stats/lastAdminLogin');
+            const lastAdminLogin = lastLoginData || 0;
 
-        window.closeGameOverModal = () => {
-            document.getElementById('gameOverModal').classList.add('hidden');
-            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
-        };
-
-        // --- Text-to-Speech Helper ---
-        window.speakText = (text) => {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); 
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'th-TH'; 
-                msg.rate = 0.85; // ช้าลงนิดหน่อยให้เด็กฟังง่าย
-                window.speechSynthesis.speak(msg);
-            }
-        };
-
-        // --- Kindergarten Game Variables & Logic (NEW) ---
-        const KDG_QUESTION_DB = [
-            { q: "สัตว์ตัวไหนคือ สุนัข?", a: "🐶", options: ["🐱", "🐭", "🐰", "🐶"] },
-            { q: "สัตว์ตัวไหนคือ แมว?", a: "🐱", options: ["🐱", "🐷", "🐸", "🐻"] },
-            { q: "สัตว์ตัวไหนคือ ช้าง?", a: "🐘", options: ["🐎", "🐘", "🐪", "🐅"] },
-            { q: "สัตว์ตัวไหนคือ ปลา?", a: "🐟", options: ["🐙", "🐟", "🐢", "🦀"] },
-            { q: "สัตว์ตัวไหนคือ นก?", a: "🐦", options: ["🦋", "🐛", "🐦", "🐝"] },
-            { q: "ผลไม้ชนิดใดคือ แอปเปิ้ล?", a: "🍎", options: ["🍌", "🍉", "🍇", "🍎"] },
-            { q: "ผลไม้ชนิดใดคือ กล้วย?", a: "🍌", options: ["🍓", "🍌", "🍒", "🥭"] },
-            { q: "ผลไม้ชนิดใดคือ แตงโม?", a: "🍉", options: ["🍉", "🍍", "🥑", "🍑"] },
-            { q: "ผลไม้ชนิดใดคือ ส้ม?", a: "🍊", options: ["🍊", "🍋", "🍈", "🥝"] },
-            { q: "ยานพาหนะใดคือ รถยนต์?", a: "🚗", options: ["✈️", "🚂", "🚲", "🚗"] },
-            { q: "ยานพาหนะใดคือ รถไฟ?", a: "🚂", options: ["🚂", "🚁", "⛵", "🚀"] },
-            { q: "ยานพาหนะใดคือ เครื่องบิน?", a: "✈️", options: ["🚤", "✈️", "🛸", "🚜"] },
-            { q: "อะไรคือ พระอาทิตย์?", a: "☀️", options: ["🌙", "⭐", "☁️", "☀️"] },
-            { q: "อะไรคือ ดอกไม้?", a: "🌸", options: ["🌲", "🌵", "🌸", "🍄"] },
-            { q: "สิ่งใดคือ หนังสือ?", a: "📖", options: ["✏️", "🎒", "📖", "✂️"] },
-            { q: "สีใดคือ สีแดง?", a: "🔴", options: ["🔵", "🟢", "🟡", "🔴"] },
-            { q: "สีใดคือ สีน้ำเงิน?", a: "🔵", options: ["🔴", "🟢", "🔵", "🟣"] },
-            { q: "สีใดคือ สีเขียว?", a: "🟢", options: ["🟢", "🟠", "⚪", "🟤"] },
-            { q: "อะไรคือ เสื้อ?", a: "👕", options: ["👖", "👗", "👟", "👕"] },
-            { q: "อะไรคือ รองเท้า?", a: "👟", options: ["🧢", "🧦", "👟", "🧤"] },
-            { q: "สัตว์ตัวไหนคือ ลิง?", a: "🐒", options: ["🦍", "🦧", "🐒", "🐕"] },
-            { q: "สัตว์ตัวไหนคือ หมู?", a: "🐷", options: ["🐮", "🐷", "🐴", "🦌"] },
-            { q: "สัตว์ตัวไหนคือ กบ?", a: "🐸", options: ["🐸", "🐊", "🐍", "🦎"] },
-            { q: "ผลไม้ชนิดใดคือ สตรอว์เบอร์รี?", a: "🍓", options: ["🫐", "🍓", "🍅", "🥥"] },
-            { q: "สิ่งใดคือ ดินสอ?", a: "✏️", options: ["📏", "✏️", "🖋️", "🖍️"] },
-            { q: "ยานพาหนะใดคือ จักรยาน?", a: "🚲", options: ["🏍️", "🛴", "🚲", "🛺"] },
-            { q: "อะไรคือ กางเกง?", a: "👖", options: ["👔", "🩳", "👖", "👘"] },
-            { q: "อะไรคือ พระจันทร์?", a: "🌙", options: ["☀️", "⚡", "🌙", "☄️"] },
-            { q: "สีใดคือ สีเหลือง?", a: "🟡", options: ["🟣", "🟡", "⚫", "🔴"] },
-            { q: "สัตว์ตัวไหนคือ ไก่?", a: "🐔", options: ["🐧", "🦆", "🐔", "🦉"] }
-        ];
-
-        let activeKdgQuestions = [];   
-        let currentKdgQIndex = 0;
-        let kdgScoreTotal = 0;
-        let kdgQuestionStartTime = 0;
-        let kdgVisualTimerInterval = null;
-        let isKdgAnswering = false;
-        let currentKdgQuestionText = "";
-
-        function generateKdgPool() {
-            let shuffledQuestions = [...KDG_QUESTION_DB].sort(() => Math.random() - 0.5);
-            activeKdgQuestions = shuffledQuestions.slice(0, 20).map(qData => {
-                return {
-                    q: qData.q,
-                    a: qData.a,
-                    options: [...qData.options].sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopKdgScorer() {
-            const display = document.getElementById('topKdgScorerDisplay');
-            const data = await fetchDB('kdgLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
+            let newCount = 0;
+            users.forEach(u => {
+                if (u.createdAt && u.createdAt > lastAdminLogin) {
+                    newCount++;
                 }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        window.startKdgGame = () => {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('kdgGameDashboard').classList.remove('hidden-section');
-            
-            generateKdgPool();
-            
-            currentKdgQIndex = 0;
-            kdgScoreTotal = 0;
-            document.getElementById('kdgTotalScore').innerText = kdgScoreTotal;
-            
-            loadKdgQuestion();
-        };
-
-        window.replayKdgAudio = () => {
-            if (currentKdgQuestionText) {
-                speakText(currentKdgQuestionText);
-            }
-        };
-
-        function loadKdgQuestion() {
-            if (currentKdgQIndex >= 20 || currentKdgQIndex >= activeKdgQuestions.length) {
-                endKdgGame();
-                return;
-            }
-
-            isKdgAnswering = false;
-            const qData = activeKdgQuestions[currentKdgQIndex];
-            currentKdgQuestionText = qData.q;
-            
-            document.getElementById('kdgProgress').innerText = `ข้อที่ ${currentKdgQIndex + 1} / 20`;
-            document.getElementById('kdgQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('kdgOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                optionsDiv.innerHTML += `<button onclick="submitKdgAnswer('${opt}', '${qData.a}', this)" class="kdg-option-btn text-7xl md:text-8xl py-6 md:py-10 rounded-3xl w-full h-full flex items-center justify-center transition-transform hover:scale-105">${opt}</button>`;
             });
 
-            // อ่านคำถาม
-            setTimeout(() => { replayKdgAudio(); }, 300);
+            document.getElementById('adminTotalUsers').innerText = users.length.toLocaleString();
+            document.getElementById('adminNewUsers').innerText = `+${newCount.toLocaleString()}`;
 
-            kdgQuestionStartTime = Date.now();
-            clearInterval(kdgVisualTimerInterval);
-            document.getElementById('kdgTimerDisplay').innerText = "0.0";
-            kdgVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - kdgQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('kdgTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        window.submitKdgAnswer = (selectedOpt, correctOpt, btnElement) => {
-            if(isKdgAnswering) return; 
-            isKdgAnswering = true;
-            clearInterval(kdgVisualTimerInterval);
-            window.speechSynthesis.cancel(); // หยุดเสียงถ้าตอบแล้ว
-            
-            const timeElapsed = (Date.now() - kdgQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('kdg-option-btn', 'bg-green-400');
-                btnElement.classList.add('border-green-500', 'shadow-[0_0_20px_rgba(74,222,128,0.5)]');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-                if (pointsEarned > 0) {
-                    showMessage(`เก่งมาก! +${pointsEarned} คะแนน!`, 'success');
-                } else {
-                    showMessage(`ถูกต้อง แต่หมดเวลา! (0 คะแนน)`, 'error');
-                }
-            } else {
-                btnElement.classList.replace('kdg-option-btn', 'bg-red-400');
-                btnElement.classList.add('border-red-500');
-                showMessage(`ตอบผิดจ้า! (0 คะแนน)`, 'error');
-                
-                Array.from(document.getElementById('kdgOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('kdg-option-btn', 'bg-green-200');
-                        btn.classList.add('border-green-400');
-                    }
-                });
-            }
-
-            kdgScoreTotal += pointsEarned;
-            document.getElementById('kdgTotalScore').innerText = kdgScoreTotal;
-
-            setTimeout(() => {
-                currentKdgQIndex++;
-                loadKdgQuestion();
-            }, 1500);
+            // อัปเดตเวลาล่าสุดที่แอดมินเข้าดู เพื่อให้ครั้งต่อไปเริ่มนับ 0 ใหม่
+            await fetchDB('stats/lastAdminLogin', 'PUT', Date.now());
         };
 
-        window.quitKdgGame = () => {
-            if(confirm("หนูต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่ไหมจ๊ะ?")) {
-                window.speechSynthesis.cancel();
-                endKdgGame();
-            }
-        };
-
-        async function endKdgGame() {
-            clearInterval(kdgVisualTimerInterval);
-            window.speechSynthesis.cancel();
-            document.getElementById('kdgGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(kdgScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/kdgHistory/${ts}`, 'PUT', { score: kdgScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: kdgScoreTotal, date: ts };
-            await fetchDB(`kdgLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopKdgScorer();
-        }
-
-        // --- Math Game Variables & Logic ---
-        let mathQuestionsPool = [];
-        let activeQuestions = [];   
-        let currentMathQIndex = 0;
-        let mathScoreTotal = 0;
-        let questionStartTime = 0;
-        let visualTimerInterval = null;
-        let isAnswering = false;
-
-        function generateMathPool() {
-            mathQuestionsPool = [];
-            const ops = ['+', '-', 'x'];
-            while (mathQuestionsPool.length < 200) {
-                let a = Math.floor(Math.random() * 50) + 1;
-                let b = Math.floor(Math.random() * 50) + 1;
-                let op = ops[Math.floor(Math.random() * ops.length)];
-                
-                if(op === 'x') {
-                    a = Math.floor(Math.random() * 12) + 2;
-                    b = Math.floor(Math.random() * 12) + 2;
-                }
-                
-                if (op === '-' && b > a) { let temp = a; a = b; b = temp; }
-                
-                let answer;
-                if(op === '+') answer = a + b;
-                if(op === '-') answer = a - b;
-                if(op === 'x') answer = a * b;
-
-                let optionsSet = new Set([answer]);
-                while(optionsSet.size < 4) {
-                    let fake = answer + (Math.floor(Math.random() * 21) - 10);
-                    if(fake >= 0 && fake !== answer) optionsSet.add(fake);
-                }
-                
-                mathQuestionsPool.push({
-                    q: `${a} ${op} ${b}`,
-                    a: answer,
-                    options: Array.from(optionsSet).sort(() => Math.random() - 0.5)
-                });
-            }
-        }
-
-        async function fetchTopMathScorer() {
-            const display = document.getElementById('topScorerDisplay');
-            const data = await fetchDB('mathLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name); 
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        window.startMathGame = () => {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('mathGameDashboard').classList.remove('hidden-section');
-            
-            generateMathPool();
-            activeQuestions = [...mathQuestionsPool].sort(() => Math.random() - 0.5).slice(0, 50);
-            
-            currentMathQIndex = 0;
-            mathScoreTotal = 0;
-            document.getElementById('mathTotalScore').innerText = mathScoreTotal;
-            
-            loadMathQuestion();
-        };
-
-        function loadMathQuestion() {
-            if (currentMathQIndex >= 50) {
-                endMathGame();
-                return;
-            }
-
-            isAnswering = false;
-            const qData = activeQuestions[currentMathQIndex];
-            document.getElementById('mathProgress').innerText = `ข้อที่ ${currentMathQIndex + 1} / 50`;
-            document.getElementById('mathQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('mathOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                optionsDiv.innerHTML += `<button onclick="submitMathAnswer(${opt}, ${qData.a}, this)" class="math-option-btn text-3xl md:text-5xl font-black py-6 md:py-8 rounded-3xl w-full">${opt}</button>`;
-            });
-
-            questionStartTime = Date.now();
-            clearInterval(visualTimerInterval);
-            document.getElementById('mathTimerDisplay').innerText = "0.0";
-            visualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - questionStartTime) / 1000).toFixed(1);
-                document.getElementById('mathTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        window.submitMathAnswer = (selectedOpt, correctOpt, btnElement) => {
-            if(isAnswering) return; 
-            isAnswering = true;
-            clearInterval(visualTimerInterval);
-            
-            const timeElapsed = (Date.now() - questionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('math-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('math-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-            }
-
-            mathScoreTotal += pointsEarned;
-            document.getElementById('mathTotalScore').innerText = mathScoreTotal;
-
-            setTimeout(() => {
-                currentMathQIndex++;
-                loadMathQuestion();
-            }, 1200);
-        };
-
-        window.quitMathGame = () => {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endMathGame();
-            }
-        };
-
-        async function endMathGame() {
-            clearInterval(visualTimerInterval);
-            document.getElementById('mathGameDashboard').classList.add('hidden-section');
-            
-            // แสดงหน้าต่างคะแนนรวม
-            showGameOverModal(mathScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/mathHistory/${ts}`, 'PUT', { score: mathScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: mathScoreTotal, date: ts };
-            await fetchDB(`mathLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopMathScorer();
-        }
-
-        // --- English Vocab Game Variables & Logic ---
-        const ENG_VOCAB_DB = [
-            {en: "environment", th: "สิ่งแวดล้อม"}, {en: "pollution", th: "มลพิษ"}, {en: "temperature", th: "อุณหภูมิ"}, {en: "earthquake", th: "แผ่นดินไหว"},
-            {en: "experiment", th: "การทดลอง"}, {en: "scientist", th: "นักวิทยาศาสตร์"}, {en: "gravity", th: "แรงโน้มถ่วง"}, {en: "universe", th: "จักรวาล"},
-            {en: "dangerous", th: "อันตราย"}, {en: "difficult", th: "ยาก"}, {en: "expensive", th: "แพง"}, {en: "important", th: "สำคัญ"},
-            {en: "comfortable", th: "สะดวกสบาย"}, {en: "delicious", th: "อร่อย"}, {en: "terrible", th: "แย่มาก"}, {en: "brilliant", th: "ยอดเยี่ยม"},
-            {en: "curious", th: "อยากรู้อยากเห็น"}, {en: "mysterious", th: "ลึกลับ"}, {en: "enormous", th: "ใหญ่โต"}, {en: "communicate", th: "สื่อสาร"},
-            {en: "discover", th: "ค้นพบ"}, {en: "invent", th: "ประดิษฐ์"}, {en: "celebrate", th: "เฉลิมฉลอง"}, {en: "apologize", th: "ขอโทษ"},
-            {en: "encourage", th: "สนับสนุน/ให้กำลังใจ"}, {en: "disappear", th: "หายไป"}, {en: "organize", th: "จัดระเบียบ"}, {en: "participate", th: "เข้าร่วม"},
-            {en: "knowledge", th: "ความรู้"}, {en: "experience", th: "ประสบการณ์"}, {en: "government", th: "รัฐบาล"}, {en: "technology", th: "เทคโนโลยี"},
-            {en: "vocabulary", th: "คำศัพท์"}, {en: "signature", th: "ลายเซ็น"}, {en: "destination", th: "จุดหมายปลายทาง"}, {en: "instrument", th: "เครื่องดนตรี"},
-            {en: "immediately", th: "ทันที"}, {en: "exactly", th: "อย่างแน่นอน"}, {en: "unfortunately", th: "โชคร้ายที่"}, {en: "especially", th: "โดยเฉพาะ"},
-            {en: "adventure", th: "การผจญภัย"}, {en: "beautiful", th: "สวยงาม"}, {en: "courage", th: "ความกล้าหาญ"}, {en: "direction", th: "ทิศทาง"},
-            {en: "education", th: "การศึกษา"}, {en: "familiar", th: "คุ้นเคย"}, {en: "generation", th: "คนรุ่นหลัง/ยุค"}, {en: "hospitality", th: "การต้อนรับ"},
-            {en: "imagination", th: "จินตนาการ"}, {en: "journey", th: "การเดินทาง"}, {en: "language", th: "ภาษา"}, {en: "mountain", th: "ภูเขา"},
-            {en: "natural", th: "ธรรมชาติ"}, {en: "opportunity", th: "โอกาส"}, {en: "passenger", th: "ผู้โดยสาร"}, {en: "question", th: "คำถาม"},
-            {en: "restaurant", th: "ร้านอาหาร"}, {en: "successful", th: "ประสบความสำเร็จ"}, {en: "tradition", th: "ประเพณี"}, {en: "umbrella", th: "ร่ม"},
-            {en: "vacation", th: "วันหยุดพักผ่อน"}, {en: "wonderful", th: "มหัศจรรย์"}, {en: "yesterday", th: "เมื่อวาน"}, {en: "zoology", th: "สัตววิทยา"},
-            {en: "achievement", th: "ความสำเร็จ"}, {en: "behavior", th: "พฤติกรรม"}, {en: "challenge", th: "ความท้าทาย"}, {en: "decision", th: "การตัดสินใจ"},
-            {en: "equipment", th: "อุปกรณ์"}, {en: "favorite", th: "ที่ชื่นชอบ"}, {en: "guarantee", th: "รับประกัน"}, {en: "healthy", th: "สุขภาพดี"},
-            {en: "information", th: "ข้อมูล"}, {en: "jealous", th: "อิจฉา"}, {en: "kilometer", th: "กิโลเมตร"}, {en: "library", th: "ห้องสมุด"},
-            {en: "magazine", th: "นิตยสาร"}, {en: "neighbor", th: "เพื่อนบ้าน"}, {en: "ocean", th: "มหาสมุทร"}, {en: "patient", th: "อดทน/ผู้ป่วย"},
-            {en: "quality", th: "คุณภาพ"}, {en: "remember", th: "จดจำ"}, {en: "society", th: "สังคม"}, {en: "transportation", th: "การคมนาคม"}
-        ];
-
-        let activeEngQuestions = [];   
-        let currentEngQIndex = 0;
-        let engScoreTotal = 0;
-        let engQuestionStartTime = 0;
-        let engVisualTimerInterval = null;
-        let isEngAnswering = false;
-
-        function generateEngPool() {
-            let shuffledVocab = [...ENG_VOCAB_DB].sort(() => Math.random() - 0.5);
-            activeEngQuestions = shuffledVocab.slice(0, 50).map(vocab => {
-                let answer = vocab.th;
-                let optionsSet = new Set([answer]);
-                while(optionsSet.size < 4) {
-                    let wrongVocab = ENG_VOCAB_DB[Math.floor(Math.random() * ENG_VOCAB_DB.length)];
-                    if(wrongVocab.th !== answer) optionsSet.add(wrongVocab.th);
-                }
-                return {
-                    q: vocab.en,
-                    a: answer,
-                    options: Array.from(optionsSet).sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopEngScorer() {
-            const display = document.getElementById('topEngScorerDisplay');
-            const data = await fetchDB('engLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        window.startEngGame = () => {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('engGameDashboard').classList.remove('hidden-section');
-            
-            generateEngPool();
-            
-            currentEngQIndex = 0;
-            engScoreTotal = 0;
-            document.getElementById('engTotalScore').innerText = engScoreTotal;
-            
-            loadEngQuestion();
-        };
-
-        function loadEngQuestion() {
-            if (currentEngQIndex >= 50) {
-                endEngGame();
-                return;
-            }
-
-            isEngAnswering = false;
-            const qData = activeEngQuestions[currentEngQIndex];
-            document.getElementById('engProgress').innerText = `ข้อที่ ${currentEngQIndex + 1} / 50`;
-            document.getElementById('engQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('engOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                const safeOpt = opt.replace(/'/g, "\\'");
-                const safeA = qData.a.replace(/'/g, "\\'");
-                optionsDiv.innerHTML += `<button onclick="submitEngAnswer('${safeOpt}', '${safeA}', this)" class="eng-option-btn text-2xl md:text-4xl font-black py-6 md:py-8 rounded-3xl w-full">${opt}</button>`;
-            });
-
-            engQuestionStartTime = Date.now();
-            clearInterval(engVisualTimerInterval);
-            document.getElementById('engTimerDisplay').innerText = "0.0";
-            engVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - engQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('engTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        window.submitEngAnswer = (selectedOpt, correctOpt, btnElement) => {
-            if(isEngAnswering) return; 
-            isEngAnswering = true;
-            clearInterval(engVisualTimerInterval);
-            
-            const timeElapsed = (Date.now() - engQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('eng-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('eng-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-                
-                Array.from(document.getElementById('engOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('eng-option-btn', 'bg-green-400');
-                        btn.classList.add('text-white', 'border-green-500');
-                    }
-                });
-            }
-
-            engScoreTotal += pointsEarned;
-            document.getElementById('engTotalScore').innerText = engScoreTotal;
-
-            setTimeout(() => {
-                currentEngQIndex++;
-                loadEngQuestion();
-            }, 1200);
-        };
-
-        window.quitEngGame = () => {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endEngGame();
-            }
-        };
-
-        async function endEngGame() {
-            clearInterval(engVisualTimerInterval);
-            document.getElementById('engGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(engScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/engHistory/${ts}`, 'PUT', { score: engScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: engScoreTotal, date: ts };
-            await fetchDB(`engLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopEngScorer();
-        }
-
-        // --- Science Game Variables & Logic ---
-        const SCI_QUESTION_DB = [
-            { q: "อะไรคือศูนย์กลางของระบบสุริยะ?", a: "ดวงอาทิตย์", options: ["โลก", "ดวงจันทร์", "ดวงอาทิตย์", "ดาวพฤหัสบดี"] },
-            { q: "ก๊าซใดที่พืชใช้ในการสังเคราะห์แสง?", a: "คาร์บอนไดออกไซด์", options: ["ออกซิเจน", "คาร์บอนไดออกไซด์", "ไนโตรเจน", "ไฮโดรเจน"] },
-            { q: "อวัยวะใดใช้ในการหายใจของปลา?", a: "เหงือก", options: ["ปอด", "ผิวหนัง", "จมูก", "เหงือก"] },
-            { q: "สัตว์ชนิดใดเป็นสัตว์เลี้ยงลูกด้วยนม?", a: "วาฬ", options: ["ฉลาม", "วาฬ", "จระเข้", "เต่า"] },
-            { q: "สสารมีกี่สถานะพื้นฐาน?", a: "3 สถานะ", options: ["2 สถานะ", "3 สถานะ", "4 สถานะ", "5 สถานะ"] },
-            { q: "น้ำมีสถานะเป็นของแข็งเรียกว่าอะไร?", a: "น้ำแข็ง", options: ["ไอน้ำ", "น้ำแข็ง", "น้ำค้าง", "หิมะ"] },
-            { q: "อวัยวะใดทำหน้าที่สูบฉีดเลือด?", a: "หัวใจ", options: ["ปอด", "ตับ", "หัวใจ", "กระเพาะอาหาร"] },
-            { q: "ดาวเคราะห์ใดมีขนาดใหญ่ที่สุดในระบบสุริยะ?", a: "ดาวพฤหัสบดี", options: ["โลก", "ดาวเสาร์", "ดาวพฤหัสบดี", "ดาวยูเรนัส"] },
-            { q: "อะไรช่วยให้พืชมีสีเขียว?", a: "คลอโรฟิลล์", options: ["แคโรทีน", "เซลลูโลส", "คลอโรฟิลล์", "ไซเลม"] },
-            { q: "แมลงมีขากี่ขา?", a: "6 ขา", options: ["4 ขา", "6 ขา", "8 ขา", "10 ขา"] },
-            { q: "แมงมุมมีขากี่ขา?", a: "8 ขา", options: ["4 ขา", "6 ขา", "8 ขา", "10 ขา"] },
-            { q: "แรงที่ดึงดูดสิ่งของตกลงสู่พื้นคือแรงใด?", a: "แรงโน้มถ่วง", options: ["แรงเสียดทาน", "แรงแม่เหล็ก", "แรงโน้มถ่วง", "แรงไฟฟ้า"] },
-            { q: "สิ่งใดเป็นแหล่งพลังงานแสงที่ใหญ่ที่สุดของโลก?", a: "ดวงอาทิตย์", options: ["ดวงจันทร์", "ดวงดาว", "ดวงอาทิตย์", "ไฟฟ้า"] },
-            { q: "อุณหภูมิที่น้ำเดือดคือข้อใด? (องศาเซลเซียส)", a: "100", options: ["0", "50", "100", "200"] },
-            { q: "อุณหภูมิที่น้ำกลายเป็นน้ำแข็งคือข้อใด? (องศาเซลเซียส)", a: "0", options: ["-10", "0", "10", "100"] },
-            { q: "กระดูกชิ้นใดใหญ่ที่สุดในร่างกายมนุษย์?", a: "กระดูกต้นขา", options: ["กระดูกสันหลัง", "กระดูกแขน", "กระดูกต้นขา", "กะโหลกศีรษะ"] },
-            { q: "ระบบใดทำหน้าที่ย่อยอาหาร?", a: "ระบบย่อยอาหาร", options: ["ระบบหายใจ", "ระบบหมุนเวียนเลือด", "ระบบย่อยอาหาร", "ระบบขับถ่าย"] },
-            { q: "วิตามินใดช่วยบำรุงสายตา?", a: "วิตามิน A", options: ["วิตามิน A", "วิตามิน B", "วิตามิน C", "วิตามิน D"] },
-            { q: "โรคเลือดออกตามไรฟันเกิดจากการขาดวิตามินใด?", a: "วิตามิน C", options: ["วิตามิน A", "วิตามิน B", "วิตามิน C", "วิตามิน D"] },
-            { q: "พืชได้รับน้ำและแร่ธาตุผ่านทางส่วนใด?", a: "ราก", options: ["ใบ", "ลำต้น", "ราก", "ดอก"] },
-            { q: "ดาวเคราะห์ดวงใดอยู่ใกล้ดวงอาทิตย์ที่สุด?", a: "ดาวพุธ", options: ["ดาวศุกร์", "โลก", "ดาวอังคาร", "ดาวพุธ"] },
-            { q: "ก๊าซใดมีมากที่สุดในชั้นบรรยากาศโลก?", a: "ไนโตรเจน", options: ["ออกซิเจน", "คาร์บอนไดออกไซด์", "ไนโตรเจน", "อาร์กอน"] },
-            { q: "กลุ่มดาวใดมีรูปร่างคล้ายกระบวยตักน้ำ?", a: "กลุ่มดาวหมีใหญ่", options: ["กลุ่มดาวนายพราน", "กลุ่มดาวหมีใหญ่", "กลุ่มดาวแมงป่อง", "กลุ่มดาวคนคู่"] },
-            { q: "สัตว์ที่กินพืชเป็นอาหารเรียกว่าอะไร?", a: "สัตว์กินพืช (Herbivore)", options: ["สัตว์กินเนื้อ", "สัตว์กินพืช (Herbivore)", "สัตว์กินทั้งพืชและสัตว์", "ปรสิต"] },
-            { q: "สัตว์ที่ออกลูกเป็นไข่คือข้อใด?", a: "นก", options: ["สุนัข", "แมว", "ม้า", "นก"] },
-            { q: "อวัยวะใดของนกที่ใช้ในการบิน?", a: "ปีก", options: ["หาง", "ปีก", "ขา", "จะงอยปาก"] },
-            { q: "สายรุ้งมีกี่สี?", a: "7 สี", options: ["5 สี", "6 สี", "7 สี", "8 สี"] },
-            { q: "เครื่องมือที่ใช้ดูดาวเรียกว่าอะไร?", a: "กล้องโทรทรรศน์", options: ["กล้องจุลทรรศน์", "กล้องโทรทรรศน์", "แว่นขยาย", "เรดาร์"] },
-            { q: "เครื่องมือที่ใช้ดูสิ่งมีชีวิตขนาดเล็กเรียกว่าอะไร?", a: "กล้องจุลทรรศน์", options: ["กล้องโทรทรรศน์", "แว่นขยาย", "เรดาร์", "กล้องจุลทรรศน์"] },
-            { q: "สิ่งที่บอกทิศทางเหนือใต้คืออะไร?", a: "เข็มทิศ", options: ["นาฬิกา", "ปรอทวัดไข้", "เข็มทิศ", "บารอมิเตอร์"] },
-            { q: "โลหะชนิดใดถูกดูดด้วยแม่เหล็กได้?", a: "เหล็ก", options: ["ทองคำ", "เงิน", "ทองแดง", "เหล็ก"] },
-            { q: "ส่วนใดของดอกไม้ที่เจริญไปเป็นผล?", a: "รังไข่", options: ["กลีบดอก", "เกสรตัวผู้", "รังไข่", "ยอดเกสรตัวเมีย"] },
-            { q: "สัตว์ชนิดใดหายใจด้วยปอดและผิวหนัง?", a: "กบ", options: ["ปลา", "จระเข้", "กบ", "เต่า"] },
-            { q: "โรคไข้เลือดออกมียุงชนิดใดเป็นพาหะ?", a: "ยุงลาย", options: ["ยุงรำคาญ", "ยุงก้นปล่อง", "ยุงลาย", "ยุงเสือ"] },
-            { q: "วัสดุใดเป็นฉนวนไฟฟ้า?", a: "พลาสติก", options: ["เหล็ก", "ทองแดง", "น้ำเกลือ", "พลาสติก"] },
-            { q: "วัสดุใดเป็นตัวนำไฟฟ้าที่ดีที่สุด?", a: "เงิน", options: ["เหล็ก", "ทองแดง", "เงิน", "อลูมิเนียม"] },
-            { q: "ดวงจันทร์หมุนรอบสิ่งใด?", a: "โลก", options: ["ดวงอาทิตย์", "ดาวอังคาร", "โลก", "ดาวศุกร์"] },
-            { q: "ปรากฏการณ์ที่ดวงจันทร์บังดวงอาทิตย์เรียกว่าอะไร?", a: "สุริยุปราคา", options: ["จันทรุปราคา", "สุริยุปราคา", "ฝนดาวตก", "รุ้งกินน้ำ"] },
-            { q: "สัตว์ชนิดใดสามารถเปลี่ยนสีผิวให้กลมกลืนกับสภาพแวดล้อมได้?", a: "กิ้งก่า", options: ["งู", "กิ้งก่า", "จระเข้", "เต่า"] },
-            { q: "หินชนิดใดเกิดจากการทับถมของซากพืชซากสัตว์?", a: "หินชั้น (หินตะกอน)", options: ["หินอัคนี", "หินแปร", "หินชั้น (หินตะกอน)", "หินภูเขาไฟ"] },
-            { q: "ของเหลวที่ออกมาจากภูเขาไฟขณะปะทุเรียกว่าอะไร?", a: "ลาวา", options: ["แมกมา", "โคลนเดือด", "ลาวา", "น้ำแร่"] },
-            { q: "ข้อใดเป็นพลังงานหมุนเวียน?", a: "พลังงานลม", options: ["น้ำมันหิน", "ถ่านหิน", "ก๊าซธรรมชาติ", "พลังงานลม"] },
-            { q: "อะไรคือหน่วยที่เล็กที่สุดของสิ่งมีชีวิต?", a: "เซลล์", options: ["เนื้อเยื่อ", "อวัยวะ", "เซลล์", "อะตอม"] },
-            { q: "ส่วนประกอบใดของเลือดทำหน้าที่ลำเลียงออกซิเจน?", a: "เม็ดเลือดแดง", options: ["เม็ดเลือดขาว", "เกล็ดเลือด", "น้ำเลือด", "เม็ดเลือดแดง"] },
-            { q: "ส่วนประกอบใดของเลือดทำหน้าที่ต่อสู้กับเชื้อโรค?", a: "เม็ดเลือดขาว", options: ["เม็ดเลือดแดง", "เกล็ดเลือด", "เม็ดเลือดขาว", "น้ำเลือด"] },
-            { q: "โรคมาลาเรียมียุงชนิดใดเป็นพาหะ?", a: "ยุงก้นปล่อง", options: ["ยุงลาย", "ยุงรำคาญ", "ยุงก้นปล่อง", "ยุงเสือ"] },
-            { q: "อาหารหลัก 5 หมู่ หมวดใดให้พลังงานมากที่สุด?", a: "ไขมัน", options: ["โปรตีน", "คาร์โบไฮเดรต", "ไขมัน", "วิตามิน"] },
-            { q: "ใครคือผู้ค้นพบแรงโน้มถ่วงของโลก?", a: "ไอแซก นิวตัน", options: ["อัลเบิร์ต ไอน์สไตน์", "โทมัส เอดิสัน", "ไอแซก นิวตัน", "กาลิเลโอ"] },
-            { q: "ดาวศุกร์มีฉายาว่าอะไร?", a: "ฝาแฝดของโลก", options: ["ดาวเคราะห์สีแดง", "ฝาแฝดของโลก", "ดาวเคราะห์ยักษ์", "ดาวแห่งความตาย"] },
-            { q: "สิ่งมีชีวิตใดช่วยย่อยสลายซากพืชซากสัตว์?", a: "เห็ดราและแบคทีเรีย", options: ["แมลงวัน", "หนอน", "เห็ดราและแบคทีเรีย", "นกแร้ง"] },
-            { q: "ฤดูกาลบนโลกเกิดจากสาเหตุใด?", a: "แกนโลกเอียงและโคจรรอบดวงอาทิตย์", options: ["โลกหมุนรอบตัวเอง", "ระยะห่างจากดวงอาทิตย์", "แกนโลกเอียงและโคจรรอบดวงอาทิตย์", "ดวงจันทร์โคจรรอบโลก"] },
-            { q: "ข้อใดไม่ใช่สถานะของสสาร?", a: "พลังงาน", options: ["ของแข็ง", "ของเหลว", "ก๊าซ", "พลังงาน"] },
-            { q: "ก๊าซที่ทำให้เกิดสภาวะเรือนกระจกมากที่สุดคือข้อใด?", a: "คาร์บอนไดออกไซด์", options: ["ออกซิเจน", "คาร์บอนไดออกไซด์", "ไนโตรเจน", "ฮีเลียม"] },
-            { q: "เมื่อเป่าลูกโป่ง ลูกโป่งพองตัวขึ้นเพราะอะไร?", a: "อากาศต้องการที่อยู่", options: ["อากาศมีน้ำหนัก", "อากาศไม่มีสี", "อากาศต้องการที่อยู่", "อากาศมีแรงดันลดลง"] },
-            { q: "แรงเสียดทานมีประโยชน์ในข้อใด?", a: "การเดินไม่ให้ลื่นล้ม", options: ["การลากของให้ง่ายขึ้น", "การว่ายน้ำให้เร็วขึ้น", "การเดินไม่ให้ลื่นล้ม", "เครื่องจักรทำงานลื่นไหล"] },
-            { q: "ค้างคาวหาอาหารในเวลากลางคืนโดยใช้อะไร?", a: "คลื่นเสียง", options: ["สายตาที่มองเห็นในที่มืด", "การดมกลิ่น", "คลื่นเสียง", "การรับแรงสั่นสะเทือนจากพื้น"] },
-            { q: "วัฏจักรของน้ำ ข้อใดคือการที่น้ำกลายเป็นไอ?", a: "การระเหย", options: ["การควบแน่น", "การระเหย", "การตกตะกอน", "การหลอมเหลว"] },
-            { q: "วัฏจักรของผีเสื้อ ระยะใดที่กินอาหารเก่งที่สุด?", a: "หนอน", options: ["ไข่", "หนอน", "ดักแด้", "ตัวเต็มวัย"] },
-            { q: "สัตว์ในข้อใดมีการจำศีลในฤดูหนาว?", a: "หมีขั้วโลก", options: ["ช้าง", "หมีขั้วโลก", "ยีราฟ", "นกกระจอกเทศ"] },
-            { q: "ฟันของมนุษย์ชุดแรกเรียกว่าอะไร?", a: "ฟันน้ำนม", options: ["ฟันแท้", "ฟันคุด", "ฟันกราม", "ฟันน้ำนม"] },
-            { q: "ข้อใดคือแหล่งน้ำจืดที่ใหญ่ที่สุดบนโลก?", a: "ธารน้ำแข็ง", options: ["แม่น้ำ", "ทะเลสาบ", "น้ำบาดาล", "ธารน้ำแข็ง"] },
-            { q: "ข้อใดเป็นลักษณะของสัตว์เลื้อยคลาน?", a: "มีเกล็ดปกคลุมลำตัว", options: ["หายใจด้วยเหงือก", "ออกลูกเป็นตัวเสมอ", "มีเกล็ดปกคลุมลำตัว", "เป็นสัตว์เลือดอุ่น"] }
-        ];
-
-        let activeSciQuestions = [];   
-        let currentSciQIndex = 0;
-        let sciScoreTotal = 0;
-        let sciQuestionStartTime = 0;
-        let sciVisualTimerInterval = null;
-        let isSciAnswering = false;
-
-        function generateSciPool() {
-            let shuffledQuestions = [...SCI_QUESTION_DB].sort(() => Math.random() - 0.5);
-            activeSciQuestions = shuffledQuestions.slice(0, 50).map(qData => {
-                return {
-                    q: qData.q,
-                    a: qData.a,
-                    options: [...qData.options].sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopSciScorer() {
-            const display = document.getElementById('topSciScorerDisplay');
-            const data = await fetchDB('sciLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        window.startSciGame = () => {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('sciGameDashboard').classList.remove('hidden-section');
-            
-            generateSciPool();
-            
-            currentSciQIndex = 0;
-            sciScoreTotal = 0;
-            document.getElementById('sciTotalScore').innerText = sciScoreTotal;
-            
-            loadSciQuestion();
-        };
-
-        function loadSciQuestion() {
-            if (currentSciQIndex >= 50 || currentSciQIndex >= activeSciQuestions.length) {
-                endSciGame();
-                return;
-            }
-
-            isSciAnswering = false;
-            const qData = activeSciQuestions[currentSciQIndex];
-            document.getElementById('sciProgress').innerText = `ข้อที่ ${currentSciQIndex + 1} / 50`;
-            document.getElementById('sciQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('sciOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                const safeOpt = opt.replace(/'/g, "\\'");
-                const safeA = qData.a.replace(/'/g, "\\'");
-                optionsDiv.innerHTML += `<button onclick="submitSciAnswer('${safeOpt}', '${safeA}', this)" class="sci-option-btn text-xl md:text-3xl font-black py-4 md:py-8 rounded-3xl w-full h-full">${opt}</button>`;
-            });
-
-            sciQuestionStartTime = Date.now();
-            clearInterval(sciVisualTimerInterval);
-            document.getElementById('sciTimerDisplay').innerText = "0.0";
-            sciVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - sciQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('sciTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        window.submitSciAnswer = (selectedOpt, correctOpt, btnElement) => {
-            if(isSciAnswering) return; 
-            isSciAnswering = true;
-            clearInterval(sciVisualTimerInterval);
-            
-            const timeElapsed = (Date.now() - sciQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('sci-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('sci-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-                
-                Array.from(document.getElementById('sciOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('sci-option-btn', 'bg-green-400');
-                        btn.classList.add('text-white', 'border-green-500');
-                    }
-                });
-            }
-
-            sciScoreTotal += pointsEarned;
-            document.getElementById('sciTotalScore').innerText = sciScoreTotal;
-
-            setTimeout(() => {
-                currentSciQIndex++;
-                loadSciQuestion();
-            }, 1200);
-        };
-
-        window.quitSciGame = () => {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endSciGame();
-            }
-        };
-
-        async function endSciGame() {
-            clearInterval(sciVisualTimerInterval);
-            document.getElementById('sciGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(sciScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/sciHistory/${ts}`, 'PUT', { score: sciScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: sciScoreTotal, date: ts };
-            await fetchDB(`sciLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopSciScorer();
-        }
-
-        // --- Thai Language Game Variables & Logic ---
-        const THAI_QUESTION_DB = [
-            { q: "คำราชาศัพท์ของ 'กิน' คือข้อใด?", a: "เสวย", options: ["เสวย", "บรรทม", "ทรงพระดำเนิน", "ประทับ"] },
-            { q: "คำราชาศัพท์ของ 'นอน' คือข้อใด?", a: "บรรทม", options: ["บรรทม", "เสวย", "ประทับ", "สรงน้ำ"] },
-            { q: "คำราชาศัพท์ของ 'อาบน้ำ' คือข้อใด?", a: "สรงน้ำ", options: ["สรงน้ำ", "ชำระพระวรกาย", "เสวยน้ำ", "บรรทม"] },
-            { q: "คำราชาศัพท์ของ 'เดิน' คือข้อใด?", a: "ทรงพระดำเนิน", options: ["เสด็จ", "ทรงพระดำเนิน", "ยาตรา", "ประทับ"] },
-            { q: "คำราชาศัพท์ของ 'ป่วย' คือข้อใด?", a: "ประชวร", options: ["ประชวร", "พระโรคา", "ทรงพระประชวร", "พระอาพาธ"] },
-            { q: "คำราชาศัพท์ของ 'ตาย' (สำหรับพระมหากษัตริย์) คือข้อใด?", a: "สวรรคต", options: ["สวรรคต", "ทิวงคต", "สิ้นพระชนม์", "มรณภาพ"] },
-            { q: "คำว่า 'พระเนตร' หมายถึงอวัยวะใด?", a: "ตา", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระกรรณ' หมายถึงอวัยวะใด?", a: "หู", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระนาสิก' หมายถึงอวัยวะใด?", a: "จมูก", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระโอษฐ์' หมายถึงอวัยวะใด?", a: "ปาก", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระหัตถ์' หมายถึงอวัยวะใด?", a: "มือ", options: ["แขน", "มือ", "เท้า", "ขา"] },
-            { q: "คำว่า 'พระบาท' หมายถึงอวัยวะใด?", a: "เท้า", options: ["แขน", "มือ", "เท้า", "ขา"] },
-            { q: "คำว่า 'พระเศียร' หมายถึงอวัยวะใด?", a: "ศีรษะ", options: ["หน้าผาก", "ศีรษะ", "คอ", "ไหล่"] },
-            { q: "คำว่า 'พระเกศา' หมายถึงสิ่งใด?", a: "เส้นผม", options: ["เส้นผม", "ขนคิ้ว", "หนวด", "เครา"] },
-            { q: "คำว่า 'พระพักตร์' หมายถึงอวัยวะใด?", a: "ใบหน้า", options: ["หน้าผาก", "ใบหน้า", "แก้ม", "คาง"] },
-            { q: "คำว่า 'พระทนต์' หมายถึงอวัยวะใด?", a: "ฟัน", options: ["ฟัน", "ลิ้น", "ริมฝีปาก", "เหงือก"] },
-            { q: "คำว่า 'พระอุระ' หมายถึงอวัยวะใด?", a: "หน้าอก", options: ["หน้าอก", "แผ่นหลัง", "หน้าท้อง", "เอว"] },
-            { q: "คำว่า 'พระนาภี' หมายถึงอวัยวะใด?", a: "สะดือ/ท้อง", options: ["หน้าอก", "สะดือ/ท้อง", "หลัง", "ไหล่"] },
-            { q: "คำราชาศัพท์ของ 'แว่นตา' คือข้อใด?", a: "ฉลองพระเนตร", options: ["ฉลองพระเนตร", "พระแว่นตา", "ฉลองพระกรรณ", "พระทรรศนะ"] },
-            { q: "คำราชาศัพท์ของ 'เสื้อ' คือข้อใด?", a: "ฉลองพระองค์", options: ["ฉลองพระองค์", "พระภูษา", "ฉลองพระบาท", "พระสนับเพลา"] },
-            { q: "คำราชาศัพท์ของ 'กางเกง' คือข้อใด?", a: "พระสนับเพลา", options: ["พระภูษา", "พระสนับเพลา", "ฉลองพระองค์", "พระภูษาทรง"] },
-            { q: "คำราชาศัพท์ของ 'รองเท้า' คือข้อใด?", a: "ฉลองพระบาท", options: ["พระบาท", "ฉลองพระบาท", "รองพระบาท", "พระสนับเพลา"] },
-            { q: "คำราชาศัพท์ของ 'หมวก' คือข้อใด?", a: "พระมาลา", options: ["พระเศียร", "ฉลองพระเศียร", "พระมาลา", "พระกลด"] },
-            { q: "คำราชาศัพท์ของ 'ร่ม' คือข้อใด?", a: "พระกลด", options: ["พระมาลา", "ฉลองพระองค์", "พระกลด", "พระฉัตร"] },
-            { q: "คำราชาศัพท์ของ 'ยา' คือข้อใด?", a: "พระโอสถ", options: ["พระโอสถ", "ยาหลวง", "พระโรคา", "ฉลองพระโอสถ"] },
-            { q: "คำราชาศัพท์ของ 'โกรธ' คือข้อใด?", a: "กริ้ว", options: ["กริ้ว", "ทรงพระโกรธ", "ขัดเคือง", "พิโรธ"] },
-            { q: "คำราชาศัพท์ของ 'ร้องไห้' คือข้อใด?", a: "ทรงพระกันแสง", options: ["ทรงพระกันแสง", "ทรงร้องไห้", "น้ำพระเนตรตก", "ทรงกรรแสง"] },
-            { q: "คำราชาศัพท์ของ 'หัวเราะ' คือข้อใด?", a: "ทรงพระสรวล", options: ["ทรงพระสรวล", "แย้มพระสรวล", "ทรงพระสำราญ", "ทรงพระขำ"] },
-            { q: "คำราชาศัพท์ของ 'ยิ้ม' คือข้อใด?", a: "แย้มพระสรวล", options: ["ทรงพระสรวล", "แย้มพระสรวล", "ทรงแย้ม", "พระรอยยิ้ม"] },
-            { q: "คำราชาศัพท์ของ 'จดหมาย' คือข้อใด?", a: "พระราชหัตถเลขา", options: ["พระราชหัตถเลขา", "พระบรมราโชวาท", "พระราชสาส์น", "พระราชนิพนธ์"] },
-            { q: "คำราชาศัพท์ของ 'ให้' (พระมหากษัตริย์มอบให้) คือข้อใด?", a: "พระราชทาน", options: ["ถวาย", "พระราชทาน", "น้อมเกล้าฯ", "ทูลเกล้าฯ"] },
-            { q: "สำนวน 'ไก่เห็นตีนงู งูเห็นนมไก่' หมายถึงอะไร?", a: "ต่างฝ่ายต่างรู้ความลับของกันและกัน", options: ["ต่างฝ่ายต่างรู้ความลับของกันและกัน", "คนที่มีความรู้เท่าเทียมกัน", "การทำอะไรที่ไม่เกิดประโยชน์", "คนสองคนที่เกลียดชังกัน"] },
-            { q: "สำนวน 'ขี่ช้างจับตั๊กแตน' หมายถึงอะไร?", a: "ลงทุนมากแต่ได้ผลน้อย", options: ["ลงทุนมากแต่ได้ผลน้อย", "ทำเรื่องเล็กให้เป็นเรื่องใหญ่", "การกระทำที่กล้าหาญ", "การทำงานที่ยากลำบาก"] },
-            { q: "สำนวน 'น้ำขึ้นให้รีบตัก' หมายถึงอะไร?", a: "เมื่อมีโอกาสดีควรเร่งทำ", options: ["เมื่อมีโอกาสดีควรเร่งทำ", "ทำอะไรให้รวดเร็วทันใจ", "การเก็บออมเงินทอง", "การทำงานแข่งกับเวลา"] },
-            { q: "สำนวน 'ชี้นกเป็นนก ชี้ไม้เป็นไม้' หมายถึงอะไร?", a: "ว่านอนสอนง่าย คล้อยตามไปทุกอย่าง", options: ["ว่านอนสอนง่าย คล้อยตามไปทุกอย่าง", "คนที่มีอำนาจมากสั่งอะไรก็ได้", "คนที่พูดจาไม่น่าเชื่อถือ", "การอธิบายสิ่งที่เห็นให้คนอื่นฟัง"] },
-            { q: "สำนวน 'สีซอให้ควายฟัง' หมายถึงอะไร?", a: "สั่งสอนคนโง่มักไม่ได้ผล", options: ["สั่งสอนคนโง่มักไม่ได้ผล", "การเล่นดนตรีให้สัตว์ฟัง", "การทำดีแต่ไม่มีใครเห็น", "พูดเรื่องที่ไม่ควรพูด"] },
-            { q: "สำนวน 'จับปลาสองมือ' หมายถึงอะไร?", a: "ทำสองอย่างพร้อมกันจนล้มเหลว", options: ["ทำสองอย่างพร้อมกันจนล้มเหลว", "คนที่มีความสามารถมาก", "การโลภมากอยากได้ทุกอย่าง", "การหาเงินได้หลายทาง"] },
-            { q: "สำนวน 'ดินพอกหางหมู' หมายถึงอะไร?", a: "งานที่คั่งค้างพอกพูนขึ้นเรื่อยๆ", options: ["งานที่คั่งค้างพอกพูนขึ้นเรื่อยๆ", "ความสกปรกที่ไม่ยอมทำความสะอาด", "คนขี้เกียจที่ไม่ยอมอาบน้ำ", "หนี้สินที่เพิ่มมากขึ้น"] },
-            { q: "สำนวน 'หนีเสือปะจระเข้' หมายถึงอะไร?", a: "หนีอันตรายอย่างหนึ่งไปพบอีกอย่างหนึ่ง", options: ["หนีอันตรายอย่างหนึ่งไปพบอีกอย่างหนึ่ง", "คนที่มีศัตรูอยู่รอบด้าน", "รอดพ้นจากอันตรายมาได้อย่างหวุดหวิด", "การผจญภัยในป่าลึก"] },
-            { q: "สำนวน 'เข็นครกขึ้นภูเขา' หมายถึงอะไร?", a: "ทำงานที่ยากลำบากเกินความสามารถ", options: ["ทำงานที่ยากลำบากเกินความสามารถ", "คนที่มีความพยายามสูงมาก", "การลงโทษในสมัยโบราณ", "ทำเรื่องง่ายให้กลายเป็นเรื่องยาก"] },
-            { q: "สำนวน 'มือไม่พายเอาเท้าราน้ำ' หมายถึงอะไร?", a: "ไม่ช่วยทำแล้วยังขัดขวาง", options: ["ไม่ช่วยทำแล้วยังขัดขวาง", "คนที่ชอบเล่นน้ำ", "การกลั่นแกล้งผู้อื่นให้เดือดร้อน", "ทำงานด้วยความเกียจคร้าน"] },
-            { q: "สำนวน 'สาวไส้ให้กากิน' หมายถึงอะไร?", a: "เอาความลับของพวกตนไปแฉให้คนอื่นฟัง", options: ["เอาความลับของพวกตนไปแฉให้คนอื่นฟัง", "การให้ร้ายผู้อื่นให้เสียชื่อเสียง", "การทำบุญทำทานให้สัตว์", "คนที่พูดจาเปิดเผยไม่มีความลับ"] },
-            { q: "สำนวน 'กินบนเรือนขี้รดบนหลังคา' หมายถึงอะไร?", a: "คนเนรคุณที่ทำร้ายผู้มีพระคุณ", options: ["คนเนรคุณที่ทำร้ายผู้มีพระคุณ", "คนที่ทำตัวสกปรกไม่รักษาความสะอาด", "การทำลายข้าวของของผู้อื่น", "คนที่ชอบทำตัวมีปัญหาในบ้าน"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "กะเพรา", options: ["กะเพรา", "กระเพรา", "กะเพา", "กระเพา"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "สังเกต", options: ["สังเกตุ", "สังเกต", "สังกต", "สัณเกต"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อนุญาต", options: ["อนุญาติ", "อนุญาต", "อนุญาตร", "อนุณาต"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ศีรษะ", options: ["ศร๊ษะ", "ศีรษะ", "ศรีษะ", "สีสะ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อัญชัน", options: ["อัญชัน", "อัญชัญ", "อันชัน", "อันชัญ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ไอศกรีม", options: ["ไอศรีม", "ไอศกรีม", "ไอศครีม", "ไอสกรีม"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ทยอย", options: ["ทยอย", "ทะยอย", "ทระยอย", "ทะย่อย"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "โอกาส", options: ["โอกาศ", "โอกาส", "โอกาษ", "โอกาด"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "รสชาติ", options: ["รสชาด", "รสชาติ", "รสชาต", "รศชาติ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "กฎหมาย", options: ["กฏหมาย", "กฎหมาย", "กะหมาย", "กฐหมาย"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ผูกพัน", options: ["ผูกพันธ์", "ผูกพัน", "ผูกพรรณ", "ถูกพัน"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "สัมภาษณ์", options: ["สัมภาษณ์", "สัมพาด", "สัมภาส", "สัมภาษ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "เครื่องสำอาง", options: ["เครื่องสำอางค์", "เครื่องสำอาง", "เครื่องสำอางง", "เครื่องสำอางก์"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อานิสงส์", options: ["อานิสงฆ์", "อานิสงค์", "อานิสงส์", "อานิสสงค์"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อะไหล่", options: ["อะไหล่", "อาไหล่", "อไหล่", "อะไหล"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ทะเลสาบ", options: ["ทะเลสาป", "ทะเลสาบ", "ทะเลสาร์บ", "ทะเลทราบ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อินเทอร์เน็ต", options: ["อินเตอร์เน็ต", "อินเทอร์เน็ต", "อินเตอเน็ต", "อินเทอเน็ต"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "คลินิก", options: ["คลิกนิก", "คินิก", "คลีนิค", "คลินิก"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "มุกตลก", options: ["มุขตลก", "มุกตลก", "หมุกตลก", "มุคตลก"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "กงสุล", options: ["กงศุล", "กงสุน", "กงสุล", "กงสูน"] },
-            { q: "คำว่า 'บิดา' หมายถึงใคร?", a: "พ่อ", options: ["พ่อ", "แม่", "ปู่", "ตา"] },
-            { q: "คำว่า 'มารดา' หมายถึงใคร?", a: "แม่", options: ["พ่อ", "แม่", "ย่า", "ยาย"] },
-            { q: "คำว่า 'บุตร' หมายถึงใคร?", a: "ลูกชาย", options: ["ลูกชาย", "ลูกสาว", "หลานชาย", "น้องชาย"] },
-            { q: "คำว่า 'ธิดา' หมายถึงใคร?", a: "ลูกสาว", options: ["ลูกชาย", "ลูกสาว", "หลานสาว", "น้องสาว"] },
-            { q: "คำว่า 'เชษฐา' หมายถึงใคร?", a: "พี่ชาย", options: ["พี่ชาย", "น้องชาย", "พี่สาว", "น้องสาว"] },
-            { q: "คำว่า 'อนุชา' หมายถึงใคร?", a: "น้องชาย", options: ["พี่ชาย", "น้องชาย", "พี่สาว", "น้องสาว"] },
-            { q: "คำว่า 'พระอัยกา' หมายถึงใคร?", a: "ปู่ หรือ ตา", options: ["ย่า หรือ ยาย", "ปู่ หรือ ตา", "ลุง หรือ อา", "พ่อ หรือ แม่"] },
-            { q: "คำว่า 'พระอัยยิกา' หมายถึงใคร?", a: "ย่า หรือ ยาย", options: ["ปู่ หรือ ตา", "ย่า หรือ ยาย", "ป้า หรือ น้า", "พ่อ หรือ แม่"] },
-            { q: "คำว่า 'สุกร' หมายถึงสัตว์ชนิดใด?", a: "หมู", options: ["หมา", "แมว", "หมู", "วัว"] },
-            { q: "คำว่า 'โค' หมายถึงสัตว์ชนิดใด?", a: "วัว", options: ["ควาย", "วัว", "ม้า", "ช้าง"] },
-            { q: "คำว่า 'กระบือ' หมายถึงสัตว์ชนิดใด?", a: "ควาย", options: ["วัว", "ควาย", "แรด", "ม้า"] },
-            { q: "คำว่า 'สุนัข' หมายถึงสัตว์ชนิดใด?", a: "หมา", options: ["แมว", "หมา", "กระต่าย", "หนู"] },
-            { q: "คำว่า 'วิฬาร์' หมายถึงสัตว์ชนิดใด?", a: "แมว", options: ["หมา", "แมว", "หนู", "นก"] },
-            { q: "คำว่า 'มุสิกะ' หมายถึงสัตว์ชนิดใด?", a: "หนู", options: ["กระรอก", "หนู", "กระต่าย", "ค้างคาว"] },
-            { q: "คำว่า 'กุญชร' หมายถึงสัตว์ชนิดใด?", a: "ช้าง", options: ["แรด", "ช้าง", "ฮิปโป", "ม้า"] },
-            { q: "คำว่า 'อาชา' หมายถึงสัตว์ชนิดใด?", a: "ม้า", options: ["ล่อ", "ม้า", "ลา", "อูฐ"] },
-            { q: "คำว่า 'ปักษี' หมายถึงสัตว์ชนิดใด?", a: "นก", options: ["ปลา", "นก", "ค้างคาว", "ผีเสื้อ"] }
-        ];
-
-        let activeThaiQuestions = [];   
-        let currentThaiQIndex = 0;
-        let thaiScoreTotal = 0;
-        let thaiQuestionStartTime = 0;
-        let thaiVisualTimerInterval = null;
-        let isThaiAnswering = false;
-
-        function generateThaiPool() {
-            let shuffledQuestions = [...THAI_QUESTION_DB].sort(() => Math.random() - 0.5);
-            activeThaiQuestions = shuffledQuestions.slice(0, 50).map(qData => {
-                return {
-                    q: qData.q,
-                    a: qData.a,
-                    options: [...qData.options].sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopThaiScorer() {
-            const display = document.getElementById('topThaiScorerDisplay');
-            const data = await fetchDB('thaiLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        window.startThaiGame = () => {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('thaiGameDashboard').classList.remove('hidden-section');
-            
-            generateThaiPool();
-            
-            currentThaiQIndex = 0;
-            thaiScoreTotal = 0;
-            document.getElementById('thaiTotalScore').innerText = thaiScoreTotal;
-            
-            loadThaiQuestion();
-        };
-
-        function loadThaiQuestion() {
-            if (currentThaiQIndex >= 50 || currentThaiQIndex >= activeThaiQuestions.length) {
-                endThaiGame();
-                return;
-            }
-
-            isThaiAnswering = false;
-            const qData = activeThaiQuestions[currentThaiQIndex];
-            document.getElementById('thaiProgress').innerText = `ข้อที่ ${currentThaiQIndex + 1} / 50`;
-            document.getElementById('thaiQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('thaiOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                const safeOpt = opt.replace(/'/g, "\\'");
-                const safeA = qData.a.replace(/'/g, "\\'");
-                optionsDiv.innerHTML += `<button onclick="submitThaiAnswer('${safeOpt}', '${safeA}', this)" class="thai-option-btn text-xl md:text-3xl font-black py-4 md:py-8 rounded-3xl w-full h-full">${opt}</button>`;
-            });
-
-            thaiQuestionStartTime = Date.now();
-            clearInterval(thaiVisualTimerInterval);
-            document.getElementById('thaiTimerDisplay').innerText = "0.0";
-            thaiVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - thaiQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('thaiTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        window.submitThaiAnswer = (selectedOpt, correctOpt, btnElement) => {
-            if(isThaiAnswering) return; 
-            isThaiAnswering = true;
-            clearInterval(thaiVisualTimerInterval);
-            
-            const timeElapsed = (Date.now() - thaiQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('thai-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('thai-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-                
-                Array.from(document.getElementById('thaiOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('thai-option-btn', 'bg-green-400');
-                        btn.classList.add('text-white', 'border-green-500');
-                    }
-                });
-            }
-
-            thaiScoreTotal += pointsEarned;
-            document.getElementById('thaiTotalScore').innerText = thaiScoreTotal;
-
-            setTimeout(() => {
-                currentThaiQIndex++;
-                loadThaiQuestion();
-            }, 1200);
-        };
-
-        window.quitThaiGame = () => {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endThaiGame();
-            }
-        };
-
-        async function endThaiGame() {
-            clearInterval(thaiVisualTimerInterval);
-            document.getElementById('thaiGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(thaiScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/thaiHistory/${ts}`, 'PUT', { score: thaiScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: thaiScoreTotal, date: ts };
-            await fetchDB(`thaiLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopThaiScorer();
-        }
-
-        // --- Content loading ---
-        async function loadTermSettings() {
-            const settingsData = await fetchDB('termSettings');
-            termSettingsData = settingsData || {};
-            const customData = await fetchDB('customTerms');
-            customTermsData = objToArray(customData) || [];
-        }
-
-        const getYouTubeEmbedUrl = (url) => { 
+        // --- ระบบข่าวสาร (CMS) ดึงจาก Firebase ---
+        
+        const getYouTubeEmbedUrl = (url) => {
             if(!url) return null;
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
             const match = url.match(regExp);
@@ -1685,12 +523,12 @@
             }
             return null;
         };
-        
-        const escapeHtml = (unsafe) => { 
+
+        const escapeHtml = (unsafe) => {
             if (!unsafe) return "";
             return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         };
-        
+
         const createNewsCardHTML = (news) => {
             const dateStr = new Date(news.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
             const ytEmbed = getYouTubeEmbedUrl(news.youtubeUrl);
@@ -1774,10 +612,20 @@
                 const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
                 newsData = (localData || []).map(n => ({...n, location: n.location || 'login'}));
             } else if (data === null) {
-                newsData = [];
+                const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
+                if (localData && localData.length > 0) {
+                    for (let item of localData) {
+                        await fetchDB('news', 'POST', item); 
+                    }
+                    const newData = await fetchDB('news');
+                    newsData = objToArray(newData).map(n => ({...n, location: n.location || 'login'}));
+                } else {
+                    newsData = [];
+                }
             } else {
                 newsData = objToArray(data).map(n => ({...n, location: n.location || 'login'}));
             }
+
             renderPublicFeed();
             renderDashboardFeed();
             renderAdminNews();
@@ -1848,7 +696,7 @@
             const safeKey = sanitizeKey(email);
 
             const user = await fetchDB(`users/${safeKey}`);
-            if (user === undefined) return;
+            if (user === undefined) return; 
             
             if (user === null) {
                 showMessage("ไม่พบบัญชีผู้ใช้นี้ กรุณาสมัครสมาชิกก่อนนะจ๊ะ", 'error');
@@ -1870,24 +718,27 @@
             const password = document.getElementById('regPassword').value;
             const safeKey = sanitizeKey(email);
 
-            if(!name || !email || !password) return showMessage("กรุณากรอกข้อมูลให้ครบถ้วน", 'error');
+            if(!name || !email || !password) {
+                return showMessage("กรุณากรอกข้อมูลให้ครบถ้วน", 'error');
+            }
 
             const existingUser = await fetchDB(`users/${safeKey}`);
-            if (existingUser === undefined) return;
+            if (existingUser === undefined) return; 
             
             if (existingUser !== null) {
                 showMessage("อีเมลนี้มีผู้ใช้งานแล้ว", 'error');
             } else {
-                await fetchDB(`users/${safeKey}`, 'PUT', { name, email, password, permissions: [] });
+                // เพิ่มเวลาที่สมัครเข้าไปด้วย (createdAt)
+                await fetchDB(`users/${safeKey}`, 'PUT', { name, email, password, permissions: [], createdAt: Date.now() });
                 showMessage("สมัครสำเร็จ! กรุณาล็อกอิน");
                 toggleSection('login');
-                document.getElementById('registerForm').reset();
+                document.getElementById('registerForm').reset(); 
             }
         });
 
         // --- ระบบนำทางหน้า ---
         
-        async function toggleSection(s) {
+        function toggleSection(s) {
             document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
             if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
             else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
@@ -1895,29 +746,15 @@
             else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
             else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); loadNewsData(); }
             else if (s === 'menu') { 
-                await loadTermSettings(); 
                 document.getElementById('mainContent').classList.remove('hidden-section'); 
-                document.getElementById('kdgGameDashboard').classList.add('hidden-section');
-                document.getElementById('mathGameDashboard').classList.add('hidden-section');
-                document.getElementById('engGameDashboard').classList.add('hidden-section');
-                document.getElementById('sciGameDashboard').classList.add('hidden-section');
-                document.getElementById('thaiGameDashboard').classList.add('hidden-section');
-                document.getElementById('termSelectionContainer').classList.remove('hidden-section');
-                
-                fetchTopKdgScorer();
-                fetchTopMathScorer(); 
-                fetchTopEngScorer(); 
-                fetchTopSciScorer(); 
-                fetchTopThaiScorer();
                 renderTermCards(); 
                 renderDashboardFeed(); 
             }
             else if (s === 'admin') { 
-                await loadTermSettings(); 
                 document.getElementById('adminSection').classList.remove('hidden-section'); 
+                loadAdminStats(); // โหลดและรีเซ็ตยอดสมาชิกใหม่
                 refreshAdminUsers(); 
                 initAdminSelect(); 
-                renderAdminBanners();
             }
         }
 
@@ -1940,43 +777,13 @@
         function renderTermCards() {
             const grid = document.getElementById('termCardsGrid');
             const userPerms = currentUser.permissions || [];
-            
-            grid.innerHTML = getAllTerms().map(t => {
+            grid.innerHTML = TERMS.map(t => {
                 const hasAccess = userPerms.includes(t.id);
-                const settings = termSettingsData[t.id] || {};
-                const titleName = settings.title || t.defaultName;
-                const subtitle = settings.subtitle || 'เข้าสู่บทเรียนและแบบทดสอบ';
-                const bgImage = settings.imageUrl || '';
-                
-                const bgStyle = bgImage ? `background-image: url('${bgImage}'); background-size: cover; background-position: center;` : '';
-                const fallbackClass = bgImage ? '' : t.fallbackBg;
-
-                let lockedText = "ปลดล็อกเข้าเรียน";
-                if (t.id.startsWith('an')) {
-                    lockedText = "ปลดล็อก 99 บาท";
-                } else if (t.id.startsWith('p')) {
-                    lockedText = "ปลดล็อก 199 บาท";
-                }
-
                 return `
-                <div onclick="selectTerm('${t.id}', '${titleName}')" class="term-banner ${fallbackClass} p-8 md:p-12 min-h-[320px] flex items-center justify-between ${!hasAccess ? 'locked' : ''}" style="${bgStyle}">
-                    ${bgImage ? '<div class="banner-overlay"></div>' : ''}
-                    
-                    <div class="relative z-10 flex items-center gap-8 text-white w-full">
-                        <div class="w-20 h-20 md:w-28 md:h-28 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-4xl md:text-5xl shadow-inner flex-shrink-0">
-                            <i class="fas ${hasAccess ? t.icon : 'fa-lock'}"></i>
-                        </div>
-                        <div class="text-left flex-grow">
-                            <h3 class="text-3xl md:text-5xl font-black drop-shadow-lg">${titleName}</h3>
-                            <p class="text-base md:text-xl opacity-90 font-medium drop-shadow-md mt-2">${subtitle}</p>
-                        </div>
-                        <div class="hidden md:block">
-                            ${hasAccess 
-                                ? '<button class="bg-white text-gray-800 px-8 py-4 text-lg rounded-full font-bold shadow-xl hover:bg-gray-100 transition hover:scale-105">เข้าเรียน <i class="fas fa-arrow-right ml-2"></i></button>' 
-                                : '<span class="bg-black/40 backdrop-blur-sm text-white px-8 py-4 text-lg rounded-full font-bold border border-white/30"><i class="fas fa-lock mr-2"></i> ' + lockedText + '</span>'
-                            }
-                        </div>
-                    </div>
+                <div onclick="selectTerm('${t.id}', '${t.name}')" class="menu-card bg-white p-6 text-center shadow-md ${!hasAccess ? 'locked' : ''}">
+                    <div class="w-12 h-12 ${t.color} rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl shadow-sm border-2 border-white"><i class="fas ${t.icon}"></i></div>
+                    <div class="font-black text-gray-700 text-sm">${t.name}</div>
+                    ${!hasAccess ? '<div class="text-[9px] text-gray-300 mt-2 font-bold uppercase">ยังไม่เปิด</div>' : '<div class="text-[9px] text-orange-500 mt-2 font-bold uppercase">เข้าเรียน</div>'}
                 </div>`;
             }).join('');
         }
@@ -1992,7 +799,7 @@
             document.getElementById('currentTermView').innerHTML = id === 'special' ? `🎁 ${name}` : `<i class="fas fa-graduation-cap"></i> ${name}`;
             
             const unitsData = await fetchDB('units');
-            if (unitsData === undefined) return;
+            if (unitsData === undefined) return; 
 
             const allUnits = objToArray(unitsData);
             const filteredUnits = allUnits.filter(u => u.term === id);
@@ -2012,47 +819,46 @@
             document.getElementById('contentDashboard').classList.add('hidden-section');
         }
 
-        // --- Admin Management ---
-        window.switchAdminTab = (tab) => {
-            document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
-            document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
-            document.getElementById('tabContentBanners').classList.toggle('hidden-section', tab !== 'banners');
-            document.getElementById('tabContentLeaderboards').classList.toggle('hidden-section', tab !== 'leaderboards');
-            
-            const activeClass = ['text-indigo-600', 'bg-indigo-50'];
-            const inactiveClass = ['text-gray-500', 'hover:bg-gray-200'];
-
-            const setBtnStyle = (btnId, isActive) => {
-                const btn = document.getElementById(btnId);
-                if(isActive) {
-                    btn.classList.add(...activeClass); btn.classList.remove(...inactiveClass);
-                } else {
-                    btn.classList.add(...inactiveClass); btn.classList.remove(...activeClass);
-                }
-            };
-
-            setBtnStyle('tabUsersBtn', tab === 'users');
-            setBtnStyle('tabUnitsBtn', tab === 'units');
-            setBtnStyle('tabBannersBtn', tab === 'banners');
-            setBtnStyle('tabLeaderboardsBtn', tab === 'leaderboards');
-        };
+        // --- Admin Management (Users & Units) ---
 
         async function refreshAdminUsers() {
             const usersData = await fetchDB('users');
-            if (usersData === undefined) return;
+            if (usersData === undefined) return; 
 
             const users = objToArray(usersData);
+            
+            // เรียงลำดับจากเก่าไปใหม่ (อิงจากเวลาสมัคร createdAt)
+            users.sort((a, b) => {
+                const timeA = a.createdAt || 0; 
+                const timeB = b.createdAt || 0;
+                return timeA - timeB; 
+            });
+            
             document.getElementById('userTableBody').innerHTML = users.map(u => {
                 const perms = u.permissions || [];
+                
+                // แปลงเวลาให้แสดงผลอ่านง่ายขึ้น
+                const joinDateStr = u.createdAt 
+                    ? new Date(u.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+                    : 'ระบบเดิม';
+
                 return `
-                <tr class="border-b hover:bg-slate-50">
-                    <td class="p-4"><div class="font-bold">${u.name}</div><div class="text-xs text-slate-400">${u.email}</div></td>
+                <tr class="border-b hover:bg-slate-50 transition">
+                    <td class="p-4">
+                        <div class="font-bold text-gray-800">${u.name}</div>
+                        <div class="text-xs text-slate-400">${u.email}</div>
+                        <div class="text-[10px] text-emerald-500 mt-1 font-medium"><i class="far fa-calendar-alt"></i> สมัครเมื่อ: ${joinDateStr}</div>
+                    </td>
                     <td class="p-4">
                         <div class="flex flex-wrap gap-1">
-                            ${getAllTerms().map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-slate-400'}">${termSettingsData[t.id]?.title || t.defaultName}</button>`).join('')}
+                            ${TERMS.map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white shadow-sm' : 'bg-gray-100 text-slate-400 hover:bg-gray-200'}">${t.name}</button>`).join('')}
                         </div>
                     </td>
-                    <td class="p-4 text-center"><button onclick="deleteUserGS('${u.email}')" class="text-red-300"><i class="fas fa-trash-alt"></i></button></td>
+                    <td class="p-4 text-center">
+                        <button onclick="deleteUserGS('${u.email}')" class="text-red-300 hover:text-red-500 hover:bg-red-50 w-8 h-8 rounded-full transition" title="ลบผู้ใช้นี้">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
                 </tr>`
             }).join('');
         }
@@ -2067,6 +873,7 @@
             } else {
                 perms.push(termId);
             }
+            
             await fetchDB(`users/${safeKey}/permissions`, 'PUT', perms);
             refreshAdminUsers(); 
         };
@@ -2080,31 +887,24 @@
         };
 
         function initAdminSelect() {
-            const allOptions = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
-            document.getElementById('unitTerm').innerHTML = allOptions.map(t => {
-                const customTitle = termSettingsData[t.id]?.title;
-                return `<option value="${t.id}">${customTitle || t.defaultName}</option>`;
-            }).join('');
+            const allOptions = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
+            document.getElementById('unitTerm').innerHTML = allOptions.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
             refreshAdminUnits();
         }
 
         async function refreshAdminUnits() {
             const unitsData = await fetchDB('units');
-            if (unitsData === undefined) return;
+            if (unitsData === undefined) return; 
 
             const units = objToArray(unitsData);
-            const all = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
+            const all = [...TERMS, {id: 'special', name: 'ทดลองเรียนฟรี'}];
             
-            document.getElementById('unitTableBody').innerHTML = units.map(u => {
-                const termInfo = all.find(t=>t.id===u.term);
-                const termName = termSettingsData[u.term]?.title || termInfo?.defaultName || u.term;
-                return `
+            document.getElementById('unitTableBody').innerHTML = units.map(u => `
                 <tr class="border-b">
                     <td class="p-4 font-bold text-slate-700">${u.name}</td>
-                    <td class="p-4 text-xs font-bold text-orange-600">${termName}</td>
+                    <td class="p-4 text-xs font-bold text-orange-600">${all.find(t=>t.id===u.term)?.name || u.term}</td>
                     <td class="p-4 text-center"><button onclick="deleteUnitGS('${u.id}')" class="text-red-400"><i class="fas fa-trash"></i></button></td>
-                </tr>`;
-            }).join('');
+                </tr>`).join('');
         }
 
         window.saveUnitGS = async () => {
@@ -2114,179 +914,32 @@
             if(!name || !link) return showMessage("กรอกข้อมูลให้ครบ", "error");
             
             await fetchDB('units', 'POST', { name, term, link });
+            
             document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
             refreshAdminUnits();
         };
 
         window.deleteUnitGS = async (id) => { 
-            if(confirm('ลบบบทเรียนนี้?')) { 
+            if(confirm('ลบบทเรียนนี้?')) { 
                 await fetchDB(`units/${id}`, 'DELETE'); 
                 refreshAdminUnits(); 
             } 
         };
 
-        function renderAdminBanners() {
-            const container = document.getElementById('adminBannersList');
+        window.switchAdminTab = (tab) => {
+            document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
+            document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
             
-            let htmlContent = getAllTerms().map(t => {
-                const settings = termSettingsData[t.id] || {};
-                const currentTitle = settings.title || t.defaultName;
-                const currentSub = settings.subtitle || 'เข้าสู่บทเรียนและแบบทดสอบ';
-                const currentImg = settings.imageUrl || '';
-                const isCustom = t.id.startsWith('custom_');
-
-                return `
-                <div class="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden">
-                    ${isCustom ? `
-                        <button onclick="deleteCustomTerm('${t.id}')" class="absolute top-4 right-4 text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 w-8 h-8 rounded-full transition flex items-center justify-center" title="ลบห้องเรียนนี้">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    ` : ''}
-                    <div class="flex items-center gap-2 mb-4 pr-10">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-lg"><i class="fas ${t.icon}"></i></div>
-                        <h4 class="font-black text-lg text-gray-800 line-clamp-1">รหัส: ${t.id} <span class="text-xs text-gray-400 font-normal">(${t.defaultName})</span></h4>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">ชื่อแสดงผล</label>
-                            <input type="text" id="banner_title_${t.id}" value="${currentTitle}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น อนุบาล 1">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">คำอธิบาย</label>
-                            <input type="text" id="banner_sub_${t.id}" value="${currentSub}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น เข้าสู่บทเรียนแสนสนุก">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">ลิงก์ภาพพื้นหลัง (URL)</label>
-                            <input type="url" id="banner_img_${t.id}" value="${currentImg}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="ปล่อยว่างเพื่อใช้สีปกติ">
-                        </div>
-                        <button onclick="saveBannerSetting('${t.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition mt-2 shadow-md">บันทึกแบนเนอร์นี้</button>
-                    </div>
-                </div>`;
-            }).join('');
-
-            htmlContent += `
-            <div class="col-span-1 md:col-span-2 mt-2">
-                <button onclick="createNewCustomTerm()" class="w-full border-4 border-dashed border-indigo-200 text-indigo-500 hover:border-indigo-400 hover:bg-indigo-50 font-black py-8 rounded-3xl transition duration-300 flex items-center justify-center gap-3 text-xl">
-                    <i class="fas fa-plus-circle text-3xl"></i> เพิ่มห้องเรียน / ระดับชั้นใหม่
-                </button>
-            </div>
-            `;
-
-            container.innerHTML = htmlContent;
-        }
-
-        window.saveBannerSetting = async (termId) => {
-            const title = document.getElementById(`banner_title_${termId}`).value;
-            const subtitle = document.getElementById(`banner_sub_${termId}`).value;
-            const imageUrl = document.getElementById(`banner_img_${termId}`).value;
-
-            const payload = { title, subtitle, imageUrl };
-            
-            await fetchDB(`termSettings/${termId}`, 'PUT', payload);
-            showMessage("บันทึกการตั้งค่าแบนเนอร์สำเร็จ");
-            
-            await loadTermSettings();
-            initAdminSelect();
-            refreshAdminUsers();
-        };
-
-        window.createNewCustomTerm = async () => {
-            const name = prompt("กรุณาตั้งชื่อห้องเรียนหรือระดับชั้นใหม่ (เช่น มัธยมศึกษาปีที่ 1):");
-            if (!name || name.trim() === '') return;
-
-            const newId = 'custom_' + Date.now();
-            const payload = {
-                id: newId,
-                defaultName: name.trim(),
-                icon: 'fa-star',
-                fallbackBg: 'bg-gradient-to-r from-teal-400 to-emerald-400'
-            };
-
-            await fetchDB(`customTerms/${newId}`, 'PUT', payload);
-            
-            await fetchDB(`termSettings/${newId}`, 'PUT', {
-                title: name.trim(),
-                subtitle: 'เข้าสู่บทเรียนและแบบทดสอบ',
-                imageUrl: ''
-            });
-
-            showMessage("สร้างห้องเรียนใหม่สำเร็จ!");
-            
-            await loadTermSettings();
-            renderAdminBanners();
-            initAdminSelect();
-            refreshAdminUsers(); 
-        };
-
-        window.deleteCustomTerm = async (id) => {
-            if(confirm("คุณต้องการลบห้องเรียนนี้ใช่หรือไม่? (ข้อมูลแบนเนอร์จะหายไปทั้งหมด แต่บทเรียนย่อยอาจจะยังคงค้างอยู่ในระบบ)")) {
-                await fetchDB(`customTerms/${id}`, 'DELETE');
-                await fetchDB(`termSettings/${id}`, 'DELETE');
-                
-                showMessage("ลบห้องเรียนสำเร็จ");
-
-                await loadTermSettings();
-                renderAdminBanners();
-                initAdminSelect();
-                refreshAdminUsers();
-            }
-        };
-
-        // --- Admin Leaderboard Load Logic ---
-        window.loadAdminLeaderboard = async (subject) => {
-            let dbKey = '';
-            let title = '';
-            
-            if(subject === 'kdg') { dbKey = 'kdgLeaderboard'; title = '<i class="fas fa-baby text-orange-500"></i> สถิติแข่งขันอนุบาล'; }
-            if(subject === 'math') { dbKey = 'mathLeaderboard'; title = '<i class="fas fa-calculator text-pink-500"></i> สถิติแข่งขันคณิตคิดเร็ว'; }
-            if(subject === 'eng') { dbKey = 'engLeaderboard'; title = '<i class="fas fa-globe text-blue-500"></i> สถิติแข่งขันภาษาอังกฤษ'; }
-            if(subject === 'sci') { dbKey = 'sciLeaderboard'; title = '<i class="fas fa-flask text-emerald-500"></i> สถิติแข่งขันวิทยาศาสตร์'; }
-            if(subject === 'thai') { dbKey = 'thaiLeaderboard'; title = '<i class="fas fa-book text-purple-500"></i> สถิติแข่งขันภาษาไทย'; }
-
-            document.getElementById('adminLbTitle').innerHTML = title;
-            const tbody = document.getElementById('adminLbTableBody');
-            tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center"><i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i><br>กำลังโหลดข้อมูล...</td></tr>`;
-
-            const data = await fetchDB(dbKey);
-            
-            if(!data) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ยังไม่มีข้อมูลการแข่งขันในหมวดนี้</td></tr>`;
-                return;
-            }
-
-            // แปลงข้อมูล Object เป็น Array และกรองเอาเฉพาะข้อมูลที่มีชื่อ (รองรับทั้งแบบเก่าและแบบใหม่)
-            let scores = objToArray(data).filter(s => s.name);
-            scores.sort((a,b) => b.score - a.score);
-
-            if(scores.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ยังไม่มีข้อมูลการแข่งขันในหมวดนี้</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = scores.map((s, index) => {
-                const dateStr = new Date(s.date).toLocaleString('th-TH', { 
-                    year: 'numeric', month: 'short', day: 'numeric', 
-                    hour: '2-digit', minute: '2-digit' 
-                });
-                
-                let rankTrophy = index + 1;
-                if(index === 0) rankTrophy = '<span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs">🥇 1</span>';
-                if(index === 1) rankTrophy = '<span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-xs">🥈 2</span>';
-                if(index === 2) rankTrophy = '<span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs">🥉 3</span>';
-
-                return `
-                <tr class="border-b border-gray-50 hover:bg-slate-50 transition">
-                    <td class="p-5 font-black text-gray-500">${rankTrophy}</td>
-                    <td class="p-5 font-bold text-slate-800">${s.name}</td>
-                    <td class="p-5 font-black text-indigo-600 text-lg">${s.score} <span class="text-xs text-gray-400 font-normal">แต้ม</span></td>
-                    <td class="p-5 text-xs text-gray-500"><i class="far fa-clock"></i> ${dateStr}</td>
-                </tr>`;
-            }).join('');
+            // สลับสีปุ่มเมนู
+            document.getElementById('tabUsersBtn').classList.toggle('text-indigo-600', tab === 'users');
+            document.getElementById('tabUsersBtn').classList.toggle('text-gray-400', tab !== 'users');
+            document.getElementById('tabUnitsBtn').classList.toggle('text-indigo-600', tab === 'units');
+            document.getElementById('tabUnitsBtn').classList.toggle('text-gray-400', tab !== 'units');
         };
 
         window.logout = () => location.reload();
 
+        // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
         window.addEventListener('DOMContentLoaded', () => {
             loadNewsData();
             initVisitorStats();
