@@ -93,11 +93,14 @@
 
     <div id="messageBox"></div>
 
-    <!-- Stats Badge -->
-    <div class="fixed bottom-4 left-4 bg-slate-800/80 backdrop-blur-md text-white px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-[100] visitor-stats-display flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 border border-white/20">
-        <div class="flex items-center gap-2"><i class="fas fa-users text-blue-400"></i> ผู้เข้าชมสะสม: <span id="statTotalVal">...</span></div>
-        <div class="hidden sm:block text-slate-500">|</div>
-        <div class="flex items-center gap-2"><i class="fas fa-circle text-green-400 animate-pulse"></i> กำลังออนไลน์: <span id="statOnlineVal">...</span></div>
+    <!-- Stats Badge (อัปเดตเพิ่มจำนวนสมาชิกและสมาชิกใหม่) -->
+    <div class="fixed bottom-4 left-4 bg-slate-800/80 backdrop-blur-md text-white px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-[100] visitor-stats-display flex flex-wrap items-center gap-2 sm:gap-3 border border-white/20">
+        <div class="flex items-center gap-2" title="ผู้เข้าชมสะสม"><i class="fas fa-users text-blue-400"></i> เข้าชม: <span id="statTotalVal">...</span></div>
+        <div class="text-slate-500">|</div>
+        <div class="flex items-center gap-2" title="กำลังออนไลน์"><i class="fas fa-circle text-green-400 animate-pulse"></i> ออนไลน์: <span id="statOnlineVal">...</span></div>
+        <div class="text-slate-500">|</div>
+        <div class="flex items-center gap-2" title="สมาชิกทั้งหมด"><i class="fas fa-user-graduate text-purple-400"></i> สมาชิก: <span id="statTotalMembers">...</span></div>
+        <div class="flex items-center gap-1" title="สมาชิกใหม่"><span id="statNewMembers" class="text-pink-400 bg-pink-900/50 px-2 py-0.5 rounded-md hidden">...</span></div>
     </div>
 
     <div id="firebaseErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] hidden flex items-center justify-center p-4">
@@ -527,7 +530,7 @@
                 <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">ออก</button>
             </div>
             
-            <!-- เพิ่มส่วนแสดงสถิติสมาชิก -->
+            <!-- ส่วนแสดงสถิติสมาชิก -->
             <div class="p-8 pb-0">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 flex items-center justify-between shadow-sm">
@@ -659,7 +662,6 @@
         };
 
         async function fetchDB(path, method = 'GET', data = null) {
-            // ไม่แสดง Loading สำหรับระบบ Background (เช่นอัพเดทสถิติคนออนไลน์)
             const isBackground = path.includes('stats/');
             if(!isBackground) showLoading(true);
             
@@ -754,6 +756,29 @@
             } catch(e) {}
         }
 
+        // --- ระบบแสดงผลสถิติสำหรับหน้า Admin ---
+        window.loadAdminStats = async () => {
+            const usersData = await fetchDB('users');
+            if(!usersData) return;
+            const users = objToArray(usersData);
+            
+            const lastLoginData = await fetchDB('stats/lastAdminLogin');
+            const lastAdminLogin = lastLoginData || 0;
+
+            let newCount = 0;
+            users.forEach(u => {
+                if (u.createdAt && u.createdAt > lastAdminLogin) {
+                    newCount++;
+                }
+            });
+
+            document.getElementById('adminTotalUsers').innerText = users.length.toLocaleString();
+            document.getElementById('adminNewUsers').innerText = `+${newCount.toLocaleString()}`;
+
+            // อัปเดตเวลาเข้าหน้าแอดมินล่าสุด (ทำให้ยอดสมาชิกใหม่เริ่มนับ 0 ใหม่หลังจากนี้)
+            await fetchDB('stats/lastAdminLogin', 'PUT', Date.now());
+        };
+
         // --- UI Modal Functions ---
         window.showGameOverModal = (score) => {
             document.getElementById('finalScoreText').innerText = score;
@@ -771,12 +796,12 @@
                 window.speechSynthesis.cancel(); 
                 const msg = new SpeechSynthesisUtterance(text);
                 msg.lang = 'th-TH'; 
-                msg.rate = 0.85; // ช้าลงนิดหน่อยให้เด็กฟังง่าย
+                msg.rate = 0.85; 
                 window.speechSynthesis.speak(msg);
             }
         };
 
-        // --- Kindergarten Game Variables & Logic (NEW) ---
+        // --- Kindergarten Game Variables & Logic ---
         const KDG_QUESTION_DB = [
             { q: "สัตว์ตัวไหนคือ สุนัข?", a: "🐶", options: ["🐱", "🐭", "🐰", "🐶"] },
             { q: "สัตว์ตัวไหนคือ แมว?", a: "🐱", options: ["🐱", "🐷", "🐸", "🐻"] },
@@ -883,7 +908,6 @@
                 optionsDiv.innerHTML += `<button onclick="submitKdgAnswer('${opt}', '${qData.a}', this)" class="kdg-option-btn text-7xl md:text-8xl py-6 md:py-10 rounded-3xl w-full h-full flex items-center justify-center transition-transform hover:scale-105">${opt}</button>`;
             });
 
-            // อ่านคำถาม
             setTimeout(() => { replayKdgAudio(); }, 300);
 
             kdgQuestionStartTime = Date.now();
@@ -899,7 +923,7 @@
             if(isKdgAnswering) return; 
             isKdgAnswering = true;
             clearInterval(kdgVisualTimerInterval);
-            window.speechSynthesis.cancel(); // หยุดเสียงถ้าตอบแล้ว
+            window.speechSynthesis.cancel(); 
             
             const timeElapsed = (Date.now() - kdgQuestionStartTime) / 1000;
             let pointsEarned = 0;
@@ -1109,7 +1133,6 @@
             clearInterval(visualTimerInterval);
             document.getElementById('mathGameDashboard').classList.add('hidden-section');
             
-            // แสดงหน้าต่างคะแนนรวม
             showGameOverModal(mathScoreTotal);
             
             const safeKey = sanitizeKey(currentUser.email);
@@ -1972,31 +1995,6 @@
             }
         }
 
-        // --- ระบบคำนวณสถิติของ Admin ---
-        window.loadAdminStats = async () => {
-            const usersData = await fetchDB('users');
-            if(!usersData) return;
-            const users = objToArray(usersData);
-            
-            // ดึงเวลาล่าสุดที่แอดมินเคยเข้ามา
-            const lastLoginData = await fetchDB('stats/lastAdminLogin');
-            const lastAdminLogin = lastLoginData || 0;
-
-            let newCount = 0;
-            users.forEach(u => {
-                // เช็คว่ามีเวลาสมัคร และเวลานั้นใหม่กว่าตอนแอดมินเข้าครั้งที่แล้ว
-                if (u.createdAt && u.createdAt > lastAdminLogin) {
-                    newCount++;
-                }
-            });
-
-            document.getElementById('adminTotalUsers').innerText = users.length.toLocaleString();
-            document.getElementById('adminNewUsers').innerText = `+${newCount.toLocaleString()}`;
-
-            // อัปเดตเวลาเข้าหน้าแอดมินล่าสุด เพื่อใช้รีเซ็ตตัวเลขในครั้งถัดไป
-            await fetchDB('stats/lastAdminLogin', 'PUT', Date.now());
-        };
-
         function checkAdminPassword() {
             if (document.getElementById('adminPasswordInput').value === "1471200") {
                 document.getElementById('adminPasswordInput').value = "";
@@ -2121,9 +2119,9 @@
             
             // เรียงลำดับจากเก่าไปใหม่ (อิงจากเวลาสมัคร createdAt)
             users.sort((a, b) => {
-                const timeA = a.createdAt || 0; // ถ้าไม่มีเวลา (ผู้ใช้เก่า) ให้เป็น 0 (เก่าสุด)
+                const timeA = a.createdAt || 0; 
                 const timeB = b.createdAt || 0;
-                return timeA - timeB; // จากน้อยไปมาก (เก่าไปใหม่)
+                return timeA - timeB; 
             });
 
             document.getElementById('userTableBody').innerHTML = users.map(u => {
