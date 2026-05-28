@@ -257,6 +257,11 @@
                         </div>
 
                         <div>
+                            <label class="block text-sm font-bold text-gray-600 mb-1">ลิงก์อ่านต่อ (ใส่หรือไม่ใส่ก็ได้)</label>
+                            <input type="url" id="newsReadMore" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none" placeholder="https://example.com/page">
+                        </div>
+
+                        <div>
                             <label class="block text-sm font-bold text-gray-600 mb-1">โค้ด (ใส่หรือไม่ใส่ก็ได้)</label>
                             <textarea id="newsCode" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none min-h-[120px] font-mono text-sm bg-slate-800 text-green-400 placeholder-gray-500" placeholder="วางโค้ดตัวอย่างที่ต้องการให้เด็กๆ ดูที่นี่..."></textarea>
                         </div>
@@ -284,19 +289,41 @@
 
     <!-- Section: Student Dashboard -->
     <div id="mainContent" class="hidden-section flex flex-col min-h-screen">
-        <header class="bg-white border-b-4 border-orange-100 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-            <h1 class="text-2xl font-black text-orange-500 flex items-center gap-2">
+        <header class="bg-white border-b-4 border-orange-100 px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+            <h1 class="text-xl sm:text-2xl font-black text-orange-500 flex items-center gap-2">
                 <i class="fas fa-rocket"></i> KidLearning
             </h1>
-            <div class="flex items-center gap-4">
-                <div id="userNameDisplay" class="font-bold text-gray-800 hidden sm:block"></div>
-                <button onclick="logout()" class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md"><i class="fas fa-sign-out-alt"></i></button>
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button onclick="openFeedbackModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2">
+                    <i class="fas fa-comment-dots"></i><span class="hidden sm:inline"> ส่งข้อความ</span>
+                </button>
+                <div id="userNameDisplay" class="font-bold text-gray-800 hidden md:block"></div>
+                <button onclick="logout()" class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </header>
 
         <main class="max-w-7xl mx-auto p-6 flex-grow w-full">
             <div id="termSelectionContainer">
-                <!-- ปรับเป็น 3 คอลัมน์ จะได้แสดง 6 แบนเนอร์ได้สวยๆ (2 แถว) -->
+                
+                <!-- หัวข้อระดับชั้น และ ปุ่มซ่อน -->
+                <div class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-orange-100 pb-4">
+                    <div class="text-center md:text-left">
+                        <h2 class="text-3xl font-black text-gray-800 mb-2">ยินดีต้อนรับเข้าสู่บทเรียน!</h2>
+                        <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
+                    </div>
+                    <button onclick="toggleTermCards()" id="toggleTermsBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-6 py-3 rounded-full font-bold transition-colors shadow-sm flex items-center gap-2" title="ซ่อน/แสดง ระดับชั้น">
+                        <i class="fas fa-eye-slash"></i> ซ่อนชั้นเรียน (อ.1 - ป.6)
+                    </button>
+                </div>
+                
+                <div class="flex flex-col gap-6 mb-12 max-w-6xl mx-auto" id="termCardsGrid"></div>
+
+                <div class="my-12 border-t-4 border-dashed border-gray-200 relative">
+                    <div class="absolute left-1/2 transform -translate-x-1/2 -top-4 bg-[#fffcf2] px-6 text-lg font-black text-gray-400">
+                        <i class="fas fa-star text-yellow-400"></i> โซนกิจกรรม <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     <!-- Free Trial Banner -->
                     <div onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner p-6 text-white flex flex-col justify-between h-full">
@@ -307,7 +334,7 @@
                         </div>
                         <div class="z-10 flex justify-between items-end mt-auto">
                             <div class="text-4xl animate-bounce"><i class="fas fa-gift text-yellow-300"></i></div>
-                            <button class="bg-white text-indigo-700 px-6 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition">เริ่มเรียน <i class="fas fa-play ml-1"></i></button>
+                            <button class="bg-white text-indigo-700 px-4 py-2 rounded-full font-bold text-xs shadow-lg hover:scale-105 transition">เริ่ม <i class="fas fa-play ml-1"></i></button>
                         </div>
                     </div>
 
@@ -376,13 +403,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="mb-6 text-center mt-12">
-                    <h2 class="text-3xl font-black text-gray-800 mb-2">ยินดีต้อนรับเข้าสู่บทเรียน!</h2>
-                    <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
-                </div>
-                
-                <div class="flex flex-col gap-6 mb-12 max-w-6xl mx-auto" id="termCardsGrid"></div>
 
                 <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6 mt-10">
                     <!-- ประกาศจากแอดมิน -->
@@ -1792,6 +1812,13 @@
                     <div class="bg-slate-700 text-slate-300 text-[10px] uppercase font-bold px-4 py-2 rounded-t-xl w-fit flex items-center gap-2"><i class="fas fa-code"></i> โค้ดตัวอย่าง</div>
                     <pre class="bg-slate-800 text-green-400 p-4 rounded-b-xl rounded-tr-xl overflow-x-auto font-mono text-sm shadow-inner whitespace-pre-wrap border border-slate-700"><code>${escapeHtml(news.codeSnippet)}</code></pre>
                 </div>` : ''}
+
+                ${news.readMoreUrl ? `
+                <div class="mt-4 text-left">
+                    <a href="${escapeHtml(news.readMoreUrl)}" target="_blank" class="inline-block bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-bold py-2 px-4 rounded-xl transition text-sm">
+                        <i class="fas fa-external-link-alt mr-1"></i> อ่านรายละเอียดเพิ่มเติม
+                    </a>
+                </div>` : ''}
             </div>`;
         };
 
@@ -1863,9 +1890,10 @@
             const imageUrl = document.getElementById('newsImage').value;
             const youtubeUrl = document.getElementById('newsYoutube').value;
             const codeSnippet = document.getElementById('newsCode').value;
+            const readMoreUrl = document.getElementById('newsReadMore').value;
             const editId = document.getElementById('editNewsId').value;
 
-            const payload = { location, text, imageUrl, youtubeUrl, codeSnippet, timestamp: Date.now() };
+            const payload = { location, text, imageUrl, youtubeUrl, codeSnippet, readMoreUrl, timestamp: Date.now() };
 
             if (editId) {
                 await fetchDB(`news/${editId}`, 'PATCH', payload);
@@ -1888,6 +1916,7 @@
                 document.getElementById('newsImage').value = item.imageUrl || '';
                 document.getElementById('newsYoutube').value = item.youtubeUrl || '';
                 document.getElementById('newsCode').value = item.codeSnippet || '';
+                document.getElementById('newsReadMore').value = item.readMoreUrl || '';
                 
                 document.getElementById('cmsFormTitle').innerText = "2. แก้ไขประกาศ";
                 document.getElementById('btnSaveNews').innerText = "บันทึกการแก้ไข";
@@ -2010,6 +2039,25 @@
         }
 
         // --- Student Dashboard ---
+
+        let termsVisible = true;
+        window.toggleTermCards = () => {
+            const grid = document.getElementById('termCardsGrid');
+            const btn = document.getElementById('toggleTermsBtn');
+            termsVisible = !termsVisible;
+            
+            if (termsVisible) {
+                grid.classList.remove('hidden');
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> ซ่อนชั้นเรียน (อ.1 - ป.6)';
+                btn.classList.remove('bg-orange-100', 'text-orange-600');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            } else {
+                grid.classList.add('hidden');
+                btn.innerHTML = '<i class="fas fa-eye"></i> แสดงชั้นเรียน (อ.1 - ป.6)';
+                btn.classList.remove('bg-gray-100', 'text-gray-600');
+                btn.classList.add('bg-orange-100', 'text-orange-600');
+            }
+        };
 
         function renderTermCards() {
             const grid = document.getElementById('termCardsGrid');
