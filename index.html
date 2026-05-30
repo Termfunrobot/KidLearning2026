@@ -101,6 +101,10 @@
         <div class="text-slate-500">|</div>
         <div class="flex items-center gap-2" title="สมาชิกทั้งหมด"><i class="fas fa-user-graduate text-purple-400"></i> สมาชิก: <span id="statTotalMembers">...</span></div>
         <div class="flex items-center gap-1" title="สมาชิกใหม่"><span id="statNewMembers" class="text-pink-400 bg-pink-900/50 px-2 py-0.5 rounded-md hidden">...</span></div>
+        <div class="text-slate-500 hidden" id="topupDivider">|</div>
+        <div class="flex items-center gap-2 hidden cursor-pointer hover:text-yellow-300 transition" title="แจ้งเติมเครดิตค้างตรวจสอบ" id="statPendingTopupsContainer" onclick="toggleSection('admin-verify')">
+            <i class="fas fa-file-invoice-dollar text-yellow-400"></i> แจ้งโอน: <span id="statPendingTopups" class="text-yellow-400 bg-yellow-900/50 px-2 py-0.5 rounded-md">0</span>
+        </div>
     </div>
 
     <!-- Error Modal -->
@@ -891,6 +895,12 @@
                     }
                 });
 
+                // --- อัปเดตสถิติแจ้งโอนค้าง ---
+                const topupsRes = await fetch(`${FIREBASE_DB_URL}/topups.json`);
+                const topupsData = await topupsRes.json() || {};
+                const topups = objToArray(topupsData);
+                const pendingTopupsCount = topups.filter(t => t.status === 'pending').length;
+
                 // แสดงผลบน Floating Badge
                 if (document.getElementById('statTotalVal')) document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
                 if (document.getElementById('statOnlineVal')) document.getElementById('statOnlineVal').innerText = currentOnlineCount.toLocaleString();
@@ -903,6 +913,19 @@
                         newMemberSpan.classList.remove('hidden');
                     } else {
                         newMemberSpan.classList.add('hidden');
+                    }
+                }
+
+                const topupContainer = document.getElementById('statPendingTopupsContainer');
+                const topupDivider = document.getElementById('topupDivider');
+                if (topupContainer && topupDivider) {
+                    if (pendingTopupsCount > 0) {
+                        document.getElementById('statPendingTopups').innerText = pendingTopupsCount.toLocaleString();
+                        topupContainer.classList.remove('hidden');
+                        topupDivider.classList.remove('hidden');
+                    } else {
+                        topupContainer.classList.add('hidden');
+                        topupDivider.classList.add('hidden');
                     }
                 }
             } catch(e) {}
