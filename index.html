@@ -103,6 +103,7 @@
         <div class="flex items-center gap-1" title="สมาชิกใหม่"><span id="statNewMembers" class="text-pink-400 bg-pink-900/50 px-2 py-0.5 rounded-md hidden">...</span></div>
     </div>
 
+    <!-- Error Modal -->
     <div id="firebaseErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl text-center">
             <div class="text-red-500 text-6xl mb-4"><i class="fas fa-exclamation-triangle"></i></div>
@@ -125,9 +126,55 @@
         </div>
     </div>
 
+    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-md z-[9999] hidden flex flex-col items-center justify-center">
         <div class="loader ease-linear rounded-full border-4 border-gray-200 h-16 w-16 mb-4"></div>
         <p class="text-orange-600 font-bold text-xl">กำลังประมวลผล...</p>
+    </div>
+
+    <!-- Topup Modal (สำหรับแจ้งเติมเครดิต) -->
+    <div id="topupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[40px] p-8 max-w-md w-full shadow-2xl relative text-center border-8 border-green-100">
+            <button onclick="closeTopupModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-red-100 hover:text-red-500 transition shadow-sm"><i class="fas fa-times"></i></button>
+            <div class="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center text-4xl text-green-500 mb-4 shadow-inner">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <h2 class="text-2xl font-black text-gray-800 mb-2">แจ้งเติมเครดิต</h2>
+            <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-200 text-sm">
+                <p class="text-gray-600 mb-2">โอนเงินผ่าน <b>TrueMoney Wallet</b> หรือ <b>พร้อมเพย์</b></p>
+                <p class="text-2xl font-black text-orange-500 mb-2 tracking-wider">0847999639</p>
+                <div class="font-bold text-green-700 bg-green-100 py-1.5 rounded-lg inline-block px-4 border border-green-300">10 บาท = 100 เครดิต</div>
+            </div>
+            <form id="topupForm" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-1">อีเมลผู้ใช้งาน (บัญชีของหนู) *</label>
+                    <input type="email" id="topupEmail" required readonly class="w-full p-3 rounded-xl border border-gray-300 bg-gray-100 text-gray-500 outline-none font-medium cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-1">อัปโหลดภาพสลิปโอนเงิน *</label>
+                    <input type="file" id="topupSlip" accept="image/*" required class="w-full p-2 rounded-xl border border-gray-300 focus:border-green-400 outline-none text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition">
+                </div>
+                <button type="submit" class="w-full bg-green-500 text-white font-bold py-4 rounded-xl hover:bg-green-600 transition shadow-lg mt-2">ยืนยันแจ้งโอนเงิน</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Credit Modal -->
+    <div id="creditModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[40px] p-8 max-w-sm w-full shadow-2xl relative text-center overflow-hidden border-8 border-yellow-100">
+            <button onclick="closeCreditModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-red-100 hover:text-red-500 transition shadow-sm"><i class="fas fa-times"></i></button>
+            <div class="w-24 h-24 bg-gradient-to-tr from-yellow-400 to-orange-400 rounded-full mx-auto flex items-center justify-center text-5xl text-white shadow-[0_10px_20px_rgba(250,204,21,0.5)] mb-4 border-4 border-white">
+                <i class="fas fa-coins"></i>
+            </div>
+            <h2 class="text-2xl font-black text-gray-800 mb-1 truncate px-2" id="creditModalName">ชื่อผู้ใช้งาน</h2>
+            <p class="text-gray-500 text-sm font-medium mb-6">กระเป๋าเงินเครดิตของคุณ</p>
+            <div class="bg-yellow-50 rounded-3xl p-6 border-2 border-yellow-200 mb-2 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 text-yellow-200 text-6xl opacity-30"><i class="fas fa-coins"></i></div>
+                <span id="creditModalAmount" class="text-6xl font-black text-yellow-600 relative z-10">0</span>
+                <span class="text-lg text-yellow-500 font-bold ml-1 relative z-10">เครดิต</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 px-4 leading-relaxed">* โบนัสฟรี! เครดิตจะได้รับ <span class="text-green-500 font-bold">+10 แต้ม</span> อัตโนมัติในวันถัดไปหากคุณมีเครดิตน้อยกว่า 10</p>
+        </div>
     </div>
 
     <!-- Game Over Modal (สรุปคะแนน) -->
@@ -146,6 +193,33 @@
             <button onclick="closeGameOverModal()" class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl text-xl transition shadow-[0_10px_20px_rgba(239,68,68,0.3)] hover:scale-105 active:scale-95 relative z-10">
                 กลับสู่หน้าหลัก <i class="fas fa-home ml-2"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[40px] p-8 max-w-lg w-full shadow-2xl relative">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto flex items-center justify-center text-3xl shadow-inner mt-2 mb-4 text-blue-500">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <h2 class="text-2xl font-black text-gray-800">ส่งข้อความถึงคุณครู/แอดมิน</h2>
+                <p class="text-gray-500 text-sm mt-1">แนะนำ ติชม หรือส่งผลงานรูปภาพมาให้ดูได้เลย!</p>
+            </div>
+            <form id="feedbackForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-2">ข้อความ *</label>
+                    <textarea id="fbText" required class="w-full p-4 rounded-2xl border-2 border-gray-100 focus:border-blue-400 outline-none min-h-[120px] bg-gray-50" placeholder="พิมพ์ข้อความที่นี่..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-2">ลิงก์รูปภาพ (ถ้ามี)</label>
+                    <input type="url" id="fbImage" class="w-full p-4 rounded-2xl border-2 border-gray-100 focus:border-blue-400 outline-none bg-gray-50" placeholder="https://example.com/image.png">
+                </div>
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeFeedbackModal()" class="flex-1 bg-gray-200 text-gray-700 font-bold py-4 rounded-2xl hover:bg-gray-300 transition">ยกเลิก</button>
+                    <button type="submit" class="flex-1 bg-blue-500 text-white font-bold py-4 rounded-2xl hover:bg-blue-600 transition shadow-lg shadow-blue-500/30">ส่งข้อความ</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -226,7 +300,6 @@
             </div>
             
             <div class="p-8">
-                <!-- ฟอร์มเพิ่มข่าวสาร -->
                 <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 mb-8">
                     <h3 class="font-bold text-blue-800 mb-4 text-lg" id="cmsFormTitle">1. เพิ่มข้อความใหม่</h3>
                     <form id="newsForm" class="space-y-4">
@@ -294,6 +367,13 @@
                 <i class="fas fa-rocket"></i> KidLearning
             </h1>
             <div class="flex items-center gap-2 sm:gap-4">
+                <!-- เพิ่มปุ่ม แจ้งเติมเครดิต สีเขียวที่นี่ -->
+                <button onclick="openTopupModal()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2 border-2 border-green-400" title="แจ้งเติมเครดิต">
+                    <i class="fas fa-wallet"></i><span class="hidden sm:inline"> เติมเครดิต</span>
+                </button>
+                <button onclick="openCreditModal()" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-black shadow-sm transition text-xs sm:text-sm flex items-center gap-2 border-2 border-yellow-300" title="กระเป๋าเครดิตของคุณ">
+                    <i class="fas fa-coins text-yellow-500"></i><span id="userCreditsDisplay">0</span>
+                </button>
                 <button onclick="openFeedbackModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2">
                     <i class="fas fa-comment-dots"></i><span class="hidden sm:inline"> ส่งข้อความ</span>
                 </button>
@@ -316,7 +396,8 @@
                     </button>
                 </div>
                 
-                <div class="flex flex-col gap-6 mb-12 max-w-6xl mx-auto" id="termCardsGrid"></div>
+                <!-- ปรับให้กลับมาเป็นแบนเนอร์แนวยาว (เต็มแบนเนอร์) -->
+                <div class="flex flex-col gap-6 mb-12 max-w-6xl mx-auto w-full" id="termCardsGrid"></div>
 
                 <div class="my-12 border-t-4 border-dashed border-gray-200 relative">
                     <div class="absolute left-1/2 transform -translate-x-1/2 -top-4 bg-[#fffcf2] px-6 text-lg font-black text-gray-400">
@@ -324,7 +405,8 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- แบนเนอร์กิจกรรม (คงอยู่ล่างเสมอ) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 mt-8">
                     <!-- Free Trial Banner -->
                     <div onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner p-6 text-white flex flex-col justify-between h-full">
                         <div class="z-10 mb-4">
@@ -338,7 +420,7 @@
                         </div>
                     </div>
 
-                    <!-- Kindergarten Game Banner (NEW) -->
+                    <!-- Kindergarten Game Banner -->
                     <div onclick="startKdgGame()" class="kdg-game-banner p-6 text-white flex flex-col justify-between h-full">
                         <div class="z-10 mb-4">
                             <span class="bg-white text-orange-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-baby text-orange-500"></i> Kids Game</span>
@@ -547,7 +629,7 @@
         <div class="max-w-6xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
             <div class="bg-slate-800 p-8 text-white flex justify-between items-center">
                 <h2 class="text-2xl font-bold">Admin Panel</h2>
-                <button onclick="toggleSection('login')" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">ออก</button>
+                <button onclick="logout()" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">ออก</button>
             </div>
             
             <!-- ส่วนแสดงสถิติสมาชิก -->
@@ -570,12 +652,14 @@
                 </div>
             </div>
 
-            <!-- เพิ่มแท็บ จัดการแบนเนอร์ และ สถิติการแข่งขัน -->
+            <!-- เพิ่มแท็บ จัดการแบนเนอร์, สถิติการแข่งขัน และ ข้อความ -->
             <div class="flex flex-wrap gap-2 px-8 py-4 border-b bg-gray-50 mt-4">
                 <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 rounded-lg text-indigo-600 bg-indigo-50 transition">จัดการนักเรียน</button>
                 <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการบทเรียน</button>
                 <button onclick="switchAdminTab('banners')" id="tabBannersBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการแบนเนอร์ชั้นเรียน</button>
+                <button onclick="switchAdminTab('topups')" id="tabTopupsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">💵 แจ้งเติมเครดิต</button>
                 <button onclick="switchAdminTab('leaderboards')" id="tabLeaderboardsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">🏆 สถิติการแข่งขัน</button>
+                <button onclick="switchAdminTab('feedbacks')" id="tabFeedbacksBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">📩 ข้อความจากนักเรียน</button>
             </div>
             
             <div id="tabContentUsers" class="p-6">
@@ -610,6 +694,26 @@
                 </div>
             </div>
 
+            <!-- ส่วนตรวจสอบแจ้งโอนเงิน -->
+            <div id="tabContentTopups" class="hidden-section p-6 bg-gray-50 min-h-[500px]">
+                <h3 class="text-2xl font-black text-slate-800 mb-6 border-l-4 border-green-500 pl-4">รายการแจ้งเติมเครดิต (รอตรวจสอบ)</h3>
+                <div class="overflow-x-auto bg-white rounded-3xl border shadow-sm">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 text-slate-600 text-sm border-b">
+                            <tr>
+                                <th class="p-5 font-bold">เวลาแจ้ง</th>
+                                <th class="p-5 font-bold">ผู้ใช้งาน (Email)</th>
+                                <th class="p-5 font-bold text-center">สลิปโอนเงิน</th>
+                                <th class="p-5 font-bold text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTopupsTableBody" class="divide-y divide-gray-100">
+                            <tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">รอโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- ส่วนดูสถิติการแข่งขัน (Leaderboards) -->
             <div id="tabContentLeaderboards" class="hidden-section p-6">
                 <div class="flex flex-wrap gap-3 mb-6">
@@ -636,6 +740,14 @@
                             <tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">รอการเลือกวิชา...</td></tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- ส่วนกล่องข้อความจากนักเรียน -->
+            <div id="tabContentFeedbacks" class="hidden-section p-6 bg-gray-50 min-h-[500px]">
+                <h3 class="text-2xl font-black text-slate-800 mb-6 border-l-4 border-blue-500 pl-4">กล่องข้อความ/ผลงาน จากนักเรียน</h3>
+                <div id="adminFeedbacksList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- ข้อความจะแสดงที่นี่ -->
                 </div>
             </div>
         </div>
@@ -665,8 +777,9 @@
         const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
         // --- Helper Functions ---
-        window.showLoading = function(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
-        window.showMessage = function(m, t='success') {
+        function showLoading(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
+        
+        function showMessage(m, t='success') {
             const b = document.getElementById('messageBox');
             b.innerText = m; b.style.display = 'block';
             b.style.backgroundColor = t === 'success' ? '#10B981' : '#EF4444';
@@ -708,16 +821,30 @@
 
         // --- Visitor Stats Logic ---
         const VISITOR_SESSION_ID = 'sess_' + Math.random().toString(36).substr(2, 9);
-        let currentTotalVisitors = 0;
+        let currentTotalVisitors = 885; // ยอดสะสมเดิมที่ต้องการรักษาไว้
         let currentOnlineCount = 0;
 
         async function initVisitorStats() {
             try {
                 let totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
-                let total = await totalRes.json() || 0;
-                total++;
-                await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`, { method: 'PUT', body: JSON.stringify(total) });
+                let total = await totalRes.json();
+                
+                // ถ้ายอดในฐานข้อมูลน้อยกว่า 885 หรือไม่มีค่า ให้ดันกลับไปที่ 885 ขั้นต่ำ
+                if (typeof total !== 'number' || total < 885) {
+                    total = 885; 
+                }
+
+                // กันการปั๊มยอดจากการรีเฟรชหน้าเว็บรัวๆ (จะบวกแค่ครั้งแรกที่เปิดเบราว์เซอร์)
+                if (!sessionStorage.getItem('hasCountedVisit')) {
+                    total++;
+                    await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`, { method: 'PUT', body: JSON.stringify(total) });
+                    sessionStorage.setItem('hasCountedVisit', 'true');
+                }
+                
                 currentTotalVisitors = total;
+                if (document.getElementById('statTotalVal')) {
+                    document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
+                }
             } catch (e) {}
 
             sendHeartbeat();
@@ -734,7 +861,12 @@
                 
                 // ดึงผู้เข้าชมรวม
                 const totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
-                currentTotalVisitors = await totalRes.json() || currentTotalVisitors;
+                const fetchedTotal = await totalRes.json();
+                
+                // จะอัปเดตยอดโชว์บนหน้าจอ ก็ต่อเมื่อยอดใหม่ในฐานข้อมูล มากกว่ายอดเดิมเท่านั้น (ป้องกันยอดตกเวลาดึงพลาด)
+                if (typeof fetchedTotal === 'number' && fetchedTotal > currentTotalVisitors) {
+                    currentTotalVisitors = fetchedTotal;
+                }
 
                 let count = 0;
                 const cutoff = now - 30000; 
@@ -777,7 +909,7 @@
         }
 
         // --- ระบบแสดงผลสถิติสำหรับหน้า Admin ---
-        window.loadAdminStats = async () => {
+        async function loadAdminStats() {
             const usersData = await fetchDB('users');
             if(!usersData) return;
             const users = objToArray(usersData);
@@ -797,21 +929,372 @@
 
             // อัปเดตเวลาเข้าหน้าแอดมินล่าสุด (ทำให้ยอดสมาชิกใหม่เริ่มนับ 0 ใหม่หลังจากนี้)
             await fetchDB('stats/lastAdminLogin', 'PUT', Date.now());
-        };
+        }
 
         // --- UI Modal Functions ---
-        window.showGameOverModal = (score) => {
+        function openCreditModal() {
+            document.getElementById('creditModal').classList.remove('hidden');
+        }
+
+        function closeCreditModal() {
+            document.getElementById('creditModal').classList.add('hidden');
+        }
+
+        function showGameOverModal(score) {
             document.getElementById('finalScoreText').innerText = score;
             document.getElementById('gameOverModal').classList.remove('hidden');
-        };
+        }
 
-        window.closeGameOverModal = () => {
+        function closeGameOverModal() {
             document.getElementById('gameOverModal').classList.add('hidden');
             document.getElementById('termSelectionContainer').classList.remove('hidden-section');
+        }
+
+        // --- Student Top-up Logic ---
+        function openTopupModal() {
+            document.getElementById('topupForm').reset();
+            if (currentUser) {
+                document.getElementById('topupEmail').value = currentUser.email;
+            }
+            document.getElementById('topupModal').classList.remove('hidden');
+        }
+
+        function closeTopupModal() {
+            document.getElementById('topupModal').classList.add('hidden');
+        }
+
+        document.getElementById('topupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('topupEmail').value;
+            const slipFile = document.getElementById('topupSlip').files[0];
+
+            if (!slipFile) {
+                showMessage('กรุณาแนบภาพสลิปโอนเงินด้วยครับ', 'error');
+                return;
+            }
+
+            // ใช้ FileReader เพื่ออ่านไฟล์ภาพเป็น Base64
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const base64Slip = event.target.result;
+                const payload = {
+                    email: email,
+                    name: currentUser ? currentUser.name : 'Unknown',
+                    slipImage: base64Slip,
+                    timestamp: Date.now(),
+                    status: 'pending' // pending = รอตรวจสอบ
+                };
+                
+                await fetchDB('topups', 'POST', payload);
+                showMessage('แจ้งโอนเงินสำเร็จ! กรุณารอแอดมินตรวจสอบ', 'success');
+                closeTopupModal();
+            };
+            reader.readAsDataURL(slipFile);
+        });
+
+        async function loadAdminTopups() {
+            const tbody = document.getElementById('adminTopupsTableBody');
+            tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center"><i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i><br>กำลังโหลดข้อมูล...</td></tr>`;
+
+            const data = await fetchDB('topups');
+            if(!data) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ไม่มีรายการแจ้งเติมเครดิต</td></tr>`;
+                return;
+            }
+
+            const topups = objToArray(data).sort((a,b) => b.timestamp - a.timestamp);
+            const pendingTopups = topups.filter(t => t.status === 'pending');
+
+            if(pendingTopups.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ไม่มีรายการแจ้งเติมเครดิตใหม่</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = pendingTopups.map(t => {
+                const dateStr = new Date(t.timestamp).toLocaleString('th-TH');
+                return `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-5 text-sm text-gray-600">${dateStr}</td>
+                    <td class="p-5 font-bold text-slate-800">${t.name}<br><span class="text-xs text-blue-500 font-normal">${t.email}</span></td>
+                    <td class="p-5 text-center">
+                        <a href="${t.slipImage}" target="_blank" class="inline-block bg-gray-100 p-2 rounded-lg border hover:bg-gray-200 transition">
+                            <img src="${t.slipImage}" class="h-16 w-16 object-cover rounded-md" alt="Slip">
+                        </a>
+                    </td>
+                    <td class="p-5 text-center space-y-2 sm:space-y-0 sm:space-x-2">
+                        <button onclick="approveTopup('${t.id}', '${t.email}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition"><i class="fas fa-check"></i> อนุมัติ (+100)</button>
+                        <button onclick="rejectTopup('${t.id}')" class="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg font-bold text-sm transition"><i class="fas fa-times"></i> ปฏิเสธ</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function approveTopup(id, email) {
+            if(confirm('อนุมัติการเติมเงิน และเพิ่ม 100 เครดิตให้ผู้ใช้นี้?')) {
+                const safeKey = sanitizeKey(email);
+                const user = await fetchDB(`users/${safeKey}`);
+                if(user) {
+                    let newCredits = (user.credits || 0) + 100;
+                    await fetchDB(`users/${safeKey}/credits`, 'PUT', newCredits);
+                    await fetchDB(`topups/${id}/status`, 'PUT', '"approved"');
+                    showMessage('อนุมัติและเติม 100 เครดิตสำเร็จ!', 'success');
+                    loadAdminTopups();
+                    refreshAdminUsers();
+                } else {
+                    showMessage('ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ', 'error');
+                }
+            }
+        }
+
+        async function rejectTopup(id) {
+            if(confirm('ปฏิเสธรายการแจ้งโอนนี้ใช่หรือไม่?')) {
+                await fetchDB(`topups/${id}/status`, 'PUT', '"rejected"');
+                showMessage('ปฏิเสธรายการแล้ว', 'success');
+                loadAdminTopups();
+            }
+        }
+
+        // --- Student Feedback Logic ---
+        function openFeedbackModal() {
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('feedbackModal').classList.remove('hidden');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.add('hidden');
+        }
+
+        document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = document.getElementById('fbText').value;
+            const img = document.getElementById('fbImage').value;
+            if(!text) return;
+            
+            const payload = {
+                senderEmail: currentUser.email,
+                senderName: currentUser.name,
+                text: text,
+                image: img,
+                timestamp: Date.now()
+            };
+            
+            await fetchDB('feedbacks', 'POST', payload);
+            showMessage('ส่งข้อความถึงคุณครูเรียบร้อยแล้ว!', 'success');
+            closeFeedbackModal();
+        });
+
+        async function loadAdminFeedbacks() {
+            const container = document.getElementById('adminFeedbacksList');
+            container.innerHTML = `<p class="text-gray-400 col-span-full text-center py-10"><i class="fas fa-spinner fa-spin text-2xl"></i><br>กำลังโหลด...</p>`;
+            
+            const data = await fetchDB('feedbacks');
+            if(!data) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-gray-400 border col-span-full">ไม่มีข้อความใหม่</div>`;
+                return;
+            }
+            
+            const fbs = objToArray(data).sort((a,b) => b.timestamp - a.timestamp);
+            container.innerHTML = fbs.map(f => {
+                const dateStr = new Date(f.timestamp).toLocaleString('th-TH');
+                return `
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative hover:shadow-md transition">
+                    <button onclick="deleteFeedback('${f.id}')" class="absolute top-6 right-6 text-gray-300 hover:text-red-500 transition text-lg"><i class="fas fa-trash-alt"></i></button>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center font-bold text-xl"><i class="fas fa-user-graduate"></i></div>
+                        <div>
+                            <div class="font-bold text-slate-800 text-lg">${escapeHtml(f.senderName)}</div>
+                            <div class="text-xs text-blue-500 font-medium">${escapeHtml(f.senderEmail)} • <span class="text-gray-400">${dateStr}</span></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 bg-gray-50 p-4 rounded-2xl leading-relaxed whitespace-pre-wrap">${escapeHtml(f.text)}</p>
+                    ${f.image ? `<div class="mt-4 rounded-2xl overflow-hidden border"><img src="${escapeHtml(f.image)}" class="w-full h-auto object-cover" onerror="this.style.display='none'"></div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        async function deleteFeedback(id) {
+            if(confirm('ลบข้อความนี้ใช่หรือไม่?')) {
+                await fetchDB(`feedbacks/${id}`, 'DELETE');
+                showMessage("ลบข้อความแล้ว");
+                loadAdminFeedbacks();
+            }
+        }
+
+        // --- ระบบข่าวสาร (CMS) ดึงจาก Firebase ---
+        const getYouTubeEmbedUrl = (url) => {
+            if(!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) {
+                return `https://www.youtube.com/embed/${match[2]}`;
+            }
+            return null;
         };
 
+        const escapeHtml = (unsafe) => {
+            if (!unsafe) return "";
+            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        };
+
+        const createNewsCardHTML = (news) => {
+            const dateStr = new Date(news.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+            const ytEmbed = getYouTubeEmbedUrl(news.youtubeUrl);
+            const isDashboard = news.location === 'dashboard';
+            
+            const cardStyle = isDashboard 
+                ? "bg-white p-6 md:p-8 rounded-[30px] border-4 border-indigo-50 shadow-md hover:shadow-lg transition text-left"
+                : "bg-white p-5 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition text-left";
+
+            return `
+            <div class="${cardStyle}">
+                <div class="flex items-center gap-2 text-xs font-bold mb-3 ${isDashboard ? 'text-indigo-500' : 'text-gray-400'}">
+                    <i class="${isDashboard ? 'fas fa-graduation-cap text-lg' : 'far fa-clock'}"></i> 
+                    ${isDashboard ? 'ประกาศจากคุณครู :' : ''} ${dateStr}
+                </div>
+                <p class="text-gray-700 whitespace-pre-wrap font-medium mb-4 ${isDashboard ? 'text-lg' : ''}">${news.text}</p>
+                
+                ${news.imageUrl ? `<img src="${escapeHtml(news.imageUrl)}" onerror="this.style.display='none'" class="w-full rounded-2xl mb-4 max-h-[400px] object-cover border border-gray-200">` : ''}
+                
+                ${ytEmbed ? `<div class="aspect-video w-full rounded-2xl overflow-hidden mb-4 border border-gray-200 shadow-inner">
+                    <iframe width="100%" height="100%" src="${ytEmbed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>` : ''}
+
+                ${news.readMoreUrl ? `
+                <div class="mt-4 text-left">
+                    <a href="${escapeHtml(news.readMoreUrl)}" target="_blank" class="inline-block bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-bold py-2 px-4 rounded-xl transition text-sm">
+                        <i class="fas fa-external-link-alt mr-1"></i> อ่านรายละเอียดเพิ่มเติม
+                    </a>
+                </div>` : ''}
+
+                ${news.codeSnippet ? `
+                <div class="mt-4 text-left">
+                    <div class="bg-slate-700 text-slate-300 text-[10px] uppercase font-bold px-4 py-2 rounded-t-xl w-fit flex items-center gap-2"><i class="fas fa-code"></i> โค้ดตัวอย่าง</div>
+                    <pre class="bg-slate-800 text-green-400 p-4 rounded-b-xl rounded-tr-xl overflow-x-auto font-mono text-sm shadow-inner whitespace-pre-wrap border border-slate-700"><code>${escapeHtml(news.codeSnippet)}</code></pre>
+                </div>` : ''}
+            </div>`;
+        };
+
+        const renderPublicFeed = () => {
+            const container = document.getElementById('publicNewsContainer');
+            const filteredData = newsData.filter(n => n.location === 'login').sort((a, b) => b.timestamp - a.timestamp);
+            if (filteredData.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-300">ยังไม่มีข่าวสารในขณะนี้</div>`;
+                return;
+            }
+            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
+        };
+
+        const renderDashboardFeed = () => {
+            const container = document.getElementById('dashboardNewsContainer');
+            const filteredData = newsData.filter(n => n.location === 'dashboard').sort((a, b) => b.timestamp - a.timestamp);
+            if (filteredData.length === 0) {
+                container.innerHTML = ``; 
+                return;
+            }
+            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
+        };
+
+        const renderAdminNews = () => {
+            const container = document.getElementById('adminNewsContainer');
+            if (newsData.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-center py-4">ไม่มีรายการ</p>`;
+                return;
+            }
+
+            const sortedData = [...newsData].sort((a, b) => b.timestamp - a.timestamp);
+
+            container.innerHTML = sortedData.map(news => `
+                <div class="bg-white p-4 rounded-2xl border flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-grow overflow-hidden">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="px-2 py-1 text-[10px] font-bold rounded ${news.location === 'dashboard' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}">
+                                ${news.location === 'dashboard' ? '🎓 หน้าห้องเรียน' : '📢 หน้าแรกล็อกอิน'}
+                            </span>
+                        </div>
+                        <p class="font-bold text-gray-800 line-clamp-2">${news.text}</p>
+                    </div>
+                    <div class="flex gap-2 whitespace-nowrap">
+                        <button type="button" onclick="editNewsItem('${news.id}')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition text-sm font-bold">แก้ไข</button>
+                        <button type="button" onclick="deleteNewsItem('${news.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition text-sm font-bold">ลบ</button>
+                    </div>
+                </div>`).join('');
+        };
+
+        async function loadNewsData() {
+            const data = await fetchDB('news');
+            if (data === undefined) {
+                const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
+                newsData = (localData || []).map(n => ({...n, location: n.location || 'login'}));
+            } else if (data === null) {
+                newsData = [];
+            } else {
+                newsData = objToArray(data).map(n => ({...n, location: n.location || 'login'}));
+            }
+            renderPublicFeed();
+            renderDashboardFeed();
+            renderAdminNews();
+        }
+
+        document.getElementById('newsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const location = document.getElementById('newsLocation').value;
+            const text = document.getElementById('newsText').value;
+            const imageUrl = document.getElementById('newsImage').value;
+            const youtubeUrl = document.getElementById('newsYoutube').value;
+            const codeSnippet = document.getElementById('newsCode').value;
+            const readMoreUrl = document.getElementById('newsReadMore') ? document.getElementById('newsReadMore').value : '';
+            const editId = document.getElementById('editNewsId').value;
+
+            const payload = { location, text, imageUrl, youtubeUrl, codeSnippet, readMoreUrl, timestamp: Date.now() };
+
+            if (editId) {
+                await fetchDB(`news/${editId}`, 'PATCH', payload);
+                showMessage("แก้ไขประกาศสำเร็จ");
+            } else {
+                await fetchDB('news', 'POST', payload);
+                showMessage("เพิ่มประกาศสำเร็จ");
+            }
+            
+            await loadNewsData();
+            resetNewsForm();
+        });
+
+        function editNewsItem(id) {
+            const item = newsData.find(n => n.id === id);
+            if(item) {
+                document.getElementById('editNewsId').value = item.id;
+                document.getElementById('newsLocation').value = item.location || 'login';
+                document.getElementById('newsText').value = item.text || '';
+                document.getElementById('newsImage').value = item.imageUrl || '';
+                document.getElementById('newsYoutube').value = item.youtubeUrl || '';
+                document.getElementById('newsCode').value = item.codeSnippet || '';
+                if(document.getElementById('newsReadMore')) document.getElementById('newsReadMore').value = item.readMoreUrl || '';
+                
+                document.getElementById('cmsFormTitle').innerText = "2. แก้ไขประกาศ";
+                document.getElementById('btnSaveNews').innerText = "บันทึกการแก้ไข";
+                document.getElementById('btnCancelEdit').classList.remove('hidden');
+                document.getElementById('cmsSection').scrollIntoView({behavior: 'smooth'});
+            }
+        }
+
+        async function deleteNewsItem(id) {
+            if(confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
+                await fetchDB(`news/${id}`, 'DELETE');
+                showMessage("ลบสำเร็จ");
+                await loadNewsData();
+            }
+        }
+
+        function resetNewsForm() {
+            document.getElementById('newsForm').reset();
+            document.getElementById('editNewsId').value = "";
+            document.getElementById('cmsFormTitle').innerText = "1. เพิ่มข้อความใหม่";
+            document.getElementById('btnSaveNews').innerText = "บันทึกประกาศ";
+            document.getElementById('btnCancelEdit').classList.add('hidden');
+        }
+
         // --- Text-to-Speech Helper ---
-        window.speakText = (text) => {
+        function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel(); 
                 const msg = new SpeechSynthesisUtterance(text);
@@ -819,7 +1302,7 @@
                 msg.rate = 0.85; 
                 window.speechSynthesis.speak(msg);
             }
-        };
+        }
 
         // --- Kindergarten Game Variables & Logic ---
         const KDG_QUESTION_DB = [
@@ -888,7 +1371,7 @@
             display.innerText = "🏆 ยังไม่มีแชมป์";
         }
 
-        window.startKdgGame = () => {
+        function startKdgGame() {
             document.getElementById('termSelectionContainer').classList.add('hidden-section');
             document.getElementById('contentDashboard').classList.add('hidden-section');
             document.getElementById('kdgGameDashboard').classList.remove('hidden-section');
@@ -900,13 +1383,13 @@
             document.getElementById('kdgTotalScore').innerText = kdgScoreTotal;
             
             loadKdgQuestion();
-        };
+        }
 
-        window.replayKdgAudio = () => {
+        function replayKdgAudio() {
             if (currentKdgQuestionText) {
                 speakText(currentKdgQuestionText);
             }
-        };
+        }
 
         function loadKdgQuestion() {
             if (currentKdgQIndex >= 20 || currentKdgQIndex >= activeKdgQuestions.length) {
@@ -939,7 +1422,7 @@
             }, 100);
         }
 
-        window.submitKdgAnswer = (selectedOpt, correctOpt, btnElement) => {
+        function submitKdgAnswer(selectedOpt, correctOpt, btnElement) {
             if(isKdgAnswering) return; 
             isKdgAnswering = true;
             clearInterval(kdgVisualTimerInterval);
@@ -984,14 +1467,14 @@
                 currentKdgQIndex++;
                 loadKdgQuestion();
             }, 1500);
-        };
+        }
 
-        window.quitKdgGame = () => {
+        function quitKdgGame() {
             if(confirm("หนูต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่ไหมจ๊ะ?")) {
                 window.speechSynthesis.cancel();
                 endKdgGame();
             }
-        };
+        }
 
         async function endKdgGame() {
             clearInterval(kdgVisualTimerInterval);
@@ -1068,7 +1551,7 @@
             display.innerText = "🏆 ยังไม่มีแชมป์";
         }
 
-        window.startMathGame = () => {
+        function startMathGame() {
             document.getElementById('termSelectionContainer').classList.add('hidden-section');
             document.getElementById('contentDashboard').classList.add('hidden-section');
             document.getElementById('mathGameDashboard').classList.remove('hidden-section');
@@ -1081,7 +1564,7 @@
             document.getElementById('mathTotalScore').innerText = mathScoreTotal;
             
             loadMathQuestion();
-        };
+        }
 
         function loadMathQuestion() {
             if (currentMathQIndex >= 50) {
@@ -1110,7 +1593,7 @@
             }, 100);
         }
 
-        window.submitMathAnswer = (selectedOpt, correctOpt, btnElement) => {
+        function submitMathAnswer(selectedOpt, correctOpt, btnElement) {
             if(isAnswering) return; 
             isAnswering = true;
             clearInterval(visualTimerInterval);
@@ -1141,13 +1624,13 @@
                 currentMathQIndex++;
                 loadMathQuestion();
             }, 1200);
-        };
+        }
 
-        window.quitMathGame = () => {
+        function quitMathGame() {
             if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
                 endMathGame();
             }
-        };
+        }
 
         async function endMathGame() {
             clearInterval(visualTimerInterval);
@@ -1167,37 +1650,6 @@
         }
 
         // --- English Vocab Game Variables & Logic ---
-        const ENG_VOCAB_DB = [
-            {en: "environment", th: "สิ่งแวดล้อม"}, {en: "pollution", th: "มลพิษ"}, {en: "temperature", th: "อุณหภูมิ"}, {en: "earthquake", th: "แผ่นดินไหว"},
-            {en: "experiment", th: "การทดลอง"}, {en: "scientist", th: "นักวิทยาศาสตร์"}, {en: "gravity", th: "แรงโน้มถ่วง"}, {en: "universe", th: "จักรวาล"},
-            {en: "dangerous", th: "อันตราย"}, {en: "difficult", th: "ยาก"}, {en: "expensive", th: "แพง"}, {en: "important", th: "สำคัญ"},
-            {en: "comfortable", th: "สะดวกสบาย"}, {en: "delicious", th: "อร่อย"}, {en: "terrible", th: "แย่มาก"}, {en: "brilliant", th: "ยอดเยี่ยม"},
-            {en: "curious", th: "อยากรู้อยากเห็น"}, {en: "mysterious", th: "ลึกลับ"}, {en: "enormous", th: "ใหญ่โต"}, {en: "communicate", th: "สื่อสาร"},
-            {en: "discover", th: "ค้นพบ"}, {en: "invent", th: "ประดิษฐ์"}, {en: "celebrate", th: "เฉลิมฉลอง"}, {en: "apologize", th: "ขอโทษ"},
-            {en: "encourage", th: "สนับสนุน/ให้กำลังใจ"}, {en: "disappear", th: "หายไป"}, {en: "organize", th: "จัดระเบียบ"}, {en: "participate", th: "เข้าร่วม"},
-            {en: "knowledge", th: "ความรู้"}, {en: "experience", th: "ประสบการณ์"}, {en: "government", th: "รัฐบาล"}, {en: "technology", th: "เทคโนโลยี"},
-            {en: "vocabulary", th: "คำศัพท์"}, {en: "signature", th: "ลายเซ็น"}, {en: "destination", th: "จุดหมายปลายทาง"}, {en: "instrument", th: "เครื่องดนตรี"},
-            {en: "immediately", th: "ทันที"}, {en: "exactly", th: "อย่างแน่นอน"}, {en: "unfortunately", th: "โชคร้ายที่"}, {en: "especially", th: "โดยเฉพาะ"},
-            {en: "adventure", th: "การผจญภัย"}, {en: "beautiful", th: "สวยงาม"}, {en: "courage", th: "ความกล้าหาญ"}, {en: "direction", th: "ทิศทาง"},
-            {en: "education", th: "การศึกษา"}, {en: "familiar", th: "คุ้นเคย"}, {en: "generation", th: "คนรุ่นหลัง/ยุค"}, {en: "hospitality", th: "การต้อนรับ"},
-            {en: "imagination", th: "จินตนาการ"}, {en: "journey", th: "การเดินทาง"}, {en: "language", th: "ภาษา"}, {en: "mountain", th: "ภูเขา"},
-            {en: "natural", th: "ธรรมชาติ"}, {en: "opportunity", th: "โอกาส"}, {en: "passenger", th: "ผู้โดยสาร"}, {en: "question", th: "คำถาม"},
-            {en: "restaurant", th: "ร้านอาหาร"}, {en: "successful", th: "ประสบความสำเร็จ"}, {en: "tradition", th: "ประเพณี"}, {en: "umbrella", th: "ร่ม"},
-            {en: "vacation", th: "วันหยุดพักผ่อน"}, {en: "wonderful", th: "มหัศจรรย์"}, {en: "yesterday", th: "เมื่อวาน"}, {en: "zoology", th: "สัตววิทยา"},
-            {en: "achievement", th: "ความสำเร็จ"}, {en: "behavior", th: "พฤติกรรม"}, {en: "challenge", th: "ความท้าทาย"}, {en: "decision", th: "การตัดสินใจ"},
-            {en: "equipment", th: "อุปกรณ์"}, {en: "favorite", th: "ที่ชื่นชอบ"}, {en: "guarantee", th: "รับประกัน"}, {en: "healthy", th: "สุขภาพดี"},
-            {en: "information", th: "ข้อมูล"}, {en: "jealous", th: "อิจฉา"}, {en: "kilometer", th: "กิโลเมตร"}, {en: "library", th: "ห้องสมุด"},
-            {en: "magazine", th: "นิตยสาร"}, {en: "neighbor", th: "เพื่อนบ้าน"}, {en: "ocean", th: "มหาสมุทร"}, {en: "patient", th: "อดทน/ผู้ป่วย"},
-            {en: "quality", th: "คุณภาพ"}, {en: "remember", th: "จดจำ"}, {en: "society", th: "สังคม"}, {en: "transportation", th: "การคมนาคม"}
-        ];
-
-        let activeEngQuestions = [];   
-        let currentEngQIndex = 0;
-        let engScoreTotal = 0;
-        let engQuestionStartTime = 0;
-        let engVisualTimerInterval = null;
-        let isEngAnswering = false;
-
         function generateEngPool() {
             let shuffledVocab = [...ENG_VOCAB_DB].sort(() => Math.random() - 0.5);
             activeEngQuestions = shuffledVocab.slice(0, 50).map(vocab => {
@@ -1229,7 +1681,7 @@
             display.innerText = "🏆 ยังไม่มีแชมป์";
         }
 
-        window.startEngGame = () => {
+        function startEngGame() {
             document.getElementById('termSelectionContainer').classList.add('hidden-section');
             document.getElementById('contentDashboard').classList.add('hidden-section');
             document.getElementById('engGameDashboard').classList.remove('hidden-section');
@@ -1241,7 +1693,7 @@
             document.getElementById('engTotalScore').innerText = engScoreTotal;
             
             loadEngQuestion();
-        };
+        }
 
         function loadEngQuestion() {
             if (currentEngQIndex >= 50) {
@@ -1272,7 +1724,7 @@
             }, 100);
         }
 
-        window.submitEngAnswer = (selectedOpt, correctOpt, btnElement) => {
+        function submitEngAnswer(selectedOpt, correctOpt, btnElement) {
             if(isEngAnswering) return; 
             isEngAnswering = true;
             clearInterval(engVisualTimerInterval);
@@ -1310,13 +1762,13 @@
                 currentEngQIndex++;
                 loadEngQuestion();
             }, 1200);
-        };
+        }
 
-        window.quitEngGame = () => {
+        function quitEngGame() {
             if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
                 endEngGame();
             }
-        };
+        }
 
         async function endEngGame() {
             clearInterval(engVisualTimerInterval);
@@ -1336,78 +1788,6 @@
         }
 
         // --- Science Game Variables & Logic ---
-        const SCI_QUESTION_DB = [
-            { q: "อะไรคือศูนย์กลางของระบบสุริยะ?", a: "ดวงอาทิตย์", options: ["โลก", "ดวงจันทร์", "ดวงอาทิตย์", "ดาวพฤหัสบดี"] },
-            { q: "ก๊าซใดที่พืชใช้ในการสังเคราะห์แสง?", a: "คาร์บอนไดออกไซด์", options: ["ออกซิเจน", "คาร์บอนไดออกไซด์", "ไนโตรเจน", "ไฮโดรเจน"] },
-            { q: "อวัยวะใดใช้ในการหายใจของปลา?", a: "เหงือก", options: ["ปอด", "ผิวหนัง", "จมูก", "เหงือก"] },
-            { q: "สัตว์ชนิดใดเป็นสัตว์เลี้ยงลูกด้วยนม?", a: "วาฬ", options: ["ฉลาม", "วาฬ", "จระเข้", "เต่า"] },
-            { q: "สสารมีกี่สถานะพื้นฐาน?", a: "3 สถานะ", options: ["2 สถานะ", "3 สถานะ", "4 สถานะ", "5 สถานะ"] },
-            { q: "น้ำมีสถานะเป็นของแข็งเรียกว่าอะไร?", a: "น้ำแข็ง", options: ["ไอน้ำ", "น้ำแข็ง", "น้ำค้าง", "หิมะ"] },
-            { q: "อวัยวะใดทำหน้าที่สูบฉีดเลือด?", a: "หัวใจ", options: ["ปอด", "ตับ", "หัวใจ", "กระเพาะอาหาร"] },
-            { q: "ดาวเคราะห์ใดมีขนาดใหญ่ที่สุดในระบบสุริยะ?", a: "ดาวพฤหัสบดี", options: ["โลก", "ดาวเสาร์", "ดาวพฤหัสบดี", "ดาวยูเรนัส"] },
-            { q: "อะไรช่วยให้พืชมีสีเขียว?", a: "คลอโรฟิลล์", options: ["แคโรทีน", "เซลลูโลส", "คลอโรฟิลล์", "ไซเลม"] },
-            { q: "แมลงมีขากี่ขา?", a: "6 ขา", options: ["4 ขา", "6 ขา", "8 ขา", "10 ขา"] },
-            { q: "แมงมุมมีขากี่ขา?", a: "8 ขา", options: ["4 ขา", "6 ขา", "8 ขา", "10 ขา"] },
-            { q: "แรงที่ดึงดูดสิ่งของตกลงสู่พื้นคือแรงใด?", a: "แรงโน้มถ่วง", options: ["แรงเสียดทาน", "แรงแม่เหล็ก", "แรงโน้มถ่วง", "แรงไฟฟ้า"] },
-            { q: "สิ่งใดเป็นแหล่งพลังงานแสงที่ใหญ่ที่สุดของโลก?", a: "ดวงอาทิตย์", options: ["ดวงจันทร์", "ดวงดาว", "ดวงอาทิตย์", "ไฟฟ้า"] },
-            { q: "อุณหภูมิที่น้ำเดือดคือข้อใด? (องศาเซลเซียส)", a: "100", options: ["0", "50", "100", "200"] },
-            { q: "อุณหภูมิที่น้ำกลายเป็นน้ำแข็งคือข้อใด? (องศาเซลเซียส)", a: "0", options: ["-10", "0", "10", "100"] },
-            { q: "กระดูกชิ้นใดใหญ่ที่สุดในร่างกายมนุษย์?", a: "กระดูกต้นขา", options: ["กระดูกสันหลัง", "กระดูกแขน", "กระดูกต้นขา", "กะโหลกศีรษะ"] },
-            { q: "ระบบใดทำหน้าที่ย่อยอาหาร?", a: "ระบบย่อยอาหาร", options: ["ระบบหายใจ", "ระบบหมุนเวียนเลือด", "ระบบย่อยอาหาร", "ระบบขับถ่าย"] },
-            { q: "วิตามินใดช่วยบำรุงสายตา?", a: "วิตามิน A", options: ["วิตามิน A", "วิตามิน B", "วิตามิน C", "วิตามิน D"] },
-            { q: "โรคเลือดออกตามไรฟันเกิดจากการขาดวิตามินใด?", a: "วิตามิน C", options: ["วิตามิน A", "วิตามิน B", "วิตามิน C", "วิตามิน D"] },
-            { q: "พืชได้รับน้ำและแร่ธาตุผ่านทางส่วนใด?", a: "ราก", options: ["ใบ", "ลำต้น", "ราก", "ดอก"] },
-            { q: "ดาวเคราะห์ดวงใดอยู่ใกล้ดวงอาทิตย์ที่สุด?", a: "ดาวพุธ", options: ["ดาวศุกร์", "โลก", "ดาวอังคาร", "ดาวพุธ"] },
-            { q: "ก๊าซใดมีมากที่สุดในชั้นบรรยากาศโลก?", a: "ไนโตรเจน", options: ["ออกซิเจน", "คาร์บอนไดออกไซด์", "ไนโตรเจน", "อาร์กอน"] },
-            { q: "กลุ่มดาวใดมีรูปร่างคล้ายกระบวยตักน้ำ?", a: "กลุ่มดาวหมีใหญ่", options: ["กลุ่มดาวนายพราน", "กลุ่มดาวหมีใหญ่", "กลุ่มดาวแมงป่อง", "กลุ่มดาวคนคู่"] },
-            { q: "สัตว์ที่กินพืชเป็นอาหารเรียกว่าอะไร?", a: "สัตว์กินพืช (Herbivore)", options: ["สัตว์กินเนื้อ", "สัตว์กินพืช (Herbivore)", "สัตว์กินทั้งพืชและสัตว์", "ปรสิต"] },
-            { q: "สัตว์ที่ออกลูกเป็นไข่คือข้อใด?", a: "นก", options: ["สุนัข", "แมว", "ม้า", "นก"] },
-            { q: "อวัยวะใดของนกที่ใช้ในการบิน?", a: "ปีก", options: ["หาง", "ปีก", "ขา", "จะงอยปาก"] },
-            { q: "สายรุ้งมีกี่สี?", a: "7 สี", options: ["5 สี", "6 สี", "7 สี", "8 สี"] },
-            { q: "เครื่องมือที่ใช้ดูดาวเรียกว่าอะไร?", a: "กล้องโทรทรรศน์", options: ["กล้องจุลทรรศน์", "กล้องโทรทรรศน์", "แว่นขยาย", "เรดาร์"] },
-            { q: "เครื่องมือที่ใช้ดูสิ่งมีชีวิตขนาดเล็กเรียกว่าอะไร?", a: "กล้องจุลทรรศน์", options: ["กล้องโทรทรรศน์", "แว่นขยาย", "เรดาร์", "กล้องจุลทรรศน์"] },
-            { q: "สิ่งที่บอกทิศทางเหนือใต้คืออะไร?", a: "เข็มทิศ", options: ["นาฬิกา", "ปรอทวัดไข้", "เข็มทิศ", "บารอมิเตอร์"] },
-            { q: "โลหะชนิดใดถูกดูดด้วยแม่เหล็กได้?", a: "เหล็ก", options: ["ทองคำ", "เงิน", "ทองแดง", "เหล็ก"] },
-            { q: "ส่วนใดของดอกไม้ที่เจริญไปเป็นผล?", a: "รังไข่", options: ["กลีบดอก", "เกสรตัวผู้", "รังไข่", "ยอดเกสรตัวเมีย"] },
-            { q: "สัตว์ชนิดใดหายใจด้วยปอดและผิวหนัง?", a: "กบ", options: ["ปลา", "จระเข้", "กบ", "เต่า"] },
-            { q: "โรคไข้เลือดออกมียุงชนิดใดเป็นพาหะ?", a: "ยุงลาย", options: ["ยุงรำคาญ", "ยุงก้นปล่อง", "ยุงลาย", "ยุงเสือ"] },
-            { q: "วัสดุใดเป็นฉนวนไฟฟ้า?", a: "พลาสติก", options: ["เหล็ก", "ทองแดง", "น้ำเกลือ", "พลาสติก"] },
-            { q: "วัสดุใดเป็นตัวนำไฟฟ้าที่ดีที่สุด?", a: "เงิน", options: ["เหล็ก", "ทองแดง", "เงิน", "อลูมิเนียม"] },
-            { q: "ดวงจันทร์หมุนรอบสิ่งใด?", a: "โลก", options: ["ดวงอาทิตย์", "ดาวอังคาร", "โลก", "ดาวศุกร์"] },
-            { q: "ปรากฏการณ์ที่ดวงจันทร์บังดวงอาทิตย์เรียกว่าอะไร?", a: "สุริยุปราคา", options: ["จันทรุปราคา", "สุริยุปราคา", "ฝนดาวตก", "รุ้งกินน้ำ"] },
-            { q: "สัตว์ชนิดใดสามารถเปลี่ยนสีผิวให้กลมกลืนกับสภาพแวดล้อมได้?", a: "กิ้งก่า", options: ["งู", "กิ้งก่า", "จระเข้", "เต่า"] },
-            { q: "หินชนิดใดเกิดจากการทับถมของซากพืชซากสัตว์?", a: "หินชั้น (หินตะกอน)", options: ["หินอัคนี", "หินแปร", "หินชั้น (หินตะกอน)", "หินภูเขาไฟ"] },
-            { q: "ของเหลวที่ออกมาจากภูเขาไฟขณะปะทุเรียกว่าอะไร?", a: "ลาวา", options: ["แมกมา", "โคลนเดือด", "ลาวา", "น้ำแร่"] },
-            { q: "ข้อใดเป็นพลังงานหมุนเวียน?", a: "พลังงานลม", options: ["น้ำมันหิน", "ถ่านหิน", "ก๊าซธรรมชาติ", "พลังงานลม"] },
-            { q: "อะไรคือหน่วยที่เล็กที่สุดของสิ่งมีชีวิต?", a: "เซลล์", options: ["เนื้อเยื่อ", "อวัยวะ", "เซลล์", "อะตอม"] },
-            { q: "ส่วนประกอบใดของเลือดทำหน้าที่ลำเลียงออกซิเจน?", a: "เม็ดเลือดแดง", options: ["เม็ดเลือดขาว", "เกล็ดเลือด", "น้ำเลือด", "เม็ดเลือดแดง"] },
-            { q: "ส่วนประกอบใดของเลือดทำหน้าที่ต่อสู้กับเชื้อโรค?", a: "เม็ดเลือดขาว", options: ["เม็ดเลือดแดง", "เกล็ดเลือด", "เม็ดเลือดขาว", "น้ำเลือด"] },
-            { q: "โรคมาลาเรียมียุงชนิดใดเป็นพาหะ?", a: "ยุงก้นปล่อง", options: ["ยุงลาย", "ยุงรำคาญ", "ยุงก้นปล่อง", "ยุงเสือ"] },
-            { q: "อาหารหลัก 5 หมู่ หมวดใดให้พลังงานมากที่สุด?", a: "ไขมัน", options: ["โปรตีน", "คาร์โบไฮเดรต", "ไขมัน", "วิตามิน"] },
-            { q: "ใครคือผู้ค้นพบแรงโน้มถ่วงของโลก?", a: "ไอแซก นิวตัน", options: ["อัลเบิร์ต ไอน์สไตน์", "โทมัส เอดิสัน", "ไอแซก นิวตัน", "กาลิเลโอ"] },
-            { q: "ดาวศุกร์มีฉายาว่าอะไร?", a: "ฝาแฝดของโลก", options: ["ดาวเคราะห์สีแดง", "ฝาแฝดของโลก", "ดาวเคราะห์ยักษ์", "ดาวแห่งความตาย"] },
-            { q: "สิ่งมีชีวิตใดช่วยย่อยสลายซากพืชซากสัตว์?", a: "เห็ดราและแบคทีเรีย", options: ["แมลงวัน", "หนอน", "เห็ดราและแบคทีเรีย", "นกแร้ง"] },
-            { q: "ฤดูกาลบนโลกเกิดจากสาเหตุใด?", a: "แกนโลกเอียงและโคจรรอบดวงอาทิตย์", options: ["โลกหมุนรอบตัวเอง", "ระยะห่างจากดวงอาทิตย์", "แกนโลกเอียงและโคจรรอบดวงอาทิตย์", "ดวงจันทร์โคจรรอบโลก"] },
-            { q: "ข้อใดไม่ใช่สถานะของสสาร?", a: "พลังงาน", options: ["ของแข็ง", "ของเหลว", "ก๊าซ", "พลังงาน"] },
-            { q: "ก๊าซที่ทำให้เกิดสภาวะเรือนกระจกมากที่สุดคือข้อใด?", a: "คาร์บอนไดออกไซด์", options: ["ออกซิเจน", "คาร์บอนไดออกไซด์", "ไนโตรเจน", "ฮีเลียม"] },
-            { q: "เมื่อเป่าลูกโป่ง ลูกโป่งพองตัวขึ้นเพราะอะไร?", a: "อากาศต้องการที่อยู่", options: ["อากาศมีน้ำหนัก", "อากาศไม่มีสี", "อากาศต้องการที่อยู่", "อากาศมีแรงดันลดลง"] },
-            { q: "แรงเสียดทานมีประโยชน์ในข้อใด?", a: "การเดินไม่ให้ลื่นล้ม", options: ["การลากของให้ง่ายขึ้น", "การว่ายน้ำให้เร็วขึ้น", "การเดินไม่ให้ลื่นล้ม", "เครื่องจักรทำงานลื่นไหล"] },
-            { q: "ค้างคาวหาอาหารในเวลากลางคืนโดยใช้อะไร?", a: "คลื่นเสียง", options: ["สายตาที่มองเห็นในที่มืด", "การดมกลิ่น", "คลื่นเสียง", "การรับแรงสั่นสะเทือนจากพื้น"] },
-            { q: "วัฏจักรของน้ำ ข้อใดคือการที่น้ำกลายเป็นไอ?", a: "การระเหย", options: ["การควบแน่น", "การระเหย", "การตกตะกอน", "การหลอมเหลว"] },
-            { q: "วัฏจักรของผีเสื้อ ระยะใดที่กินอาหารเก่งที่สุด?", a: "หนอน", options: ["ไข่", "หนอน", "ดักแด้", "ตัวเต็มวัย"] },
-            { q: "สัตว์ในข้อใดมีการจำศีลในฤดูหนาว?", a: "หมีขั้วโลก", options: ["ช้าง", "หมีขั้วโลก", "ยีราฟ", "นกกระจอกเทศ"] },
-            { q: "ฟันของมนุษย์ชุดแรกเรียกว่าอะไร?", a: "ฟันน้ำนม", options: ["ฟันแท้", "ฟันคุด", "ฟันกราม", "ฟันน้ำนม"] },
-            { q: "ข้อใดคือแหล่งน้ำจืดที่ใหญ่ที่สุดบนโลก?", a: "ธารน้ำแข็ง", options: ["แม่น้ำ", "ทะเลสาบ", "น้ำบาดาล", "ธารน้ำแข็ง"] },
-            { q: "ข้อใดเป็นลักษณะของสัตว์เลื้อยคลาน?", a: "มีเกล็ดปกคลุมลำตัว", options: ["หายใจด้วยเหงือก", "ออกลูกเป็นตัวเสมอ", "มีเกล็ดปกคลุมลำตัว", "เป็นสัตว์เลือดอุ่น"] }
-        ];
-
-        let activeSciQuestions = [];   
-        let currentSciQIndex = 0;
-        let sciScoreTotal = 0;
-        let sciQuestionStartTime = 0;
-        let sciVisualTimerInterval = null;
-        let isSciAnswering = false;
-
         function generateSciPool() {
             let shuffledQuestions = [...SCI_QUESTION_DB].sort(() => Math.random() - 0.5);
             activeSciQuestions = shuffledQuestions.slice(0, 50).map(qData => {
@@ -1433,7 +1813,7 @@
             display.innerText = "🏆 ยังไม่มีแชมป์";
         }
 
-        window.startSciGame = () => {
+        function startSciGame() {
             document.getElementById('termSelectionContainer').classList.add('hidden-section');
             document.getElementById('contentDashboard').classList.add('hidden-section');
             document.getElementById('sciGameDashboard').classList.remove('hidden-section');
@@ -1445,7 +1825,7 @@
             document.getElementById('sciTotalScore').innerText = sciScoreTotal;
             
             loadSciQuestion();
-        };
+        }
 
         function loadSciQuestion() {
             if (currentSciQIndex >= 50 || currentSciQIndex >= activeSciQuestions.length) {
@@ -1476,7 +1856,7 @@
             }, 100);
         }
 
-        window.submitSciAnswer = (selectedOpt, correctOpt, btnElement) => {
+        function submitSciAnswer(selectedOpt, correctOpt, btnElement) {
             if(isSciAnswering) return; 
             isSciAnswering = true;
             clearInterval(sciVisualTimerInterval);
@@ -1514,13 +1894,13 @@
                 currentSciQIndex++;
                 loadSciQuestion();
             }, 1200);
-        };
+        }
 
-        window.quitSciGame = () => {
+        function quitSciGame() {
             if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
                 endSciGame();
             }
-        };
+        }
 
         async function endSciGame() {
             clearInterval(sciVisualTimerInterval);
@@ -1540,96 +1920,6 @@
         }
 
         // --- Thai Language Game Variables & Logic ---
-        const THAI_QUESTION_DB = [
-            { q: "คำราชาศัพท์ของ 'กิน' คือข้อใด?", a: "เสวย", options: ["เสวย", "บรรทม", "ทรงพระดำเนิน", "ประทับ"] },
-            { q: "คำราชาศัพท์ของ 'นอน' คือข้อใด?", a: "บรรทม", options: ["บรรทม", "เสวย", "ประทับ", "สรงน้ำ"] },
-            { q: "คำราชาศัพท์ของ 'อาบน้ำ' คือข้อใด?", a: "สรงน้ำ", options: ["สรงน้ำ", "ชำระพระวรกาย", "เสวยน้ำ", "บรรทม"] },
-            { q: "คำราชาศัพท์ของ 'เดิน' คือข้อใด?", a: "ทรงพระดำเนิน", options: ["เสด็จ", "ทรงพระดำเนิน", "ยาตรา", "ประทับ"] },
-            { q: "คำราชาศัพท์ของ 'ป่วย' คือข้อใด?", a: "ประชวร", options: ["ประชวร", "พระโรคา", "ทรงพระประชวร", "พระอาพาธ"] },
-            { q: "คำราชาศัพท์ของ 'ตาย' (สำหรับพระมหากษัตริย์) คือข้อใด?", a: "สวรรคต", options: ["สวรรคต", "ทิวงคต", "สิ้นพระชนม์", "มรณภาพ"] },
-            { q: "คำว่า 'พระเนตร' หมายถึงอวัยวะใด?", a: "ตา", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระกรรณ' หมายถึงอวัยวะใด?", a: "หู", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระนาสิก' หมายถึงอวัยวะใด?", a: "จมูก", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระโอษฐ์' หมายถึงอวัยวะใด?", a: "ปาก", options: ["ตา", "หู", "จมูก", "ปาก"] },
-            { q: "คำว่า 'พระหัตถ์' หมายถึงอวัยวะใด?", a: "มือ", options: ["แขน", "มือ", "เท้า", "ขา"] },
-            { q: "คำว่า 'พระบาท' หมายถึงอวัยวะใด?", a: "เท้า", options: ["แขน", "มือ", "เท้า", "ขา"] },
-            { q: "คำว่า 'พระเศียร' หมายถึงอวัยวะใด?", a: "ศีรษะ", options: ["หน้าผาก", "ศีรษะ", "คอ", "ไหล่"] },
-            { q: "คำว่า 'พระเกศา' หมายถึงสิ่งใด?", a: "เส้นผม", options: ["เส้นผม", "ขนคิ้ว", "หนวด", "เครา"] },
-            { q: "คำว่า 'พระพักตร์' หมายถึงอวัยวะใด?", a: "ใบหน้า", options: ["หน้าผาก", "ใบหน้า", "แก้ม", "คาง"] },
-            { q: "คำว่า 'พระทนต์' หมายถึงอวัยวะใด?", a: "ฟัน", options: ["ฟัน", "ลิ้น", "ริมฝีปาก", "เหงือก"] },
-            { q: "คำว่า 'พระอุระ' หมายถึงอวัยวะใด?", a: "หน้าอก", options: ["หน้าอก", "แผ่นหลัง", "หน้าท้อง", "เอว"] },
-            { q: "คำว่า 'พระนาภี' หมายถึงอวัยวะใด?", a: "สะดือ/ท้อง", options: ["หน้าอก", "สะดือ/ท้อง", "หลัง", "ไหล่"] },
-            { q: "คำราชาศัพท์ของ 'แว่นตา' คือข้อใด?", a: "ฉลองพระเนตร", options: ["ฉลองพระเนตร", "พระแว่นตา", "ฉลองพระกรรณ", "พระทรรศนะ"] },
-            { q: "คำราชาศัพท์ของ 'เสื้อ' คือข้อใด?", a: "ฉลองพระองค์", options: ["ฉลองพระองค์", "พระภูษา", "ฉลองพระบาท", "พระสนับเพลา"] },
-            { q: "คำราชาศัพท์ของ 'กางเกง' คือข้อใด?", a: "พระสนับเพลา", options: ["พระภูษา", "พระสนับเพลา", "ฉลองพระองค์", "พระภูษาทรง"] },
-            { q: "คำราชาศัพท์ของ 'รองเท้า' คือข้อใด?", a: "ฉลองพระบาท", options: ["พระบาท", "ฉลองพระบาท", "รองพระบาท", "พระสนับเพลา"] },
-            { q: "คำราชาศัพท์ของ 'หมวก' คือข้อใด?", a: "พระมาลา", options: ["พระเศียร", "ฉลองพระเศียร", "พระมาลา", "พระกลด"] },
-            { q: "คำราชาศัพท์ของ 'ร่ม' คือข้อใด?", a: "พระกลด", options: ["พระมาลา", "ฉลองพระองค์", "พระกลด", "พระฉัตร"] },
-            { q: "คำราชาศัพท์ของ 'ยา' คือข้อใด?", a: "พระโอสถ", options: ["พระโอสถ", "ยาหลวง", "พระโรคา", "ฉลองพระโอสถ"] },
-            { q: "คำราชาศัพท์ของ 'โกรธ' คือข้อใด?", a: "กริ้ว", options: ["กริ้ว", "ทรงพระโกรธ", "ขัดเคือง", "พิโรธ"] },
-            { q: "คำราชาศัพท์ของ 'ร้องไห้' คือข้อใด?", a: "ทรงพระกันแสง", options: ["ทรงพระกันแสง", "ทรงร้องไห้", "น้ำพระเนตรตก", "ทรงกรรแสง"] },
-            { q: "คำราชาศัพท์ของ 'หัวเราะ' คือข้อใด?", a: "ทรงพระสรวล", options: ["ทรงพระสรวล", "แย้มพระสรวล", "ทรงพระสำราญ", "ทรงพระขำ"] },
-            { q: "คำราชาศัพท์ของ 'ยิ้ม' คือข้อใด?", a: "แย้มพระสรวล", options: ["ทรงพระสรวล", "แย้มพระสรวล", "ทรงแย้ม", "พระรอยยิ้ม"] },
-            { q: "คำราชาศัพท์ของ 'จดหมาย' คือข้อใด?", a: "พระราชหัตถเลขา", options: ["พระราชหัตถเลขา", "พระบรมราโชวาท", "พระราชสาส์น", "พระราชนิพนธ์"] },
-            { q: "คำราชาศัพท์ของ 'ให้' (พระมหากษัตริย์มอบให้) คือข้อใด?", a: "พระราชทาน", options: ["ถวาย", "พระราชทาน", "น้อมเกล้าฯ", "ทูลเกล้าฯ"] },
-            { q: "สำนวน 'ไก่เห็นตีนงู งูเห็นนมไก่' หมายถึงอะไร?", a: "ต่างฝ่ายต่างรู้ความลับของกันและกัน", options: ["ต่างฝ่ายต่างรู้ความลับของกันและกัน", "คนที่มีความรู้เท่าเทียมกัน", "การทำอะไรที่ไม่เกิดประโยชน์", "คนสองคนที่เกลียดชังกัน"] },
-            { q: "สำนวน 'ขี่ช้างจับตั๊กแตน' หมายถึงอะไร?", a: "ลงทุนมากแต่ได้ผลน้อย", options: ["ลงทุนมากแต่ได้ผลน้อย", "ทำเรื่องเล็กให้เป็นเรื่องใหญ่", "การกระทำที่กล้าหาญ", "การทำงานที่ยากลำบาก"] },
-            { q: "สำนวน 'น้ำขึ้นให้รีบตัก' หมายถึงอะไร?", a: "เมื่อมีโอกาสดีควรเร่งทำ", options: ["เมื่อมีโอกาสดีควรเร่งทำ", "ทำอะไรให้รวดเร็วทันใจ", "การเก็บออมเงินทอง", "การทำงานแข่งกับเวลา"] },
-            { q: "สำนวน 'ชี้นกเป็นนก ชี้ไม้เป็นไม้' หมายถึงอะไร?", a: "ว่านอนสอนง่าย คล้อยตามไปทุกอย่าง", options: ["ว่านอนสอนง่าย คล้อยตามไปทุกอย่าง", "คนที่มีอำนาจมากสั่งอะไรก็ได้", "คนที่พูดจาไม่น่าเชื่อถือ", "การอธิบายสิ่งที่เห็นให้คนอื่นฟัง"] },
-            { q: "สำนวน 'สีซอให้ควายฟัง' หมายถึงอะไร?", a: "สั่งสอนคนโง่มักไม่ได้ผล", options: ["สั่งสอนคนโง่มักไม่ได้ผล", "การเล่นดนตรีให้สัตว์ฟัง", "การทำดีแต่ไม่มีใครเห็น", "พูดเรื่องที่ไม่ควรพูด"] },
-            { q: "สำนวน 'จับปลาสองมือ' หมายถึงอะไร?", a: "ทำสองอย่างพร้อมกันจนล้มเหลว", options: ["ทำสองอย่างพร้อมกันจนล้มเหลว", "คนที่มีความสามารถมาก", "การโลภมากอยากได้ทุกอย่าง", "การหาเงินได้หลายทาง"] },
-            { q: "สำนวน 'ดินพอกหางหมู' หมายถึงอะไร?", a: "งานที่คั่งค้างพอกพูนขึ้นเรื่อยๆ", options: ["งานที่คั่งค้างพอกพูนขึ้นเรื่อยๆ", "ความสกปรกที่ไม่ยอมทำความสะอาด", "คนขี้เกียจที่ไม่ยอมอาบน้ำ", "หนี้สินที่เพิ่มมากขึ้น"] },
-            { q: "สำนวน 'หนีเสือปะจระเข้' หมายถึงอะไร?", a: "หนีอันตรายอย่างหนึ่งไปพบอีกอย่างหนึ่ง", options: ["หนีอันตรายอย่างหนึ่งไปพบอีกอย่างหนึ่ง", "คนที่มีศัตรูอยู่รอบด้าน", "รอดพ้นจากอันตรายมาได้อย่างหวุดหวิด", "การผจญภัยในป่าลึก"] },
-            { q: "สำนวน 'เข็นครกขึ้นภูเขา' หมายถึงอะไร?", a: "ทำงานที่ยากลำบากเกินความสามารถ", options: ["ทำงานที่ยากลำบากเกินความสามารถ", "คนที่มีความพยายามสูงมาก", "การลงโทษในสมัยโบราณ", "ทำเรื่องง่ายให้กลายเป็นเรื่องยาก"] },
-            { q: "สำนวน 'มือไม่พายเอาเท้าราน้ำ' หมายถึงอะไร?", a: "ไม่ช่วยทำแล้วยังขัดขวาง", options: ["ไม่ช่วยทำแล้วยังขัดขวาง", "คนที่ชอบเล่นน้ำ", "การกลั่นแกล้งผู้อื่นให้เดือดร้อน", "ทำงานด้วยความเกียจคร้าน"] },
-            { q: "สำนวน 'สาวไส้ให้กากิน' หมายถึงอะไร?", a: "เอาความลับของพวกตนไปแฉให้คนอื่นฟัง", options: ["เอาความลับของพวกตนไปแฉให้คนอื่นฟัง", "การให้ร้ายผู้อื่นให้เสียชื่อเสียง", "การทำบุญทำทานให้สัตว์", "คนที่พูดจาเปิดเผยไม่มีความลับ"] },
-            { q: "สำนวน 'กินบนเรือนขี้รดบนหลังคา' หมายถึงอะไร?", a: "คนเนรคุณที่ทำร้ายผู้มีพระคุณ", options: ["คนเนรคุณที่ทำร้ายผู้มีพระคุณ", "คนที่ทำตัวสกปรกไม่รักษาความสะอาด", "การทำลายข้าวของของผู้อื่น", "คนที่ชอบทำตัวมีปัญหาในบ้าน"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "กะเพรา", options: ["กะเพรา", "กระเพรา", "กะเพา", "กระเพา"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "สังเกต", options: ["สังเกตุ", "สังเกต", "สังกต", "สัณเกต"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อนุญาต", options: ["อนุญาติ", "อนุญาต", "อนุญาตร", "อนุณาต"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ศีรษะ", options: ["ศร๊ษะ", "ศีรษะ", "ศรีษะ", "สีสะ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อัญชัน", options: ["อัญชัน", "อัญชัญ", "อันชัน", "อันชัญ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ไอศกรีม", options: ["ไอศรีม", "ไอศกรีม", "ไอศครีม", "ไอสกรีม"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ทยอย", options: ["ทยอย", "ทะยอย", "ทระยอย", "ทะย่อย"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "โอกาส", options: ["โอกาศ", "โอกาส", "โอกาษ", "โอกาด"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "รสชาติ", options: ["รสชาด", "รสชาติ", "รสชาต", "รศชาติ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "กฎหมาย", options: ["กฏหมาย", "กฎหมาย", "กะหมาย", "กฐหมาย"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ผูกพัน", options: ["ผูกพันธ์", "ผูกพัน", "ผูกพรรณ", "ถูกพัน"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "สัมภาษณ์", options: ["สัมภาษณ์", "สัมพาด", "สัมภาส", "สัมภาษ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "เครื่องสำอาง", options: ["เครื่องสำอางค์", "เครื่องสำอาง", "เครื่องสำอางง", "เครื่องสำอางก์"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อานิสงส์", options: ["อานิสงฆ์", "อานิสงค์", "อานิสงส์", "อานิสสงค์"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อะไหล่", options: ["อะไหล่", "อาไหล่", "อไหล่", "อะไหล"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "ทะเลสาบ", options: ["ทะเลสาป", "ทะเลสาบ", "ทะเลสาร์บ", "ทะเลทราบ"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "อินเทอร์เน็ต", options: ["อินเตอร์เน็ต", "อินเทอร์เน็ต", "อินเตอเน็ต", "อินเทอเน็ต"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "คลินิก", options: ["คลิกนิก", "คินิก", "คลีนิค", "คลินิก"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "มุกตลก", options: ["มุขตลก", "มุกตลก", "หมุกตลก", "มุคตลก"] },
-            { q: "คำในข้อใดเขียนถูกต้อง?", a: "กงสุล", options: ["กงศุล", "กงสุน", "กงสุล", "กงสูน"] },
-            { q: "คำว่า 'บิดา' หมายถึงใคร?", a: "พ่อ", options: ["พ่อ", "แม่", "ปู่", "ตา"] },
-            { q: "คำว่า 'มารดา' หมายถึงใคร?", a: "แม่", options: ["พ่อ", "แม่", "ย่า", "ยาย"] },
-            { q: "คำว่า 'บุตร' หมายถึงใคร?", a: "ลูกชาย", options: ["ลูกชาย", "ลูกสาว", "หลานชาย", "น้องชาย"] },
-            { q: "คำว่า 'ธิดา' หมายถึงใคร?", a: "ลูกสาว", options: ["ลูกชาย", "ลูกสาว", "หลานสาว", "น้องสาว"] },
-            { q: "คำว่า 'เชษฐา' หมายถึงใคร?", a: "พี่ชาย", options: ["พี่ชาย", "น้องชาย", "พี่สาว", "น้องสาว"] },
-            { q: "คำว่า 'อนุชา' หมายถึงใคร?", a: "น้องชาย", options: ["พี่ชาย", "น้องชาย", "พี่สาว", "น้องสาว"] },
-            { q: "คำว่า 'พระอัยกา' หมายถึงใคร?", a: "ปู่ หรือ ตา", options: ["ย่า หรือ ยาย", "ปู่ หรือ ตา", "ลุง หรือ อา", "พ่อ หรือ แม่"] },
-            { q: "คำว่า 'พระอัยยิกา' หมายถึงใคร?", a: "ย่า หรือ ยาย", options: ["ปู่ หรือ ตา", "ย่า หรือ ยาย", "ป้า หรือ น้า", "พ่อ หรือ แม่"] },
-            { q: "คำว่า 'สุกร' หมายถึงสัตว์ชนิดใด?", a: "หมู", options: ["หมา", "แมว", "หมู", "วัว"] },
-            { q: "คำว่า 'โค' หมายถึงสัตว์ชนิดใด?", a: "วัว", options: ["ควาย", "วัว", "ม้า", "ช้าง"] },
-            { q: "คำว่า 'กระบือ' หมายถึงสัตว์ชนิดใด?", a: "ควาย", options: ["วัว", "ควาย", "แรด", "ม้า"] },
-            { q: "คำว่า 'สุนัข' หมายถึงสัตว์ชนิดใด?", a: "หมา", options: ["แมว", "หมา", "กระต่าย", "หนู"] },
-            { q: "คำว่า 'วิฬาร์' หมายถึงสัตว์ชนิดใด?", a: "แมว", options: ["หมา", "แมว", "หนู", "นก"] },
-            { q: "คำว่า 'มุสิกะ' หมายถึงสัตว์ชนิดใด?", a: "หนู", options: ["กระรอก", "หนู", "กระต่าย", "ค้างคาว"] },
-            { q: "คำว่า 'กุญชร' หมายถึงสัตว์ชนิดใด?", a: "ช้าง", options: ["แรด", "ช้าง", "ฮิปโป", "ม้า"] },
-            { q: "คำว่า 'อาชา' หมายถึงสัตว์ชนิดใด?", a: "ม้า", options: ["ล่อ", "ม้า", "ลา", "อูฐ"] },
-            { q: "คำว่า 'ปักษี' หมายถึงสัตว์ชนิดใด?", a: "นก", options: ["ปลา", "นก", "ค้างคาว", "ผีเสื้อ"] }
-        ];
-
-        let activeThaiQuestions = [];   
-        let currentThaiQIndex = 0;
-        let thaiScoreTotal = 0;
-        let thaiQuestionStartTime = 0;
-        let thaiVisualTimerInterval = null;
-        let isThaiAnswering = false;
-
         function generateThaiPool() {
             let shuffledQuestions = [...THAI_QUESTION_DB].sort(() => Math.random() - 0.5);
             activeThaiQuestions = shuffledQuestions.slice(0, 50).map(qData => {
@@ -1655,7 +1945,7 @@
             display.innerText = "🏆 ยังไม่มีแชมป์";
         }
 
-        window.startThaiGame = () => {
+        function startThaiGame() {
             document.getElementById('termSelectionContainer').classList.add('hidden-section');
             document.getElementById('contentDashboard').classList.add('hidden-section');
             document.getElementById('thaiGameDashboard').classList.remove('hidden-section');
@@ -1667,7 +1957,7 @@
             document.getElementById('thaiTotalScore').innerText = thaiScoreTotal;
             
             loadThaiQuestion();
-        };
+        }
 
         function loadThaiQuestion() {
             if (currentThaiQIndex >= 50 || currentThaiQIndex >= activeThaiQuestions.length) {
@@ -1698,7 +1988,7 @@
             }, 100);
         }
 
-        window.submitThaiAnswer = (selectedOpt, correctOpt, btnElement) => {
+        function submitThaiAnswer(selectedOpt, correctOpt, btnElement) {
             if(isThaiAnswering) return; 
             isThaiAnswering = true;
             clearInterval(thaiVisualTimerInterval);
@@ -1736,13 +2026,13 @@
                 currentThaiQIndex++;
                 loadThaiQuestion();
             }, 1200);
-        };
+        }
 
-        window.quitThaiGame = () => {
+        function quitThaiGame() {
             if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
                 endThaiGame();
             }
-        };
+        }
 
         async function endThaiGame() {
             clearInterval(thaiVisualTimerInterval);
@@ -1761,187 +2051,7 @@
             fetchTopThaiScorer();
         }
 
-        // --- Content loading ---
-        async function loadTermSettings() {
-            const settingsData = await fetchDB('termSettings');
-            termSettingsData = settingsData || {};
-            const customData = await fetchDB('customTerms');
-            customTermsData = objToArray(customData) || [];
-        }
-
-        const getYouTubeEmbedUrl = (url) => { 
-            if(!url) return null;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            const match = url.match(regExp);
-            if (match && match[2].length === 11) {
-                return `https://www.youtube.com/embed/${match[2]}`;
-            }
-            return null;
-        };
-        
-        const escapeHtml = (unsafe) => { 
-            if (!unsafe) return "";
-            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        };
-        
-        const createNewsCardHTML = (news) => {
-            const dateStr = new Date(news.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-            const ytEmbed = getYouTubeEmbedUrl(news.youtubeUrl);
-            const isDashboard = news.location === 'dashboard';
-            
-            const cardStyle = isDashboard 
-                ? "bg-white p-6 md:p-8 rounded-[30px] border-4 border-indigo-50 shadow-md hover:shadow-lg transition text-left"
-                : "bg-white p-5 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition text-left";
-
-            return `
-            <div class="${cardStyle}">
-                <div class="flex items-center gap-2 text-xs font-bold mb-3 ${isDashboard ? 'text-indigo-500' : 'text-gray-400'}">
-                    <i class="${isDashboard ? 'fas fa-graduation-cap text-lg' : 'far fa-clock'}"></i> 
-                    ${isDashboard ? 'ประกาศจากคุณครู :' : ''} ${dateStr}
-                </div>
-                <p class="text-gray-700 whitespace-pre-wrap font-medium mb-4 ${isDashboard ? 'text-lg' : ''}">${news.text}</p>
-                
-                ${news.imageUrl ? `<img src="${news.imageUrl}" onerror="this.style.display='none'" class="w-full rounded-2xl mb-4 max-h-[400px] object-cover border border-gray-200">` : ''}
-                
-                ${ytEmbed ? `<div class="aspect-video w-full rounded-2xl overflow-hidden mb-4 border border-gray-200 shadow-inner">
-                    <iframe width="100%" height="100%" src="${ytEmbed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>` : ''}
-
-                ${news.codeSnippet ? `
-                <div class="mt-4 text-left">
-                    <div class="bg-slate-700 text-slate-300 text-[10px] uppercase font-bold px-4 py-2 rounded-t-xl w-fit flex items-center gap-2"><i class="fas fa-code"></i> โค้ดตัวอย่าง</div>
-                    <pre class="bg-slate-800 text-green-400 p-4 rounded-b-xl rounded-tr-xl overflow-x-auto font-mono text-sm shadow-inner whitespace-pre-wrap border border-slate-700"><code>${escapeHtml(news.codeSnippet)}</code></pre>
-                </div>` : ''}
-
-                ${news.readMoreUrl ? `
-                <div class="mt-4 text-left">
-                    <a href="${escapeHtml(news.readMoreUrl)}" target="_blank" class="inline-block bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-bold py-2 px-4 rounded-xl transition text-sm">
-                        <i class="fas fa-external-link-alt mr-1"></i> อ่านรายละเอียดเพิ่มเติม
-                    </a>
-                </div>` : ''}
-            </div>`;
-        };
-
-        const renderPublicFeed = () => {
-            const container = document.getElementById('publicNewsContainer');
-            const filteredData = newsData.filter(n => n.location === 'login').sort((a, b) => b.timestamp - a.timestamp);
-            if (filteredData.length === 0) {
-                container.innerHTML = `<div class="p-6 text-center text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-300">ยังไม่มีข่าวสารในขณะนี้</div>`;
-                return;
-            }
-            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
-        };
-
-        const renderDashboardFeed = () => {
-            const container = document.getElementById('dashboardNewsContainer');
-            const filteredData = newsData.filter(n => n.location === 'dashboard').sort((a, b) => b.timestamp - a.timestamp);
-            if (filteredData.length === 0) {
-                container.innerHTML = ``; 
-                return;
-            }
-            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
-        };
-
-        const renderAdminNews = () => {
-            const container = document.getElementById('adminNewsContainer');
-            if (newsData.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 text-center py-4">ไม่มีรายการ</p>`;
-                return;
-            }
-
-            const sortedData = [...newsData].sort((a, b) => b.timestamp - a.timestamp);
-
-            container.innerHTML = sortedData.map(news => `
-                <div class="bg-white p-4 rounded-2xl border flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div class="flex-grow overflow-hidden">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="px-2 py-1 text-[10px] font-bold rounded ${news.location === 'dashboard' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}">
-                                ${news.location === 'dashboard' ? '🎓 หน้าห้องเรียน' : '📢 หน้าแรกล็อกอิน'}
-                            </span>
-                        </div>
-                        <p class="font-bold text-gray-800 line-clamp-2">${news.text}</p>
-                    </div>
-                    <div class="flex gap-2 whitespace-nowrap">
-                        <button type="button" onclick="editNewsItem('${news.id}')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition text-sm font-bold">แก้ไข</button>
-                        <button type="button" onclick="deleteNewsItem('${news.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition text-sm font-bold">ลบ</button>
-                    </div>
-                </div>`).join('');
-        };
-
-        async function loadNewsData() {
-            const data = await fetchDB('news');
-            if (data === undefined) {
-                const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
-                newsData = (localData || []).map(n => ({...n, location: n.location || 'login'}));
-            } else if (data === null) {
-                newsData = [];
-            } else {
-                newsData = objToArray(data).map(n => ({...n, location: n.location || 'login'}));
-            }
-            renderPublicFeed();
-            renderDashboardFeed();
-            renderAdminNews();
-        }
-
-        document.getElementById('newsForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const location = document.getElementById('newsLocation').value;
-            const text = document.getElementById('newsText').value;
-            const imageUrl = document.getElementById('newsImage').value;
-            const youtubeUrl = document.getElementById('newsYoutube').value;
-            const codeSnippet = document.getElementById('newsCode').value;
-            const readMoreUrl = document.getElementById('newsReadMore').value;
-            const editId = document.getElementById('editNewsId').value;
-
-            const payload = { location, text, imageUrl, youtubeUrl, codeSnippet, readMoreUrl, timestamp: Date.now() };
-
-            if (editId) {
-                await fetchDB(`news/${editId}`, 'PATCH', payload);
-                showMessage("แก้ไขประกาศสำเร็จ");
-            } else {
-                await fetchDB('news', 'POST', payload);
-                showMessage("เพิ่มประกาศสำเร็จ");
-            }
-            
-            await loadNewsData();
-            window.resetNewsForm();
-        });
-
-        window.editNewsItem = (id) => {
-            const item = newsData.find(n => n.id === id);
-            if(item) {
-                document.getElementById('editNewsId').value = item.id;
-                document.getElementById('newsLocation').value = item.location || 'login';
-                document.getElementById('newsText').value = item.text || '';
-                document.getElementById('newsImage').value = item.imageUrl || '';
-                document.getElementById('newsYoutube').value = item.youtubeUrl || '';
-                document.getElementById('newsCode').value = item.codeSnippet || '';
-                document.getElementById('newsReadMore').value = item.readMoreUrl || '';
-                
-                document.getElementById('cmsFormTitle').innerText = "2. แก้ไขประกาศ";
-                document.getElementById('btnSaveNews').innerText = "บันทึกการแก้ไข";
-                document.getElementById('btnCancelEdit').classList.remove('hidden');
-                document.getElementById('cmsSection').scrollIntoView({behavior: 'smooth'});
-            }
-        };
-
-        window.deleteNewsItem = async (id) => {
-            if(confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
-                await fetchDB(`news/${id}`, 'DELETE');
-                showMessage("ลบสำเร็จ");
-                await loadNewsData();
-            }
-        };
-
-        window.resetNewsForm = () => {
-            document.getElementById('newsForm').reset();
-            document.getElementById('editNewsId').value = "";
-            document.getElementById('cmsFormTitle').innerText = "1. เพิ่มข้อความใหม่";
-            document.getElementById('btnSaveNews').innerText = "บันทึกประกาศ";
-            document.getElementById('btnCancelEdit').classList.add('hidden');
-        };
-
-        // --- Auth Users (Firebase) ---
+        // --- Auth Users & App Initialization ---
         
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1959,7 +2069,25 @@
             } else {
                 currentUser = user;
                 if (!currentUser.permissions) currentUser.permissions = [];
+                
+                // --- Daily Credit Bonus Check ---
+                const todayStr = new Date().toLocaleDateString('th-TH');
+                let credits = currentUser.credits || 0;
+                if (currentUser.lastLoginDate !== todayStr) {
+                    if (credits < 10) {
+                        credits += 10;
+                        showMessage("🎁 รับโบนัสล็อกอินรายวัน +10 เครดิต!", 'success');
+                    }
+                    currentUser.credits = credits;
+                    currentUser.lastLoginDate = todayStr;
+                    fetchDB(`users/${safeKey}`, 'PATCH', { credits: credits, lastLoginDate: todayStr });
+                }
+
                 document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
+                if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = currentUser.credits || 0;
+                if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = currentUser.credits || 0;
+                if(document.getElementById('creditModalName')) document.getElementById('creditModalName').innerText = currentUser.name;
+                
                 toggleSection('menu');
                 document.getElementById('loginForm').reset();
             }
@@ -1980,15 +2108,45 @@
             if (existingUser !== null) {
                 showMessage("อีเมลนี้มีผู้ใช้งานแล้ว", 'error');
             } else {
-                await fetchDB(`users/${safeKey}`, 'PUT', { name, email, password, permissions: [], createdAt: Date.now() });
-                showMessage("สมัครสำเร็จ! กรุณาล็อกอิน");
+                await fetchDB(`users/${safeKey}`, 'PUT', { 
+                    name, email, password, permissions: [], 
+                    createdAt: Date.now(),
+                    credits: 10,
+                    lastLoginDate: new Date().toLocaleDateString('th-TH')
+                });
+                showMessage("สมัครสำเร็จ ได้รับโบนัสเริ่มต้น 10 เครดิต! กรุณาล็อกอิน");
                 toggleSection('login');
                 document.getElementById('registerForm').reset();
             }
         });
 
+        async function loadTermSettings() {
+            const settingsData = await fetchDB('termSettings');
+            termSettingsData = settingsData || {};
+            const customData = await fetchDB('customTerms');
+            customTermsData = objToArray(customData) || [];
+        }
+
         // --- ระบบนำทางหน้า ---
-        
+        let termsVisible = true;
+        function toggleTermCards() {
+            const grid = document.getElementById('termCardsGrid');
+            const btn = document.getElementById('toggleTermsBtn');
+            termsVisible = !termsVisible;
+            
+            if (termsVisible) {
+                grid.classList.remove('hidden');
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> ซ่อนชั้นเรียน (อ.1 - ป.6)';
+                btn.classList.remove('bg-orange-100', 'text-orange-600');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            } else {
+                grid.classList.add('hidden');
+                btn.innerHTML = '<i class="fas fa-eye"></i> แสดงชั้นเรียน (อ.1 - ป.6)';
+                btn.classList.remove('bg-gray-100', 'text-gray-600');
+                btn.classList.add('bg-orange-100', 'text-orange-600');
+            }
+        }
+
         async function toggleSection(s) {
             document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
             if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
@@ -2037,27 +2195,6 @@
                 toggleSection('cms');
             } else showMessage("รหัสอัพเดทไม่ถูกต้อง", "error");
         }
-
-        // --- Student Dashboard ---
-
-        let termsVisible = true;
-        window.toggleTermCards = () => {
-            const grid = document.getElementById('termCardsGrid');
-            const btn = document.getElementById('toggleTermsBtn');
-            termsVisible = !termsVisible;
-            
-            if (termsVisible) {
-                grid.classList.remove('hidden');
-                btn.innerHTML = '<i class="fas fa-eye-slash"></i> ซ่อนชั้นเรียน (อ.1 - ป.6)';
-                btn.classList.remove('bg-orange-100', 'text-orange-600');
-                btn.classList.add('bg-gray-100', 'text-gray-600');
-            } else {
-                grid.classList.add('hidden');
-                btn.innerHTML = '<i class="fas fa-eye"></i> แสดงชั้นเรียน (อ.1 - ป.6)';
-                btn.classList.remove('bg-gray-100', 'text-gray-600');
-                btn.classList.add('bg-orange-100', 'text-orange-600');
-            }
-        };
 
         function renderTermCards() {
             const grid = document.getElementById('termCardsGrid');
@@ -2135,11 +2272,13 @@
         }
 
         // --- Admin Management ---
-        window.switchAdminTab = (tab) => {
+        function switchAdminTab(tab) {
             document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
             document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
             document.getElementById('tabContentBanners').classList.toggle('hidden-section', tab !== 'banners');
             document.getElementById('tabContentLeaderboards').classList.toggle('hidden-section', tab !== 'leaderboards');
+            document.getElementById('tabContentFeedbacks').classList.toggle('hidden-section', tab !== 'feedbacks');
+            document.getElementById('tabContentTopups').classList.toggle('hidden-section', tab !== 'topups');
             
             const activeClass = ['text-indigo-600', 'bg-indigo-50'];
             const inactiveClass = ['text-gray-500', 'hover:bg-gray-200'];
@@ -2157,7 +2296,12 @@
             setBtnStyle('tabUnitsBtn', tab === 'units');
             setBtnStyle('tabBannersBtn', tab === 'banners');
             setBtnStyle('tabLeaderboardsBtn', tab === 'leaderboards');
-        };
+            setBtnStyle('tabFeedbacksBtn', tab === 'feedbacks');
+            setBtnStyle('tabTopupsBtn', tab === 'topups');
+
+            if(tab === 'feedbacks') loadAdminFeedbacks();
+            if(tab === 'topups') loadAdminTopups();
+        }
 
         async function refreshAdminUsers() {
             const usersData = await fetchDB('users');
@@ -2174,11 +2318,10 @@
 
             document.getElementById('userTableBody').innerHTML = users.map(u => {
                 const perms = u.permissions || [];
-                
-                // แปลงเวลาให้แสดงผลอ่านง่ายขึ้น
                 const joinDateStr = u.createdAt 
                     ? new Date(u.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) 
                     : 'ระบบเดิม';
+                const userCredit = u.credits || 0;
 
                 return `
                 <tr class="border-b hover:bg-slate-50">
@@ -2192,7 +2335,16 @@
                             ${getAllTerms().map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white shadow-sm' : 'bg-gray-100 text-slate-400 hover:bg-gray-200'}">${termSettingsData[t.id]?.title || t.defaultName}</button>`).join('')}
                         </div>
                     </td>
-                    <td class="p-4 text-center">
+                    <td class="p-4 text-center border-l border-gray-100">
+                        <div class="flex flex-col items-center justify-center gap-1">
+                            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wide">เครดิต</div>
+                            <div class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-black flex items-center gap-1 shadow-inner border border-yellow-200">
+                                <i class="fas fa-coins"></i> ${userCredit}
+                            </div>
+                            <button onclick="addCreditGS('${u.email}', 100)" class="mt-1 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm transition"><i class="fas fa-plus"></i> 100</button>
+                        </div>
+                    </td>
+                    <td class="p-4 text-center border-l border-gray-100">
                         <button onclick="deleteUserGS('${u.email}')" class="text-red-300 hover:text-red-500 hover:bg-red-50 w-8 h-8 rounded-full transition" title="ลบผู้ใช้นี้">
                             <i class="fas fa-trash-alt"></i>
                         </button>
@@ -2201,7 +2353,18 @@
             }).join('');
         }
 
-        window.updatePermGS = async (email, termId) => { 
+        async function addCreditGS(email, amount) {
+            if(confirm(`ยืนยันการเพิ่ม ${amount} เครดิต ให้กับผู้ใช้นี้?`)) {
+                const safeKey = sanitizeKey(email);
+                const user = await fetchDB(`users/${safeKey}`);
+                let newCredits = (user.credits || 0) + amount;
+                await fetchDB(`users/${safeKey}/credits`, 'PUT', newCredits);
+                showMessage(`เพิ่ม ${amount} เครดิตสำเร็จ`, "success");
+                refreshAdminUsers();
+            }
+        }
+
+        async function updatePermGS(email, termId) { 
             const safeKey = sanitizeKey(email);
             const user = await fetchDB(`users/${safeKey}`);
             let perms = user.permissions || [];
@@ -2213,15 +2376,15 @@
             }
             await fetchDB(`users/${safeKey}/permissions`, 'PUT', perms);
             refreshAdminUsers(); 
-        };
+        }
 
-        window.deleteUserGS = async (email) => { 
+        async function deleteUserGS(email) { 
             if(confirm('ลบผู้ใช้นี้?')) { 
                 const safeKey = sanitizeKey(email);
                 await fetchDB(`users/${safeKey}`, 'DELETE');
                 refreshAdminUsers(); 
             } 
-        };
+        }
 
         function initAdminSelect() {
             const allOptions = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
@@ -2251,7 +2414,7 @@
             }).join('');
         }
 
-        window.saveUnitGS = async () => {
+        async function saveUnitGS() {
             const name = document.getElementById('unitName').value;
             const term = document.getElementById('unitTerm').value;
             const link = document.getElementById('unitLink').value;
@@ -2260,14 +2423,14 @@
             await fetchDB('units', 'POST', { name, term, link });
             document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
             refreshAdminUnits();
-        };
+        }
 
-        window.deleteUnitGS = async (id) => { 
-            if(confirm('ลบบบทเรียนนี้?')) { 
+        async function deleteUnitGS(id) { 
+            if(confirm('ลบบทเรียนนี้?')) { 
                 await fetchDB(`units/${id}`, 'DELETE'); 
                 refreshAdminUnits(); 
             } 
-        };
+        }
 
         function renderAdminBanners() {
             const container = document.getElementById('adminBannersList');
@@ -2320,7 +2483,7 @@
             container.innerHTML = htmlContent;
         }
 
-        window.saveBannerSetting = async (termId) => {
+        async function saveBannerSetting(termId) {
             const title = document.getElementById(`banner_title_${termId}`).value;
             const subtitle = document.getElementById(`banner_sub_${termId}`).value;
             const imageUrl = document.getElementById(`banner_img_${termId}`).value;
@@ -2333,9 +2496,9 @@
             await loadTermSettings();
             initAdminSelect();
             refreshAdminUsers();
-        };
+        }
 
-        window.createNewCustomTerm = async () => {
+        async function createNewCustomTerm() {
             const name = prompt("กรุณาตั้งชื่อห้องเรียนหรือระดับชั้นใหม่ (เช่น มัธยมศึกษาปีที่ 1):");
             if (!name || name.trim() === '') return;
 
@@ -2361,9 +2524,9 @@
             renderAdminBanners();
             initAdminSelect();
             refreshAdminUsers(); 
-        };
+        }
 
-        window.deleteCustomTerm = async (id) => {
+        async function deleteCustomTerm(id) {
             if(confirm("คุณต้องการลบห้องเรียนนี้ใช่หรือไม่? (ข้อมูลแบนเนอร์จะหายไปทั้งหมด แต่บทเรียนย่อยอาจจะยังคงค้างอยู่ในระบบ)")) {
                 await fetchDB(`customTerms/${id}`, 'DELETE');
                 await fetchDB(`termSettings/${id}`, 'DELETE');
@@ -2375,10 +2538,10 @@
                 initAdminSelect();
                 refreshAdminUsers();
             }
-        };
+        }
 
         // --- Admin Leaderboard Load Logic ---
-        window.loadAdminLeaderboard = async (subject) => {
+        async function loadAdminLeaderboard(subject) {
             let dbKey = '';
             let title = '';
             
@@ -2399,7 +2562,6 @@
                 return;
             }
 
-            // แปลงข้อมูล Object เป็น Array และกรองเอาเฉพาะข้อมูลที่มีชื่อ (รองรับทั้งแบบเก่าและแบบใหม่)
             let scores = objToArray(data).filter(s => s.name);
             scores.sort((a,b) => b.score - a.score);
 
@@ -2427,9 +2589,11 @@
                     <td class="p-5 text-xs text-gray-500"><i class="far fa-clock"></i> ${dateStr}</td>
                 </tr>`;
             }).join('');
-        };
+        }
 
-        window.logout = () => location.reload();
+        function logout() {
+            location.reload();
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             loadNewsData();
