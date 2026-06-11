@@ -1,2628 +1,541 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KidLearning - ประถมสนุกเรียน & ทดลองเรียนฟรี</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;800&display=swap');
-        body { font-family: 'Kanit', sans-serif; background: #fffcf2; min-height: 100vh; }
-        
-        .primary-auth-bg { 
-            background: linear-gradient(135deg, #ffcc33 0%, #ff9933 50%, #ff6600 100%);
-            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; 
-            position: relative; overflow: hidden;
-        }
-        .bubble { position: absolute; background: rgba(255,255,255,0.2); border-radius: 50%; z-index: 0; }
-        .glass-card { 
-            background: rgba(255, 255, 255, 0.95); border-radius: 40px; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
-            width: 100%; max-width: 420px; overflow: hidden; border: 8px solid #ffffff;
-            position: relative; z-index: 10;
-        }
-        
-        .glass-feed {
-            background: rgba(255, 255, 255, 0.95); border-radius: 40px; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
-            width: 100%; max-width: 600px; border: 8px solid #ffffff;
-            position: relative; z-index: 10; display: flex; flex-direction: column;
-        }
-
-        .hidden-section { display: none !important; }
-        #messageBox { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 20px; color: white; z-index: 1000; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); font-weight: bold; }
-        
-        .primary-btn { background: #ff6600; color: white; border-bottom: 5px solid #cc5200; transition: all 0.1s; }
-        .primary-btn:active { transform: translateY(3px); border-bottom: 2px solid #cc5200; }
-
-        /* Banner Style */
-        .term-banner { 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer; border-radius: 40px; 
-            position: relative; overflow: hidden;
-            border: 6px solid white;
-            box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.15);
-        }
-        .term-banner:not(.locked):hover { transform: scale(1.02); z-index: 10;}
-        .term-banner.locked { cursor: pointer; }
-        .banner-overlay { background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 100%); position: absolute; inset: 0; z-index: 1; }
-        
-        .free-trial-banner, .math-game-banner, .eng-game-banner, .sci-game-banner, .thai-game-banner, .kdg-game-banner {
-            border-radius: 40px;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            border: 6px solid white;
-        }
-        .free-trial-banner { background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%); box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.4); }
-        .math-game-banner { background: linear-gradient(90deg, #ec4899 0%, #f43f5e 100%); box-shadow: 0 20px 30px -10px rgba(236, 72, 153, 0.4); }
-        .eng-game-banner { background: linear-gradient(90deg, #0ea5e9 0%, #2563eb 100%); box-shadow: 0 20px 30px -10px rgba(14, 165, 233, 0.4); }
-        .sci-game-banner { background: linear-gradient(90deg, #10b981 0%, #059669 100%); box-shadow: 0 20px 30px -10px rgba(16, 185, 129, 0.4); }
-        .thai-game-banner { background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 20px 30px -10px rgba(139, 92, 246, 0.4); }
-        .kdg-game-banner { background: linear-gradient(90deg, #f97316 0%, #ea580c 100%); box-shadow: 0 20px 30px -10px rgba(249, 115, 22, 0.4); }
-
-        .free-trial-banner:hover, .math-game-banner:hover, .eng-game-banner:hover, .sci-game-banner:hover, .thai-game-banner:hover, .kdg-game-banner:hover { transform: scale(1.02); }
-        .free-trial-banner::after, .math-game-banner::after, .eng-game-banner::after, .sci-game-banner::after, .thai-game-banner::after, .kdg-game-banner::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        }
-
-        .loader { border-top-color: #ff6600; animation: spinner 0.8s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .feed-scroll::-webkit-scrollbar { width: 6px; }
-        .feed-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .feed-scroll::-webkit-scrollbar-thumb { background: #ffcc33; border-radius: 10px; }
-
-        /* Game Styles */
-        .math-option-btn, .eng-option-btn, .sci-option-btn, .thai-option-btn, .kdg-option-btn {
-            background: #ffffff; color: #1f2937; border: 4px solid #e5e7eb;
-            transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-        .math-option-btn:hover { border-color: #f43f5e; background: #fff1f2; transform: translateY(-2px); }
-        .eng-option-btn:hover { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); }
-        .sci-option-btn:hover { border-color: #10b981; background: #ecfdf5; transform: translateY(-2px); }
-        .thai-option-btn:hover { border-color: #8b5cf6; background: #f5f3ff; transform: translateY(-2px); }
-        .kdg-option-btn:hover { border-color: #f97316; background: #fff7ed; transform: translateY(-2px); }
-        .math-option-btn:active, .eng-option-btn:active, .sci-option-btn:active, .thai-option-btn:active, .kdg-option-btn:active { transform: translateY(2px); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMR Kid Learning - แหล่งเรียนรู้แสนสนุก</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts (Mitr & Itim for Playful Kid Style) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    body {
+      font-family: 'Mitr', 'Itim', sans-serif;
+    }
+    .font-playful {
+      font-family: 'Itim', sans-serif;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-gradient-to-b from-amber-50 via-teal-50 to-indigo-50 min-h-screen flex flex-col justify-between text-slate-800">
 
-    <div id="messageBox"></div>
+  <!-- Header / Navigation -->
+  <header class="w-full py-4 px-6 md:px-12 flex justify-between items-center bg-white/70 backdrop-blur-md border-b border-amber-100 sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <div class="bg-gradient-to-tr from-amber-400 to-pink-500 p-2.5 rounded-2xl shadow-lg shadow-amber-200">
+        <i data-lucide="graduation-cap" class="w-8 h-8 text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-indigo-600 via-pink-500 to-amber-500 bg-clip-text text-transparent font-playful tracking-wide">
+          SMR KID LEARNING
+        </h1>
+        <p class="text-xs text-slate-500 font-medium hidden sm:block">โลกแห่งการเรียนรู้ของหนูน้อย</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <a href="https://smr-kidlearning.netlify.app/" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full text-sm font-medium shadow-md hover:shadow-lg transition-all duration-300">
+        <span>เข้าสู่บทเรียน</span>
+        <i data-lucide="external-link" class="w-4 h-4"></i>
+      </a>
+      <button onclick="openAdminModal()" class="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-sm font-medium transition-all">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+        <span>จัดการเว็บบอร์ด</span>
+      </button>
+    </div>
+  </header>
 
-    <!-- Stats Badge (อัปเดตเพิ่มจำนวนสมาชิกและสมาชิกใหม่) -->
-    <div class="fixed bottom-4 left-4 bg-slate-800/80 backdrop-blur-md text-white px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-[100] visitor-stats-display flex flex-wrap items-center gap-2 sm:gap-3 border border-white/20">
-        <div class="flex items-center gap-2" title="ผู้เข้าชมสะสม"><i class="fas fa-users text-blue-400"></i> เข้าชม: <span id="statTotalVal">...</span></div>
-        <div class="text-slate-500">|</div>
-        <div class="flex items-center gap-2" title="กำลังออนไลน์"><i class="fas fa-circle text-green-400 animate-pulse"></i> ออนไลน์: <span id="statOnlineVal">...</span></div>
-        <div class="text-slate-500">|</div>
-        <div class="flex items-center gap-2" title="สมาชิกทั้งหมด"><i class="fas fa-user-graduate text-purple-400"></i> สมาชิก: <span id="statTotalMembers">...</span></div>
-        <div class="flex items-center gap-1" title="สมาชิกใหม่"><span id="statNewMembers" class="text-pink-400 bg-pink-900/50 px-2 py-0.5 rounded-md hidden">...</span></div>
-        <div class="text-slate-500 hidden" id="topupDivider">|</div>
-        <div class="flex items-center gap-2 hidden cursor-pointer hover:text-yellow-300 transition" title="แจ้งเติมเครดิตค้างตรวจสอบ" id="statPendingTopupsContainer" onclick="toggleSection('admin-verify')">
-            <i class="fas fa-file-invoice-dollar text-yellow-400"></i> แจ้งโอน: <span id="statPendingTopups" class="text-yellow-400 bg-yellow-900/50 px-2 py-0.5 rounded-md">0</span>
+  <!-- Main Content -->
+  <main class="flex-grow container mx-auto px-4 md:px-8 py-8 md:py-16">
+    <!-- Hero Banner Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-16">
+      <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold uppercase tracking-wider">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-500 animate-pulse"></i>
+          <span>แหล่งความรู้และความสนุกครบวงจร</span>
         </div>
-    </div>
-
-    <!-- Error Modal -->
-    <div id="firebaseErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl text-center">
-            <div class="text-red-500 text-6xl mb-4"><i class="fas fa-exclamation-triangle"></i></div>
-            <h2 class="text-2xl font-black text-gray-800 mb-4">ฐานข้อมูลถูกล็อค</h2>
-            <p class="text-gray-600 mb-6 font-medium text-left">
-                ระบบไม่สามารถเข้าถึงข้อมูลได้ (Permission Denied) กรุณาปลดล็อคใน Firebase ตามนี้:<br><br>
-                1. ไปที่ Firebase Console -> <b>Realtime Database</b><br>
-                2. เลือกแถบ <b>Rules</b><br>
-                3. เปลี่ยนโค้ดให้เป็นตามนี้แล้วกด Publish:<br>
-                <code class="block bg-gray-100 p-4 rounded-xl mt-2 text-sm text-left text-blue-600 font-mono">
-                {<br>
-                &nbsp;&nbsp;"rules": {<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;".read": true,<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;".write": true<br>
-                &nbsp;&nbsp;}<br>
-                }
-                </code>
-            </p>
-            <button onclick="document.getElementById('firebaseErrorModal').classList.add('hidden')" class="w-full bg-red-500 text-white font-bold py-4 rounded-xl hover:bg-red-600 transition shadow-lg">รับทราบและปิดหน้าต่าง</button>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-md z-[9999] hidden flex flex-col items-center justify-center">
-        <div class="loader ease-linear rounded-full border-4 border-gray-200 h-16 w-16 mb-4"></div>
-        <p class="text-orange-600 font-bold text-xl">กำลังประมวลผล...</p>
-    </div>
-
-    <!-- Topup Modal (สำหรับแจ้งเติมเครดิต) -->
-    <div id="topupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[40px] p-8 max-w-md w-full shadow-2xl relative text-center border-8 border-green-100">
-            <button onclick="closeTopupModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-red-100 hover:text-red-500 transition shadow-sm"><i class="fas fa-times"></i></button>
-            <div class="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center text-4xl text-green-500 mb-4 shadow-inner">
-                <i class="fas fa-money-bill-wave"></i>
-            </div>
-            <h2 class="text-2xl font-black text-gray-800 mb-2">แจ้งเติมเครดิต</h2>
-            <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-200 text-sm">
-                <p class="text-gray-600 mb-2">โอนเงินผ่าน <b>TrueMoney Wallet</b> หรือ <b>พร้อมเพย์</b></p>
-                <p class="text-2xl font-black text-orange-500 mb-2 tracking-wider">0847999639</p>
-                <div class="font-bold text-green-700 bg-green-100 py-1.5 rounded-lg inline-block px-4 border border-green-300">10 บาท = 100 เครดิต</div>
-            </div>
-            <form id="topupForm" class="space-y-4 text-left">
-                <div>
-                    <label class="block text-sm font-bold text-gray-600 mb-1">อีเมลผู้ใช้งาน (บัญชีของหนู) *</label>
-                    <input type="email" id="topupEmail" required readonly class="w-full p-3 rounded-xl border border-gray-300 bg-gray-100 text-gray-500 outline-none font-medium cursor-not-allowed">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-600 mb-1">อัปโหลดภาพสลิปโอนเงิน *</label>
-                    <input type="file" id="topupSlip" accept="image/*" required class="w-full p-2 rounded-xl border border-gray-300 focus:border-green-400 outline-none text-sm bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition">
-                </div>
-                <button type="submit" class="w-full bg-green-500 text-white font-bold py-4 rounded-xl hover:bg-green-600 transition shadow-lg mt-2">ยืนยันแจ้งโอนเงิน</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Credit Modal -->
-    <div id="creditModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[40px] p-8 max-w-sm w-full shadow-2xl relative text-center overflow-hidden border-8 border-yellow-100">
-            <button onclick="closeCreditModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-red-100 hover:text-red-500 transition shadow-sm"><i class="fas fa-times"></i></button>
-            <div class="w-24 h-24 bg-gradient-to-tr from-yellow-400 to-orange-400 rounded-full mx-auto flex items-center justify-center text-5xl text-white shadow-[0_10px_20px_rgba(250,204,21,0.5)] mb-4 border-4 border-white">
-                <i class="fas fa-coins"></i>
-            </div>
-            <h2 class="text-2xl font-black text-gray-800 mb-1 truncate px-2" id="creditModalName">ชื่อผู้ใช้งาน</h2>
-            <p class="text-gray-500 text-sm font-medium mb-6">กระเป๋าเงินเครดิตของคุณ</p>
-            <div class="bg-yellow-50 rounded-3xl p-6 border-2 border-yellow-200 mb-2 relative overflow-hidden">
-                <div class="absolute -right-4 -bottom-4 text-yellow-200 text-6xl opacity-30"><i class="fas fa-coins"></i></div>
-                <span id="creditModalAmount" class="text-6xl font-black text-yellow-600 relative z-10">0</span>
-                <span class="text-lg text-yellow-500 font-bold ml-1 relative z-10">เครดิต</span>
-            </div>
-            <p class="text-xs text-gray-400 mt-4 px-4 leading-relaxed">* โบนัสฟรี! เครดิตจะได้รับ <span class="text-green-500 font-bold">+10 แต้ม</span> อัตโนมัติในวันถัดไปหากคุณมีเครดิตน้อยกว่า 10</p>
-        </div>
-    </div>
-
-    <!-- Game Over Modal (สรุปคะแนน) -->
-    <div id="gameOverModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-yellow-400 to-orange-500 z-0"></div>
-            <div class="w-24 h-24 bg-white rounded-full mx-auto flex items-center justify-center text-5xl shadow-lg mt-4 mb-6 relative z-10 text-yellow-500">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <h2 class="text-3xl font-black text-gray-800 mb-2 relative z-10">สรุปผลการแข่งขัน!</h2>
-            <p class="text-gray-500 font-medium mb-6 relative z-10">นี่คือคะแนนที่คุณทำได้ในรอบนี้</p>
-            <div class="bg-gray-50 rounded-3xl p-6 mb-8 border-4 border-gray-100 relative z-10">
-                <span id="finalScoreText" class="text-6xl font-black text-indigo-600">0</span>
-                <span class="text-xl text-gray-400 font-bold ml-2">แต้ม</span>
-            </div>
-            <button onclick="closeGameOverModal()" class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl text-xl transition shadow-[0_10px_20px_rgba(239,68,68,0.3)] hover:scale-105 active:scale-95 relative z-10">
-                กลับสู่หน้าหลัก <i class="fas fa-home ml-2"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Feedback Modal -->
-    <div id="feedbackModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[40px] p-8 max-w-lg w-full shadow-2xl relative">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto flex items-center justify-center text-3xl shadow-inner mt-2 mb-4 text-blue-500">
-                    <i class="fas fa-paper-plane"></i>
-                </div>
-                <h2 class="text-2xl font-black text-gray-800">ส่งข้อความถึงคุณครู/แอดมิน</h2>
-                <p class="text-gray-500 text-sm mt-1">แนะนำ ติชม หรือส่งผลงานรูปภาพมาให้ดูได้เลย!</p>
-            </div>
-            <form id="feedbackForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-gray-600 mb-2">ข้อความ *</label>
-                    <textarea id="fbText" required class="w-full p-4 rounded-2xl border-2 border-gray-100 focus:border-blue-400 outline-none min-h-[120px] bg-gray-50" placeholder="พิมพ์ข้อความที่นี่..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-600 mb-2">ลิงก์รูปภาพ (ถ้ามี)</label>
-                    <input type="url" id="fbImage" class="w-full p-4 rounded-2xl border-2 border-gray-100 focus:border-blue-400 outline-none bg-gray-50" placeholder="https://example.com/image.png">
-                </div>
-                <div class="flex gap-4 pt-4">
-                    <button type="button" onclick="closeFeedbackModal()" class="flex-1 bg-gray-200 text-gray-700 font-bold py-4 rounded-2xl hover:bg-gray-300 transition">ยกเลิก</button>
-                    <button type="submit" class="flex-1 bg-blue-500 text-white font-bold py-4 rounded-2xl hover:bg-blue-600 transition shadow-lg shadow-blue-500/30">ส่งข้อความ</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Section: Auth & News Feed -->
-    <div id="authWrapper" class="primary-auth-bg flex-col lg:flex-row gap-8">
-        <div class="bubble w-20 h-20 top-10 left-10"></div>
-        <div class="bubble w-32 h-32 bottom-20 right-10"></div>
         
-        <!-- Left: Login Card -->
-        <div class="glass-card p-8 md:p-12 self-center w-full">
-            <div id="loginSection">
-                <div class="text-center mb-8">
-                    <div class="w-24 h-24 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner border-4 border-white">
-                        <i class="fas fa-pencil-alt"></i>
-                    </div>
-                    <h2 class="text-3xl font-black text-orange-600">KidLearning</h2>
-                    <p class="text-gray-500 font-medium">เข้าสู่โลกแห่งการเรียนรู้!</p>
-                </div>
-                <form id="loginForm" class="space-y-5">
-                    <input type="email" id="loginEmail" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="อีเมล">
-                    <input type="password" id="loginPassword" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="รหัสผ่าน">
-                    <button type="submit" class="w-full primary-btn text-white font-bold py-4 rounded-2xl text-xl shadow-lg">เข้าสู่ห้องเรียน</button>
-                </form>
-                <div class="mt-8 text-center space-y-4">
-                    <p class="text-sm font-bold text-gray-500">ยังไม่มีไอดี? <a href="#" onclick="toggleSection('register')" class="text-blue-500 underline">สมัครที่นี่</a></p>
-                    <div class="flex justify-center gap-4 text-xs font-bold mt-4">
-                        <button onclick="toggleSection('admin-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-user-shield"></i> แอดมินระบบ</button>
-                        <span class="text-gray-300">|</span>
-                        <button onclick="toggleSection('cms-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-edit"></i> จัดการข่าวสาร</button>
-                    </div>
-                </div>
-            </div>
+        <h2 id="display-welcome-title" class="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
+          ยินดีต้อนรับสู่ แหล่งเรียนรู้แสนสนุก!
+        </h2>
+        
+        <p id="display-welcome-subtitle" class="text-base md:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+          พัฒนาทักษะและสมอง เสริมสร้างปัญญา ผ่านบทเรียนและเกมสร้างสรรค์สำหรับเด็กยุคใหม่ พัฒนาการดีขึ้นอย่างเห็นได้ชัด
+        </p>
 
-            <div id="registerSection" class="hidden-section">
-                <h2 class="text-2xl font-black text-center mb-6 text-orange-600">สมัครสมาชิกใหม่</h2>
-                <form id="registerForm" class="space-y-4">
-                    <input type="text" id="regName" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="ชื่อ-นามสกุล">
-                    <input type="email" id="regEmail" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="อีเมล">
-                    <input type="password" id="regPassword" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="รหัสผ่าน">
-                    <button type="submit" class="w-full primary-btn text-white font-bold py-4 rounded-2xl text-lg shadow-lg">ยืนยันสมัคร</button>
-                </form>
-                <button type="button" onclick="toggleSection('login')" class="w-full mt-4 text-gray-400 font-bold">กลับหน้าล็อกอิน</button>
-            </div>
-
-            <div id="adminVerifySection" class="hidden-section text-center">
-                <h2 class="text-xl font-bold mb-4 text-orange-600">แอดมินระบบ</h2>
-                <input type="password" id="adminPasswordInput" class="w-full px-5 py-4 bg-gray-100 border-2 border-orange-200 rounded-2xl mb-4 text-center text-2xl tracking-[1em]" placeholder="••••">
-                <button onclick="checkAdminPassword()" class="w-full bg-slate-800 text-white font-bold py-4 rounded-2xl">ยืนยัน</button>
-                <button onclick="toggleSection('login')" class="mt-4 text-gray-400 font-bold">ยกเลิก</button>
-            </div>
-
-            <div id="cmsVerifySection" class="hidden-section text-center">
-                <h2 class="text-xl font-bold mb-4 text-orange-600">ระบบจัดการข่าวสาร</h2>
-                <p class="text-xs text-gray-400 mb-4">กรอกรหัสผ่านเพื่อแก้ไขประกาศและหน้าแรก</p>
-                <input type="password" id="cmsPasswordInput" class="w-full px-5 py-4 bg-gray-100 border-2 border-orange-200 rounded-2xl mb-4 text-center text-2xl tracking-[1em]" placeholder="••••">
-                <button onclick="checkCmsPassword()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition">เข้าสู่ระบบอัพเดท</button>
-                <button onclick="toggleSection('login')" class="mt-4 text-gray-400 font-bold">ยกเลิก</button>
-            </div>
+        <div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="https://smr-kidlearning.netlify.app/" target="_blank" class="group flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold text-lg rounded-2xl shadow-xl shadow-orange-200 hover:shadow-orange-300 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300">
+            <span>เข้าสู่เว็บไซต์หลักได้ที่นี่</span>
+            <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+          </a>
         </div>
-
-        <!-- Right: Public News Feed -->
-        <div class="glass-feed p-6 md:p-8 self-center h-[600px] w-full" id="publicFeedSection">
-            <h2 class="text-2xl font-black text-orange-600 mb-4 flex items-center gap-2 border-b-2 border-orange-100 pb-2">
-                <i class="fas fa-bullhorn text-yellow-500"></i> ข่าวสารและอัพเดทใหม่!
-            </h2>
-            <div id="publicNewsContainer" class="feed-scroll flex-grow overflow-y-auto space-y-4 pr-2">
-                <!-- ข่าวสารจะถูกโหลดมาแสดงที่นี่ -->
-            </div>
+        
+        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200/60 max-w-md mx-auto lg:mx-0">
+          <div class="text-center lg:text-left">
+            <span class="block text-2xl font-bold text-indigo-600 font-playful">100+</span>
+            <span class="text-xs text-slate-500">บทเรียนแสนสนุก</span>
+          </div>
+          <div class="text-center lg:text-left">
+            <span class="block text-2xl font-bold text-pink-500 font-playful">ใช้งานง่าย</span>
+            <span class="text-xs text-slate-500">เหมาะกับทุกวัย</span>
+          </div>
+          <div class="text-center lg:text-left">
+            <span class="block text-2xl font-bold text-emerald-500 font-playful">ปลอดภัย</span>
+            <span class="text-xs text-slate-500">ไม่มีโฆษณาคั่น</span>
+          </div>
         </div>
+      </div>
+
+      <!-- Hero Image Area -->
+      <div class="lg:col-span-5 flex justify-center">
+        <div class="relative w-full max-w-md aspect-square bg-white p-4 rounded-[2.5rem] shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
+          <div class="absolute -top-4 -left-4 bg-pink-400 text-white p-3 rounded-2xl -rotate-12 shadow-lg">
+            <i data-lucide="heart" class="w-6 h-6 fill-white"></i>
+          </div>
+          <div class="absolute -bottom-4 -right-4 bg-amber-400 text-white p-3 rounded-2xl rotate-12 shadow-lg">
+            <i data-lucide="star" class="w-6 h-6 fill-white"></i>
+          </div>
+          <img id="display-hero-image" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80" alt="Kid Learning" class="w-full h-full object-cover rounded-[2rem] bg-amber-100" onerror="this.src='https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80'">
+        </div>
+      </div>
     </div>
 
-    <!-- Section: Content Management System (CMS) -->
-    <div id="cmsSection" class="hidden-section p-4 md:p-10 bg-slate-100 min-h-screen">
-        <div class="max-w-4xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
-            <div class="bg-blue-600 p-8 text-white flex justify-between items-center">
-                <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-edit"></i> ระบบอัพเดทข่าวสารหน้าแรก & ห้องเรียน</h2>
-                <button onclick="toggleSection('login')" class="bg-white/20 hover:bg-white/30 transition px-6 py-2 rounded-xl font-bold">ออก</button>
-            </div>
-            
-            <div class="p-8">
-                <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 mb-8">
-                    <h3 class="font-bold text-blue-800 mb-4 text-lg" id="cmsFormTitle">1. เพิ่มข้อความใหม่</h3>
-                    <form id="newsForm" class="space-y-4">
-                        <input type="hidden" id="editNewsId" value="">
-                        
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-1">ตำแหน่งที่ต้องการแสดง *</label>
-                            <select id="newsLocation" required class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none font-bold text-blue-700">
-                                <option value="login">แสดงที่: 📢 หน้าแรกล็อกอิน (ก่อนเข้าระบบ)</option>
-                                <option value="dashboard">แสดงที่: 🎓 หน้าห้องเรียน (ยินดีต้อนรับเข้าสู่บทเรียน)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-1">ข้อความรายละเอียด *</label>
-                            <textarea id="newsText" required class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none min-h-[100px]" placeholder="พิมพ์ข่าวสารหรือประกาศที่นี่..."></textarea>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-600 mb-1">ลิงก์รูปภาพ (ใส่หรือไม่ใส่ก็ได้)</label>
-                                <input type="url" id="newsImage" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none" placeholder="https://example.com/image.jpg">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-600 mb-1">ลิงก์ YouTube (ใส่หรือไม่ใส่ก็ได้)</label>
-                                <input type="url" id="newsYoutube" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none" placeholder="https://youtu.be/xxxx">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-1">ลิงก์อ่านต่อ (ใส่หรือไม่ใส่ก็ได้)</label>
-                            <input type="url" id="newsReadMore" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none" placeholder="https://example.com/page">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-1">โค้ด (ใส่หรือไม่ใส่ก็ได้)</label>
-                            <textarea id="newsCode" class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none min-h-[120px] font-mono text-sm bg-slate-800 text-green-400 placeholder-gray-500" placeholder="วางโค้ดตัวอย่างที่ต้องการให้เด็กๆ ดูที่นี่..."></textarea>
-                        </div>
-
-                        <div class="flex gap-4 pt-2">
-                            <button type="submit" id="btnSaveNews" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition shadow-md">
-                                บันทึกประกาศ
-                            </button>
-                            <button type="button" onclick="resetNewsForm()" id="btnCancelEdit" class="hidden flex-1 bg-gray-400 hover:bg-gray-500 text-white font-bold py-4 rounded-xl transition shadow-md">
-                                ยกเลิกการแก้ไข
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div>
-                    <h3 class="font-bold text-gray-800 mb-4 text-lg border-b pb-2">รายการประกาศทั้งหมด</h3>
-                    <div id="adminNewsContainer" class="space-y-4">
-                        <!-- รายการจะถูกโหลดมาที่นี่ -->
-                    </div>
-                </div>
-            </div>
+    <!-- Media Showcase Section (Image + YouTube Video) -->
+    <div class="mt-16 bg-white/80 backdrop-blur-md p-6 md:p-10 rounded-[3rem] shadow-xl border border-white">
+      <div class="text-center max-w-xl mx-auto mb-10">
+        <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">สื่อแนะนำประจำวัน</h3>
+        <p class="text-sm text-slate-500">รูปภาพและวิดีโอแนะนำเพื่อเสริมสร้างจินตนาการและการเรียนรู้</p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Showcase Image -->
+        <div class="flex flex-col gap-3">
+          <h4 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <i data-lucide="image" class="w-5 h-5 text-indigo-500"></i>
+            <span>ภาพกิจกรรม</span>
+          </h4>
+          <div class="bg-slate-100 rounded-3xl overflow-hidden aspect-video shadow-inner relative group border border-slate-200">
+            <img id="display-showcase-image" src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80" alt="Activity" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80'">
+          </div>
         </div>
-    </div>
 
-    <!-- Section: Student Dashboard -->
-    <div id="mainContent" class="hidden-section flex flex-col min-h-screen">
-        <header class="bg-white border-b-4 border-orange-100 px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-            <h1 class="text-xl sm:text-2xl font-black text-orange-500 flex items-center gap-2">
-                <i class="fas fa-rocket"></i> KidLearning
-            </h1>
-            <div class="flex items-center gap-2 sm:gap-4">
-                <!-- เพิ่มปุ่ม แจ้งเติมเครดิต สีเขียวที่นี่ -->
-                <button onclick="openTopupModal()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2 border-2 border-green-400" title="แจ้งเติมเครดิต">
-                    <i class="fas fa-wallet"></i><span class="hidden sm:inline"> เติมเครดิต</span>
+        <!-- YouTube Video -->
+        <div class="flex flex-col gap-3">
+          <h4 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <i data-lucide="video" class="w-5 h-5 text-red-500"></i>
+            <span>วิดีโอเพื่อการเรียนรู้</span>
+          </h4>
+          <div class="bg-slate-100 rounded-3xl overflow-hidden aspect-video shadow-inner border border-slate-200">
+            <iframe id="display-youtube-iframe" class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-8 px-6 bg-slate-900 text-slate-400 text-center border-t border-slate-800 mt-16">
+    <div class="container mx-auto space-y-4">
+      <div class="flex justify-center items-center gap-2">
+        <div class="bg-amber-400 p-1 rounded-lg">
+          <i data-lucide="graduation-cap" class="w-5 h-5 text-slate-900"></i>
+        </div>
+        <span class="text-white font-bold font-playful text-lg">SMR KID LEARNING</span>
+      </div>
+      <p class="text-xs text-slate-500 max-w-md mx-auto">
+        ยินดีต้อนรับสู่หน้าระบบกลางสำหรับเข้าสู่บทเรียน หากต้องการแก้ไขเนื้อหาด้านบน สามารถใช้รหัสผ่านแอดมินเพื่อตั้งค่าระบบได้ทันที
+      </p>
+      <div class="text-xs text-slate-600 pt-4 border-t border-slate-800">
+        &copy; 2026 SMR Kid Learning. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Admin Passcode Modal -->
+  <div id="admin-passcode-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[2rem] w-full max-w-md p-8 shadow-2xl border border-slate-100 transform scale-95 opacity-0 transition-all duration-300" id="passcode-container">
+      <div class="flex flex-col items-center text-center space-y-4">
+        <div class="bg-amber-100 p-4 rounded-full text-amber-600">
+          <i data-lucide="lock" class="w-8 h-8"></i>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-slate-950">สำหรับแอดมินผู้ดูแลระบบ</h3>
+          <p class="text-sm text-slate-500 mt-1">โปรดใส่รหัสผ่านเพื่อเข้าสู่ระบบควบคุมหน้าเว็บ</p>
+        </div>
+        
+        <div class="w-full">
+          <input type="password" id="admin-password" placeholder="••••••" class="w-full px-5 py-4 border border-slate-200 rounded-2xl text-center text-2xl tracking-widest font-bold focus:outline-none focus:ring-4 focus:ring-amber-200 focus:border-amber-400 transition-all">
+          <p id="password-error" class="text-red-500 text-xs mt-2 hidden">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</p>
+        </div>
+
+        <div class="flex gap-3 w-full pt-2">
+          <button onclick="closeAdminModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl transition-all">
+            ยกเลิก
+          </button>
+          <button onclick="verifyPasscode()" class="flex-1 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium rounded-xl shadow-lg shadow-orange-100 transition-all">
+            ยืนยันรหัส
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Control Panel Modal -->
+  <div id="admin-control-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+    <div class="bg-white rounded-[2.5rem] w-full max-w-2xl p-6 md:p-8 shadow-2xl border border-slate-100 my-8 transform scale-95 opacity-0 transition-all duration-300" id="control-container">
+      <div class="flex justify-between items-center pb-4 mb-6 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="bg-amber-500 text-white p-2 rounded-xl">
+            <i data-lucide="sliders" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold text-slate-900">แผงควบคุมระบบหน้าปก</h3>
+        </div>
+        <button onclick="closeControlModal()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-all">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <div class="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+        <!-- Welcome Text Section -->
+        <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-4">
+          <h4 class="text-sm font-bold text-amber-800 flex items-center gap-1.5">
+            <i data-lucide="heading" class="w-4 h-4"></i>
+            <span>ข้อความต้อนรับของหน้าเว็บ</span>
+          </h4>
+          <div class="grid grid-cols-1 gap-4">
+            <div>
+              <label class="block text-xs text-slate-500 mb-1.5 font-medium">หัวเรื่องต้อนรับหลัก</label>
+              <input type="text" id="input-welcome-title" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1.5 font-medium">คำอธิบายต้อนรับย่อย</label>
+              <textarea id="input-welcome-subtitle" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none resize-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Images Section -->
+        <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 space-y-4">
+          <h4 class="text-sm font-bold text-indigo-800 flex items-center gap-1.5">
+            <i data-lucide="image" class="w-4 h-4"></i>
+            <span>จัดการรูปภาพภายในเว็บ</span>
+          </h4>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Hero Image Admin -->
+            <div class="p-3 bg-white rounded-xl border border-slate-100">
+              <span class="block text-xs font-bold text-slate-700 mb-2">1. ภาพประกอบหน้าแรก (Hero)</span>
+              <div class="space-y-2">
+                <input type="file" id="upload-hero" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'hero')">
+                <button onclick="document.getElementById('upload-hero').click()" class="w-full py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5">
+                  <i data-lucide="upload" class="w-3.5 h-3.5"></i> อัปโหลดรูปภาพใหม่
                 </button>
-                <button onclick="openCreditModal()" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-black shadow-sm transition text-xs sm:text-sm flex items-center gap-2 border-2 border-yellow-300" title="กระเป๋าเครดิตของคุณ">
-                    <i class="fas fa-coins text-yellow-500"></i><span id="userCreditsDisplay">0</span>
+                <div class="text-center text-[10px] text-slate-400 py-1">หรือระบุด้วย URL ด้านล่าง</div>
+                <input type="text" id="input-hero-url" placeholder="วาง URL ของรูปภาพ..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs outline-none focus:border-indigo-400">
+              </div>
+            </div>
+
+            <!-- Showcase Image Admin -->
+            <div class="p-3 bg-white rounded-xl border border-slate-100">
+              <span class="block text-xs font-bold text-slate-700 mb-2">2. ภาพกิจกรรมประจำวัน</span>
+              <div class="space-y-2">
+                <input type="file" id="upload-showcase" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'showcase')">
+                <button onclick="document.getElementById('upload-showcase').click()" class="w-full py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5">
+                  <i data-lucide="upload" class="w-3.5 h-3.5"></i> อัปโหลดรูปภาพใหม่
                 </button>
-                <button onclick="openFeedbackModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2">
-                    <i class="fas fa-comment-dots"></i><span class="hidden sm:inline"> ส่งข้อความ</span>
-                </button>
-                <div id="userNameDisplay" class="font-bold text-gray-800 hidden md:block"></div>
-                <button onclick="logout()" class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition"><i class="fas fa-sign-out-alt"></i></button>
+                <div class="text-center text-[10px] text-slate-400 py-1">หรือระบุด้วย URL ด้านล่าง</div>
+                <input type="text" id="input-showcase-url" placeholder="วาง URL ของรูปภาพ..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs outline-none focus:border-indigo-400">
+              </div>
             </div>
-        </header>
-
-        <main class="max-w-7xl mx-auto p-6 flex-grow w-full">
-            <div id="termSelectionContainer">
-                
-                <!-- หัวข้อระดับชั้น และ ปุ่มซ่อน -->
-                <div class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-orange-100 pb-4">
-                    <div class="text-center md:text-left">
-                        <h2 class="text-3xl font-black text-gray-800 mb-2">ยินดีต้อนรับเข้าสู่บทเรียน!</h2>
-                        <p class="text-gray-500 font-bold italic">เลือกระดับชั้นของหนูเพื่อเข้าเรียนบทเรียนหลัก</p>
-                    </div>
-                    <button onclick="toggleTermCards()" id="toggleTermsBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-6 py-3 rounded-full font-bold transition-colors shadow-sm flex items-center gap-2" title="ซ่อน/แสดง ระดับชั้น">
-                        <i class="fas fa-eye-slash"></i> ซ่อนชั้นเรียน (อ.1 - ป.6)
-                    </button>
-                </div>
-                
-                <!-- ปรับให้กลับมาเป็นแบนเนอร์แนวยาว (เต็มแบนเนอร์) -->
-                <div class="flex flex-col gap-6 mb-12 max-w-6xl mx-auto w-full" id="termCardsGrid"></div>
-
-                <div class="my-12 border-t-4 border-dashed border-gray-200 relative">
-                    <div class="absolute left-1/2 transform -translate-x-1/2 -top-4 bg-[#fffcf2] px-6 text-lg font-black text-gray-400">
-                        <i class="fas fa-star text-yellow-400"></i> โซนกิจกรรม <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                </div>
-
-                <!-- แบนเนอร์กิจกรรม (คงอยู่ล่างเสมอ) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 mt-8">
-                    <!-- Free Trial Banner -->
-                    <div onclick="selectTerm('special', 'ทดลองเรียนฟรี')" class="free-trial-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-yellow-400 text-indigo-900 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm">Free Trial</span>
-                            <h2 class="text-2xl font-black mb-1">ทดลองเรียนฟรี! 🌈</h2>
-                            <p class="text-xs opacity-90 font-medium">เข้าเรียนได้ทันที ไม่ต้องรออนุมัติ</p>
-                        </div>
-                        <div class="z-10 flex justify-between items-end mt-auto">
-                            <div class="text-4xl animate-bounce"><i class="fas fa-gift text-yellow-300"></i></div>
-                            <button class="bg-white text-indigo-700 px-4 py-2 rounded-full font-bold text-xs shadow-lg hover:scale-105 transition">เริ่ม <i class="fas fa-play ml-1"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Kindergarten Game Banner -->
-                    <div onclick="startKdgGame()" class="kdg-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-orange-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-baby text-orange-500"></i> Kids Game</span>
-                            <h2 class="text-2xl font-black mb-1">ตอบคำถาม อนุบาล 🧸</h2>
-                            <p class="text-xs opacity-90 font-medium">20 ข้อ ฟังเสียง เลือกรูปภาพ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topKdgScorerDisplay" class="text-base bg-yellow-300 text-orange-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-orange-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-volume-up text-xl"></i> เล่นเกม <i class="fas fa-gamepad"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Math Speed Game Banner -->
-                    <div onclick="startMathGame()" class="math-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-pink-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-trophy text-yellow-500"></i> Challenge</span>
-                            <h2 class="text-2xl font-black mb-1">คณิตคิดเร็ว ประถม 50ข้อ ⚡</h2>
-                            <p class="text-xs opacity-90 font-medium">ท้าประลอง 50 ข้อ เก็บแต้ม</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topScorerDisplay" class="text-base bg-yellow-300 text-pink-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-pink-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-stopwatch text-xl"></i> ประลอง <i class="fas fa-bolt"></i></button>
-                        </div>
-                    </div>
-                    
-                    <!-- English Vocab Game Banner -->
-                    <div onclick="startEngGame()" class="eng-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-blue-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-globe text-blue-500"></i> Vocabulary</span>
-                            <h2 class="text-2xl font-black mb-1">ทายศัพท์อังกฤษ ประถม 🌟</h2>
-                            <p class="text-xs opacity-90 font-medium">สนุกกับคำศัพท์ 50 คำ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topEngScorerDisplay" class="text-base bg-yellow-300 text-blue-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-blue-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-spell-check text-xl"></i> ทายศัพท์ <i class="fas fa-star"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Science Game Banner -->
-                    <div onclick="startSciGame()" class="sci-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-emerald-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-flask text-emerald-500"></i> Science</span>
-                            <h2 class="text-2xl font-black mb-1">ตอบปัญหาวิทย์ ประถม 🔬</h2>
-                            <p class="text-xs opacity-90 font-medium">ประลองความรู้รอบตัว 50 ข้อ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topSciScorerDisplay" class="text-base bg-yellow-300 text-emerald-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-emerald-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-dna text-xl"></i> แข่งขัน <i class="fas fa-leaf"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Thai Game Banner -->
-                    <div onclick="startThaiGame()" class="thai-game-banner p-6 text-white flex flex-col justify-between h-full">
-                        <div class="z-10 mb-4">
-                            <span class="bg-white text-purple-600 px-3 py-1 rounded-full font-black text-[10px] uppercase inline-block mb-2 shadow-sm"><i class="fas fa-book text-purple-500"></i> Thai Language</span>
-                            <h2 class="text-2xl font-black mb-1">ทายคำราชาศัพท์ ประถม 👑</h2>
-                            <p class="text-xs opacity-90 font-medium">ประลองภาษาไทย 50 ข้อ</p>
-                        </div>
-                        <div class="z-10 flex flex-col mt-auto w-full">
-                            <div id="topThaiScorerDisplay" class="text-base bg-yellow-300 text-purple-900 px-4 py-2 rounded-xl mb-3 font-black text-center shadow-lg border-2 border-white/60 truncate w-full">🏆 แชมป์: ...</div>
-                            <button class="bg-white text-purple-600 px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:scale-105 transition w-full flex justify-between items-center"><i class="fas fa-crown text-xl"></i> ทายคำ <i class="fas fa-pen-nib"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="dashboardNewsContainer" class="max-w-4xl mx-auto space-y-6 mt-10">
-                    <!-- ประกาศจากแอดมิน -->
-                </div>
-            </div>
-
-            <!-- บทเรียนย่อย -->
-            <div id="contentDashboard" class="hidden-section max-w-6xl mx-auto">
-                <div class="flex items-center justify-between mb-8 bg-white p-6 rounded-3xl shadow-sm border-2 border-orange-50">
-                    <h3 id="currentTermView" class="text-2xl font-black text-orange-600"></h3>
-                    <button onclick="backToTerms()" class="bg-gray-100 text-gray-600 px-6 py-2 rounded-2xl font-bold hover:bg-gray-200 transition">
-                        <i class="fas fa-chevron-left"></i> กลับ
-                    </button>
-                </div>
-                <div id="dynamicUnitGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-            </div>
-
-            <!-- Kindergarten Game Dashboard -->
-            <div id="kdgGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-3xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-orange-100 relative">
-                    <div class="bg-orange-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="kdgProgress">ข้อที่ 1 / 20</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="kdgTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitKdgGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#fff7ed]">
-                        <div class="text-sm font-bold text-orange-500 mb-2">เวลาที่ใช้: <span id="kdgTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-8 px-6 rounded-3xl shadow-sm border-4 border-orange-100 mb-10 mt-4 flex flex-col items-center justify-center relative">
-                            <button onclick="replayKdgAudio()" class="absolute top-4 right-4 bg-blue-100 text-blue-600 hover:bg-blue-200 w-12 h-12 rounded-full flex items-center justify-center text-xl transition shadow-sm" title="ฟังอีกครั้ง">
-                                <i class="fas fa-volume-up"></i>
-                            </button>
-                            <p class="text-sm text-gray-400 font-bold mb-2 uppercase tracking-widest">ฟังคำถามแล้วเลือกภาพ</p>
-                            <h2 id="kdgQText" class="text-3xl md:text-5xl font-black text-orange-600 tracking-wider mt-2 px-12 leading-tight">คำถามอนุบาล?</h2>
-                        </div>
-
-                        <div id="kdgOptions" class="grid grid-cols-2 gap-4 md:gap-6">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Math Game Dashboard -->
-            <div id="mathGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-pink-100 relative">
-                    <div class="bg-pink-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="mathProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="mathTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitMathGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#fffcf2]">
-                        <div class="text-sm font-bold text-pink-500 mb-2">เวลาที่ใช้: <span id="mathTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-12 px-6 rounded-3xl shadow-sm border-4 border-gray-100 mb-10 mt-4">
-                            <h2 id="mathQText" class="text-6xl md:text-8xl font-black text-gray-800 tracking-wider">? + ?</h2>
-                        </div>
-
-                        <div id="mathOptions" class="grid grid-cols-2 gap-4 md:gap-6">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Eng Game Dashboard -->
-            <div id="engGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-blue-100 relative">
-                    <div class="bg-blue-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="engProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="engTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitEngGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#f0f9ff]">
-                        <div class="text-sm font-bold text-blue-500 mb-2">เวลาที่ใช้: <span id="engTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-12 px-6 rounded-3xl shadow-sm border-4 border-gray-100 mb-10 mt-4">
-                            <p class="text-sm text-gray-400 font-bold mb-2 uppercase tracking-widest">แปลคำศัพท์นี้</p>
-                            <h2 id="engQText" class="text-5xl md:text-7xl font-black text-blue-600 tracking-wider capitalize">Word</h2>
-                        </div>
-
-                        <div id="engOptions" class="grid grid-cols-2 gap-4 md:gap-6">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Science Game Dashboard -->
-            <div id="sciGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-3xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-emerald-100 relative">
-                    <div class="bg-emerald-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="sciProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="sciTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitSciGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#ecfdf5]">
-                        <div class="text-sm font-bold text-emerald-500 mb-2">เวลาที่ใช้: <span id="sciTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-10 px-6 rounded-3xl shadow-sm border-4 border-emerald-50 mb-10 mt-4 min-h-[180px] flex items-center justify-center">
-                            <h2 id="sciQText" class="text-2xl md:text-4xl font-black text-emerald-800 tracking-wide leading-relaxed">คำถามวิทยาศาสตร์?</h2>
-                        </div>
-
-                        <div id="sciOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Thai Game Dashboard -->
-            <div id="thaiGameDashboard" class="hidden-section min-h-[70vh] flex flex-col items-center justify-center py-10">
-                <div class="w-full max-w-3xl bg-white rounded-[40px] shadow-2xl overflow-hidden border-8 border-purple-100 relative">
-                    <div class="bg-purple-500 p-6 text-white flex justify-between items-center">
-                        <div class="font-bold bg-black/20 px-4 py-2 rounded-xl text-sm" id="thaiProgress">ข้อที่ 1 / 50</div>
-                        <div class="text-2xl font-black"><i class="fas fa-star text-yellow-300"></i> <span id="thaiTotalScore">0</span> คะแนน</div>
-                        <button onclick="quitThaiGame()" class="bg-red-500 hover:bg-red-600 w-10 h-10 rounded-full flex items-center justify-center transition shadow-inner" title="สรุปคะแนนและออก"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="p-8 md:p-12 text-center bg-[#f5f3ff]">
-                        <div class="text-sm font-bold text-purple-500 mb-2">เวลาที่ใช้: <span id="thaiTimerDisplay" class="text-xl">0.0</span> วินาที</div>
-                        
-                        <div class="bg-white py-10 px-6 rounded-3xl shadow-sm border-4 border-purple-50 mb-10 mt-4 min-h-[180px] flex items-center justify-center">
-                            <h2 id="thaiQText" class="text-2xl md:text-4xl font-black text-purple-800 tracking-wide leading-relaxed">คำถามภาษาไทย?</h2>
-                        </div>
-
-                        <div id="thaiOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Buttons generated by JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Section: Admin Management -->
-    <div id="adminSection" class="hidden-section p-4 md:p-10 bg-slate-100 min-h-screen">
-        <div class="max-w-6xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
-            <div class="bg-slate-800 p-8 text-white flex justify-between items-center">
-                <h2 class="text-2xl font-bold">Admin Panel</h2>
-                <button onclick="logout()" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">ออก</button>
-            </div>
-            
-            <!-- ส่วนแสดงสถิติสมาชิก -->
-            <div class="p-8 pb-0">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 flex items-center justify-between shadow-sm">
-                        <div>
-                            <p class="text-sm text-indigo-500 font-bold mb-1">สมาชิกทั้งหมดในระบบ</p>
-                            <h3 class="text-4xl font-black text-indigo-700" id="adminTotalUsers">...</h3>
-                        </div>
-                        <i class="fas fa-users text-5xl text-indigo-200"></i>
-                    </div>
-                    <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 flex items-center justify-between shadow-sm">
-                        <div>
-                            <p class="text-sm text-emerald-500 font-bold mb-1">สมาชิกใหม่ <span class="text-xs text-emerald-400 font-normal">(ตั้งแต่แอดมินเข้าครั้งก่อน)</span></p>
-                            <h3 class="text-4xl font-black text-emerald-700" id="adminNewUsers">...</h3>
-                        </div>
-                        <i class="fas fa-user-plus text-5xl text-emerald-200"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- เพิ่มแท็บ จัดการแบนเนอร์, สถิติการแข่งขัน และ ข้อความ -->
-            <div class="flex flex-wrap gap-2 px-8 py-4 border-b bg-gray-50 mt-4">
-                <button onclick="switchAdminTab('users')" id="tabUsersBtn" class="font-bold px-4 py-2 rounded-lg text-indigo-600 bg-indigo-50 transition">จัดการนักเรียน</button>
-                <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการบทเรียน</button>
-                <button onclick="switchAdminTab('banners')" id="tabBannersBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการแบนเนอร์ชั้นเรียน</button>
-                <button onclick="switchAdminTab('topups')" id="tabTopupsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">💵 แจ้งเติมเครดิต</button>
-                <button onclick="switchAdminTab('leaderboards')" id="tabLeaderboardsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">🏆 สถิติการแข่งขัน</button>
-                <button onclick="switchAdminTab('feedbacks')" id="tabFeedbacksBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">📩 ข้อความจากนักเรียน</button>
-            </div>
-            
-            <div id="tabContentUsers" class="p-6">
-                <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userTableBody"></tbody></table></div>
-            </div>
-            
-            <div id="tabContentUnits" class="hidden-section p-6">
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="bg-slate-50 p-6 rounded-3xl border">
-                        <h3 class="font-bold mb-4">เพิ่มบทเรียน</h3>
-                        <div class="space-y-4">
-                            <input type="text" id="unitName" class="w-full p-4 rounded-xl border" placeholder="ชื่อบทเรียน">
-                            <select id="unitTerm" class="w-full p-4 rounded-xl border"></select>
-                            <input type="url" id="unitLink" class="w-full p-4 rounded-xl border" placeholder="URL ลิงก์">
-                            <button onclick="saveUnitGS()" class="w-full primary-btn py-4 rounded-xl font-bold">บันทึก</button>
-                        </div>
-                    </div>
-                    <div class="md:col-span-2 overflow-x-auto border rounded-3xl">
-                        <table class="w-full text-left"><tbody id="unitTableBody"></tbody></table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ส่วนแก้ไขแบนเนอร์ -->
-            <div id="tabContentBanners" class="hidden-section p-6">
-                <div class="mb-6">
-                    <h3 class="text-xl font-bold text-gray-800">ตั้งค่าแบนเนอร์สำหรับแต่ละระดับชั้น</h3>
-                    <p class="text-gray-500 text-sm">ข้อความและรูปภาพเหล่านี้จะไปแสดงบนแบนเนอร์ขนาดใหญ่ในหน้าแรกของเด็กๆ</p>
-                </div>
-                <div id="adminBannersList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- ฟอร์มแบนเนอร์จะถูกโหลดมาที่นี่ -->
-                </div>
-            </div>
-
-            <!-- ส่วนตรวจสอบแจ้งโอนเงิน -->
-            <div id="tabContentTopups" class="hidden-section p-6 bg-gray-50 min-h-[500px]">
-                <h3 class="text-2xl font-black text-slate-800 mb-6 border-l-4 border-green-500 pl-4">รายการแจ้งเติมเครดิต (รอตรวจสอบ)</h3>
-                <div class="overflow-x-auto bg-white rounded-3xl border shadow-sm">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-100 text-slate-600 text-sm border-b">
-                            <tr>
-                                <th class="p-5 font-bold">เวลาแจ้ง</th>
-                                <th class="p-5 font-bold">ผู้ใช้งาน (Email)</th>
-                                <th class="p-5 font-bold text-center">สลิปโอนเงิน</th>
-                                <th class="p-5 font-bold text-center">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTopupsTableBody" class="divide-y divide-gray-100">
-                            <tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">รอโหลดข้อมูล...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- ส่วนดูสถิติการแข่งขัน (Leaderboards) -->
-            <div id="tabContentLeaderboards" class="hidden-section p-6">
-                <div class="flex flex-wrap gap-3 mb-6">
-                    <button onclick="loadAdminLeaderboard('kdg')" class="bg-orange-100 text-orange-700 px-5 py-3 rounded-xl font-bold hover:bg-orange-200 transition shadow-sm"><i class="fas fa-baby"></i> อนุบาล</button>
-                    <button onclick="loadAdminLeaderboard('math')" class="bg-pink-100 text-pink-700 px-5 py-3 rounded-xl font-bold hover:bg-pink-200 transition shadow-sm"><i class="fas fa-calculator"></i> คณิตคิดเร็ว</button>
-                    <button onclick="loadAdminLeaderboard('eng')" class="bg-blue-100 text-blue-700 px-5 py-3 rounded-xl font-bold hover:bg-blue-200 transition shadow-sm"><i class="fas fa-globe"></i> ภาษาอังกฤษ</button>
-                    <button onclick="loadAdminLeaderboard('sci')" class="bg-emerald-100 text-emerald-700 px-5 py-3 rounded-xl font-bold hover:bg-emerald-200 transition shadow-sm"><i class="fas fa-flask"></i> วิทยาศาสตร์</button>
-                    <button onclick="loadAdminLeaderboard('thai')" class="bg-purple-100 text-purple-700 px-5 py-3 rounded-xl font-bold hover:bg-purple-200 transition shadow-sm"><i class="fas fa-book"></i> ภาษาไทย</button>
-                </div>
-                
-                <h3 id="adminLbTitle" class="text-2xl font-black text-slate-800 mb-4 border-l-4 border-indigo-500 pl-4">เลือกวิชาด้านบนเพื่อดูสถิติผู้เข้าแข่งขัน</h3>
-                
-                <div class="overflow-x-auto bg-white rounded-3xl border shadow-sm">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-100 text-slate-600 text-sm border-b">
-                            <tr>
-                                <th class="p-5 font-bold">อันดับ</th>
-                                <th class="p-5 font-bold">ชื่อนักเรียน</th>
-                                <th class="p-5 font-bold">คะแนนที่ได้</th>
-                                <th class="p-5 font-bold">วัน-เวลาที่เข้าเล่น</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminLbTableBody" class="divide-y divide-gray-100">
-                            <tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">รอการเลือกวิชา...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- ส่วนกล่องข้อความจากนักเรียน -->
-            <div id="tabContentFeedbacks" class="hidden-section p-6 bg-gray-50 min-h-[500px]">
-                <h3 class="text-2xl font-black text-slate-800 mb-6 border-l-4 border-blue-500 pl-4">กล่องข้อความ/ผลงาน จากนักเรียน</h3>
-                <div id="adminFeedbacksList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- ข้อความจะแสดงที่นี่ -->
-                </div>
-            </div>
+          </div>
         </div>
+
+        <!-- YouTube Video Section -->
+        <div class="bg-red-50/50 p-4 rounded-2xl border border-red-100 space-y-4">
+          <h4 class="text-sm font-bold text-red-800 flex items-center gap-1.5">
+            <i data-lucide="youtube" class="w-4 h-4"></i>
+            <span>จัดการวิดีโอแนะนำ (YouTube)</span>
+          </h4>
+          <div>
+            <label class="block text-xs text-slate-500 mb-1.5 font-medium">ระบุ URL หรือลิงก์จาก YouTube</label>
+            <input type="text" id="input-youtube-url" placeholder="ตัวอย่าง: https://www.youtube.com/watch?v=xxxx" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none">
+            <span class="text-[10px] text-slate-400 mt-1 block">รองรับทุกรูปแบบ เช่น youtube.com/watch?v= หรือ youtu.be/ หรือ embed/</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-3 pt-6 mt-6 border-t border-slate-100">
+        <button onclick="resetToDefaults()" class="py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-sm transition-all flex items-center gap-1.5">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i> ค่าตั้งต้น
+        </button>
+        <button onclick="closeControlModal()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-sm transition-all">
+          ยกเลิก
+        </button>
+        <button onclick="saveAdminSettings()" class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium rounded-xl text-sm shadow-lg shadow-emerald-100 transition-all flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i> บันทึกข้อมูล
+        </button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // URL ของ Firebase Realtime Database
-        const FIREBASE_DB_URL = "https://tess-71c84-default-rtdb.asia-southeast1.firebasedatabase.app";
+  <!-- Notification Toast (For customized success messages) -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white py-3 px-5 rounded-2xl shadow-xl flex items-center gap-2 translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <div id="toast-icon-bg" class="p-1 rounded-lg bg-emerald-500 text-white">
+      <i data-lucide="check" class="w-4 h-4" id="toast-icon"></i>
+    </div>
+    <span id="toast-message" class="text-sm font-medium">ดำเนินการเสร็จเรียบร้อย!</span>
+  </div>
 
-        const BASE_TERMS = [
-            { id: 'an1', defaultName: 'อนุบาล 1', icon: 'fa-baby', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
-            { id: 'an2', defaultName: 'อนุบาล 2', icon: 'fa-shapes', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
-            { id: 'an3', defaultName: 'อนุบาล 3', icon: 'fa-puzzle-piece', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400' },
-            { id: 'p1', defaultName: 'ประถมศึกษาปีที่ 1', icon: 'fa-pencil-alt', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
-            { id: 'p2', defaultName: 'ประถมศึกษาปีที่ 2', icon: 'fa-book-open', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
-            { id: 'p3', defaultName: 'ประถมศึกษาปีที่ 3', icon: 'fa-calculator', fallbackBg: 'bg-gradient-to-r from-yellow-400 to-orange-400' },
-            { id: 'p4', defaultName: 'ประถมศึกษาปีที่ 4', icon: 'fa-flask', fallbackBg: 'bg-gradient-to-r from-green-400 to-emerald-500' },
-            { id: 'p5', defaultName: 'ประถมศึกษาปีที่ 5', icon: 'fa-globe-asia', fallbackBg: 'bg-gradient-to-r from-blue-400 to-indigo-500' },
-            { id: 'p6', defaultName: 'ประถมศึกษาปีที่ 6', icon: 'fa-microscope', fallbackBg: 'bg-gradient-to-r from-purple-400 to-fuchsia-500' }
-        ];
+  <script>
+    // System Constants & Storage Keys
+    const ADMIN_PASSCODE = "1471200";
+    const DB_URL = "https://tess-mode-default-rtdb.asia-southeast1.firebasedatabase.app/landing_data.json";
+    
+    // Default Web Page Settings
+    const DEFAULT_SETTINGS = {
+      welcomeTitle: "ยินดีต้อนรับสู่ แหล่งเรียนรู้แสนสนุก!",
+      welcomeSubtitle: "พัฒนาทักษะและสมอง เสริมสร้างปัญญา ผ่านบทเรียนและเกมสร้างสรรค์สำหรับเด็กยุคใหม่ พัฒนาการดีขึ้นอย่างเห็นได้ชัด",
+      heroImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80",
+      showcaseImage: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80",
+      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    };
 
-        let currentUser = null;
-        let newsData = [];
-        let termSettingsData = {}; 
-        let customTermsData = [];  
+    // Current State (Initialized from Default, stored in JS runtime memory)
+    let appState = { ...DEFAULT_SETTINGS };
+
+    // Function to parse YouTube Video ID from any youtube link
+    function getYouTubeId(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    // Function to update the page view based on the current state
+    function updateDOM() {
+      document.getElementById('display-welcome-title').innerText = appState.welcomeTitle;
+      document.getElementById('display-welcome-subtitle').innerText = appState.welcomeSubtitle;
+      document.getElementById('display-hero-image').src = appState.heroImage;
+      document.getElementById('display-showcase-image').src = appState.showcaseImage;
+
+      // Extract YouTube Video
+      const ytId = getYouTubeId(appState.youtubeUrl);
+      if (ytId) {
+        document.getElementById('display-youtube-iframe').src = `https://www.youtube.com/embed/${ytId}`;
+      } else {
+        document.getElementById('display-youtube-iframe').src = "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Fallback to classic rickroll if empty/invalid
+      }
+
+      // Sync Admin Form Inputs
+      document.getElementById('input-welcome-title').value = appState.welcomeTitle;
+      document.getElementById('input-welcome-subtitle').value = appState.welcomeSubtitle;
+      document.getElementById('input-hero-url').value = appState.heroImage.startsWith('data:') ? "" : appState.heroImage;
+      document.getElementById('input-showcase-url').value = appState.showcaseImage.startsWith('data:') ? "" : appState.showcaseImage;
+      document.getElementById('input-youtube-url').value = appState.youtubeUrl;
+    }
+
+    // Modal Control Functions
+    function openAdminModal() {
+      const modal = document.getElementById('admin-passcode-modal');
+      const container = document.getElementById('passcode-container');
+      document.getElementById('admin-password').value = "";
+      document.getElementById('password-error').classList.add('hidden');
+      
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        container.classList.remove('scale-95', 'opacity-0');
+        container.classList.add('scale-100', 'opacity-100');
+        document.getElementById('admin-password').focus();
+      }, 50);
+    }
+
+    function closeAdminModal() {
+      const modal = document.getElementById('admin-passcode-modal');
+      const container = document.getElementById('passcode-container');
+      
+      container.classList.remove('scale-100', 'opacity-100');
+      container.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    function verifyPasscode() {
+      const passwordInput = document.getElementById('admin-password').value;
+      if (passwordInput === ADMIN_PASSCODE) {
+        closeAdminModal();
+        showToast("ยืนยันรหัสผ่านเรียบร้อย ยินดีต้อนรับครับ!", "check", "bg-emerald-500");
+        setTimeout(openControlModal, 400);
+      } else {
+        const errorMsg = document.getElementById('password-error');
+        errorMsg.classList.remove('hidden');
+        errorMsg.classList.add('animate-bounce');
+        setTimeout(() => errorMsg.classList.remove('animate-bounce'), 1000);
+      }
+    }
+
+    function openControlModal() {
+      const modal = document.getElementById('admin-control-modal');
+      const container = document.getElementById('control-container');
+      
+      // Update fields to match current state
+      updateDOM();
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        container.classList.remove('scale-95', 'opacity-0');
+        container.classList.add('scale-100', 'opacity-100');
+      }, 50);
+    }
+
+    function closeControlModal() {
+      const modal = document.getElementById('admin-control-modal');
+      const container = document.getElementById('control-container');
+      
+      container.classList.remove('scale-100', 'opacity-100');
+      container.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    // Handle Local Image Uploads (Convert to base64)
+    function handleImageUpload(event, type) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Data = e.target.result;
+        if (type === 'hero') {
+          appState.heroImage = base64Data;
+          document.getElementById('input-hero-url').value = ""; // Clear URL field to prefer file upload
+          showToast("อัปโหลดรูปภาพหลัก (Hero) แล้วเรียบร้อย!", "image", "bg-indigo-500");
+        } else if (type === 'showcase') {
+          appState.showcaseImage = base64Data;
+          document.getElementById('input-showcase-url').value = ""; // Clear URL field to prefer file upload
+          showToast("อัปโหลดรูปภาพกิจกรรมแล้วเรียบร้อย!", "image", "bg-indigo-500");
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Save New Settings
+    async function saveAdminSettings() {
+      // Fetch text inputs
+      appState.welcomeTitle = document.getElementById('input-welcome-title').value.trim() || DEFAULT_SETTINGS.welcomeTitle;
+      appState.welcomeSubtitle = document.getElementById('input-welcome-subtitle').value.trim() || DEFAULT_SETTINGS.welcomeSubtitle;
+      
+      // Fetch Image URLs (Only override if they entered anything, otherwise keep existing/uploaded)
+      const inputHeroUrl = document.getElementById('input-hero-url').value.trim();
+      if (inputHeroUrl) appState.heroImage = inputHeroUrl;
+
+      const inputShowcaseUrl = document.getElementById('input-showcase-url').value.trim();
+      if (inputShowcaseUrl) appState.showcaseImage = inputShowcaseUrl;
+
+      // Fetch YouTube Video Url
+      appState.youtubeUrl = document.getElementById('input-youtube-url').value.trim() || DEFAULT_SETTINGS.youtubeUrl;
+
+      // Save to Firebase DB
+      try {
+        const response = await fetch(DB_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(appState)
+        });
+        if(response.ok) {
+          showToast("บันทึกข้อมูลลงฐานข้อมูลสำเร็จ!", "check", "bg-emerald-500");
+        }
+      } catch (error) {
+        console.error("Error saving to DB:", error);
+        showToast("บันทึกสำเร็จ แต่เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล", "alert-triangle", "bg-amber-500");
+      }
+
+      // Apply changes to UI
+      updateDOM();
+      closeControlModal();
+    }
+
+    // Reset back to system default values
+    async function resetToDefaults() {
+      if (confirm("คุณแน่ใจหรือไม่ว่าต้องการคืนค่าเริ่มต้นทั้งหมด? ข้อมูลที่แก้ไขจะหายไป")) {
+        appState = { ...DEFAULT_SETTINGS };
         
-        const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
-
-        // --- Helper Functions ---
-        function showLoading(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
-        
-        function showMessage(m, t='success') {
-            const b = document.getElementById('messageBox');
-            b.innerText = m; b.style.display = 'block';
-            b.style.backgroundColor = t === 'success' ? '#10B981' : '#EF4444';
-            setTimeout(() => b.style.display = 'none', 3000);
-        }
-
-        const sanitizeKey = (email) => email.trim().toLowerCase().replace(/[.#$[\]\/\s]/g, '_');
-        
-        const objToArray = (obj) => {
-            if (!obj || obj.error) return [];
-            if (Array.isArray(obj)) return obj.map((item, index) => item ? { ...item, id: item.id || String(index) } : null).filter(Boolean);
-            return Object.keys(obj).map(key => ({ ...obj[key], id: key }));
-        };
-
-        async function fetchDB(path, method = 'GET', data = null) {
-            const isBackground = path.includes('stats/');
-            if(!isBackground) showLoading(true);
-            
-            try {
-                const options = { method, headers: { 'Content-Type': 'application/json' } };
-                if (data) options.body = JSON.stringify(data);
-                const res = await fetch(`${FIREBASE_DB_URL}/${path}.json`, options);
-                const result = await res.json();
-                
-                if(!isBackground) showLoading(false);
-                
-                if (!res.ok) {
-                    if (result && result.error && result.error.includes("Permission denied")) {
-                        document.getElementById('firebaseErrorModal').classList.remove('hidden');
-                    }
-                    return undefined;
-                }
-                return result;
-            } catch (error) {
-                if(!isBackground) showLoading(false);
-                return undefined;
-            }
-        }
-
-        // --- Visitor Stats Logic ---
-        const VISITOR_SESSION_ID = 'sess_' + Math.random().toString(36).substr(2, 9);
-        let currentTotalVisitors = 885; // ยอดสะสมเดิมที่ต้องการรักษาไว้
-        let currentOnlineCount = 0;
-
-        async function initVisitorStats() {
-            try {
-                let totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
-                let total = await totalRes.json();
-                
-                // ถ้ายอดในฐานข้อมูลน้อยกว่า 885 หรือไม่มีค่า ให้ดันกลับไปที่ 885 ขั้นต่ำ
-                if (typeof total !== 'number' || total < 885) {
-                    total = 885; 
-                }
-
-                // กันการปั๊มยอดจากการรีเฟรชหน้าเว็บรัวๆ (จะบวกแค่ครั้งแรกที่เปิดเบราว์เซอร์)
-                if (!sessionStorage.getItem('hasCountedVisit')) {
-                    total++;
-                    await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`, { method: 'PUT', body: JSON.stringify(total) });
-                    sessionStorage.setItem('hasCountedVisit', 'true');
-                }
-                
-                currentTotalVisitors = total;
-                if (document.getElementById('statTotalVal')) {
-                    document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
-                }
-            } catch (e) {}
-
-            sendHeartbeat();
-            setInterval(sendHeartbeat, 15000);
-        }
-
-        async function sendHeartbeat() {
-            const now = Date.now();
-            try {
-                // อัปเดตการออนไลน์
-                await fetch(`${FIREBASE_DB_URL}/stats/online/${VISITOR_SESSION_ID}.json`, { method: 'PUT', body: JSON.stringify(now) });
-                const onlineRes = await fetch(`${FIREBASE_DB_URL}/stats/online.json`);
-                const onlineData = await onlineRes.json() || {};
-                
-                // ดึงผู้เข้าชมรวม
-                const totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitors.json`);
-                const fetchedTotal = await totalRes.json();
-                
-                // จะอัปเดตยอดโชว์บนหน้าจอ ก็ต่อเมื่อยอดใหม่ในฐานข้อมูล มากกว่ายอดเดิมเท่านั้น (ป้องกันยอดตกเวลาดึงพลาด)
-                if (typeof fetchedTotal === 'number' && fetchedTotal > currentTotalVisitors) {
-                    currentTotalVisitors = fetchedTotal;
-                }
-
-                let count = 0;
-                const cutoff = now - 30000; 
-                for(let key in onlineData) {
-                    if(onlineData[key] > cutoff) count++;
-                    else { fetch(`${FIREBASE_DB_URL}/stats/online/${key}.json`, { method: 'DELETE' }); }
-                }
-                currentOnlineCount = count;
-
-                // --- อัปเดตสถิติสมาชิก (รวมถึงสมาชิกใหม่) ---
-                const usersRes = await fetch(`${FIREBASE_DB_URL}/users.json`);
-                const usersData = await usersRes.json() || {};
-                const lastLoginRes = await fetch(`${FIREBASE_DB_URL}/stats/lastAdminLogin.json`);
-                const lastAdminLogin = await lastLoginRes.json() || 0;
-
-                const users = objToArray(usersData);
-                let totalMembers = users.length;
-                let newMembers = 0;
-                users.forEach(u => {
-                    if (u.createdAt && u.createdAt > lastAdminLogin) {
-                        newMembers++;
-                    }
-                });
-
-                // --- อัปเดตสถิติแจ้งโอนค้าง ---
-                const topupsRes = await fetch(`${FIREBASE_DB_URL}/topups.json`);
-                const topupsData = await topupsRes.json() || {};
-                const topups = objToArray(topupsData);
-                const pendingTopupsCount = topups.filter(t => t.status === 'pending').length;
-
-                // แสดงผลบน Floating Badge
-                if (document.getElementById('statTotalVal')) document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
-                if (document.getElementById('statOnlineVal')) document.getElementById('statOnlineVal').innerText = currentOnlineCount.toLocaleString();
-                if (document.getElementById('statTotalMembers')) document.getElementById('statTotalMembers').innerText = totalMembers.toLocaleString();
-                
-                const newMemberSpan = document.getElementById('statNewMembers');
-                if (newMemberSpan) {
-                    if(newMembers > 0) {
-                        newMemberSpan.innerText = `+${newMembers.toLocaleString()} ใหม่`;
-                        newMemberSpan.classList.remove('hidden');
-                    } else {
-                        newMemberSpan.classList.add('hidden');
-                    }
-                }
-
-                const topupContainer = document.getElementById('statPendingTopupsContainer');
-                const topupDivider = document.getElementById('topupDivider');
-                if (topupContainer && topupDivider) {
-                    if (pendingTopupsCount > 0) {
-                        document.getElementById('statPendingTopups').innerText = pendingTopupsCount.toLocaleString();
-                        topupContainer.classList.remove('hidden');
-                        topupDivider.classList.remove('hidden');
-                    } else {
-                        topupContainer.classList.add('hidden');
-                        topupDivider.classList.add('hidden');
-                    }
-                }
-            } catch(e) {}
-        }
-
-        // --- ระบบแสดงผลสถิติสำหรับหน้า Admin ---
-        async function loadAdminStats() {
-            const usersData = await fetchDB('users');
-            if(!usersData) return;
-            const users = objToArray(usersData);
-            
-            const lastLoginData = await fetchDB('stats/lastAdminLogin');
-            const lastAdminLogin = lastLoginData || 0;
-
-            let newCount = 0;
-            users.forEach(u => {
-                if (u.createdAt && u.createdAt > lastAdminLogin) {
-                    newCount++;
-                }
-            });
-
-            document.getElementById('adminTotalUsers').innerText = users.length.toLocaleString();
-            document.getElementById('adminNewUsers').innerText = `+${newCount.toLocaleString()}`;
-
-            // อัปเดตเวลาเข้าหน้าแอดมินล่าสุด (ทำให้ยอดสมาชิกใหม่เริ่มนับ 0 ใหม่หลังจากนี้)
-            await fetchDB('stats/lastAdminLogin', 'PUT', Date.now());
-        }
-
-        // --- UI Modal Functions ---
-        function openCreditModal() {
-            document.getElementById('creditModal').classList.remove('hidden');
-        }
-
-        function closeCreditModal() {
-            document.getElementById('creditModal').classList.add('hidden');
-        }
-
-        function showGameOverModal(score) {
-            document.getElementById('finalScoreText').innerText = score;
-            document.getElementById('gameOverModal').classList.remove('hidden');
-        }
-
-        function closeGameOverModal() {
-            document.getElementById('gameOverModal').classList.add('hidden');
-            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
-        }
-
-        // --- Student Top-up Logic ---
-        function openTopupModal() {
-            document.getElementById('topupForm').reset();
-            if (currentUser) {
-                document.getElementById('topupEmail').value = currentUser.email;
-            }
-            document.getElementById('topupModal').classList.remove('hidden');
-        }
-
-        function closeTopupModal() {
-            document.getElementById('topupModal').classList.add('hidden');
-        }
-
-        document.getElementById('topupForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('topupEmail').value;
-            const slipFile = document.getElementById('topupSlip').files[0];
-
-            if (!slipFile) {
-                showMessage('กรุณาแนบภาพสลิปโอนเงินด้วยครับ', 'error');
-                return;
-            }
-
-            // ใช้ FileReader เพื่ออ่านไฟล์ภาพเป็น Base64
-            const reader = new FileReader();
-            reader.onload = async function(event) {
-                const base64Slip = event.target.result;
-                const payload = {
-                    email: email,
-                    name: currentUser ? currentUser.name : 'Unknown',
-                    slipImage: base64Slip,
-                    timestamp: Date.now(),
-                    status: 'pending' // pending = รอตรวจสอบ
-                };
-                
-                await fetchDB('topups', 'POST', payload);
-                showMessage('แจ้งโอนเงินสำเร็จ! กรุณารอแอดมินตรวจสอบ', 'success');
-                closeTopupModal();
-            };
-            reader.readAsDataURL(slipFile);
-        });
-
-        async function loadAdminTopups() {
-            const tbody = document.getElementById('adminTopupsTableBody');
-            tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center"><i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i><br>กำลังโหลดข้อมูล...</td></tr>`;
-
-            const data = await fetchDB('topups');
-            if(!data) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ไม่มีรายการแจ้งเติมเครดิต</td></tr>`;
-                return;
-            }
-
-            const topups = objToArray(data).sort((a,b) => b.timestamp - a.timestamp);
-            const pendingTopups = topups.filter(t => t.status === 'pending');
-
-            if(pendingTopups.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ไม่มีรายการแจ้งเติมเครดิตใหม่</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = pendingTopups.map(t => {
-                const dateStr = new Date(t.timestamp).toLocaleString('th-TH');
-                return `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-5 text-sm text-gray-600">${dateStr}</td>
-                    <td class="p-5 font-bold text-slate-800">${t.name}<br><span class="text-xs text-blue-500 font-normal">${t.email}</span></td>
-                    <td class="p-5 text-center">
-                        <a href="${t.slipImage}" target="_blank" class="inline-block bg-gray-100 p-2 rounded-lg border hover:bg-gray-200 transition">
-                            <img src="${t.slipImage}" class="h-16 w-16 object-cover rounded-md" alt="Slip">
-                        </a>
-                    </td>
-                    <td class="p-5 text-center space-y-2 sm:space-y-0 sm:space-x-2">
-                        <button onclick="approveTopup('${t.id}', '${t.email}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition"><i class="fas fa-check"></i> อนุมัติ (+100)</button>
-                        <button onclick="rejectTopup('${t.id}')" class="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg font-bold text-sm transition"><i class="fas fa-times"></i> ปฏิเสธ</button>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
-
-        async function approveTopup(id, email) {
-            if(confirm('อนุมัติการเติมเงิน และเพิ่ม 100 เครดิตให้ผู้ใช้นี้?')) {
-                const safeKey = sanitizeKey(email);
-                const user = await fetchDB(`users/${safeKey}`);
-                if(user) {
-                    let newCredits = (user.credits || 0) + 100;
-                    await fetchDB(`users/${safeKey}/credits`, 'PUT', newCredits);
-                    await fetchDB(`topups/${id}/status`, 'PUT', '"approved"');
-                    showMessage('อนุมัติและเติม 100 เครดิตสำเร็จ!', 'success');
-                    loadAdminTopups();
-                    refreshAdminUsers();
-                } else {
-                    showMessage('ไม่พบข้อมูลผู้ใช้งานนี้ในระบบ', 'error');
-                }
-            }
-        }
-
-        async function rejectTopup(id) {
-            if(confirm('ปฏิเสธรายการแจ้งโอนนี้ใช่หรือไม่?')) {
-                await fetchDB(`topups/${id}/status`, 'PUT', '"rejected"');
-                showMessage('ปฏิเสธรายการแล้ว', 'success');
-                loadAdminTopups();
-            }
-        }
-
-        // --- Student Feedback Logic ---
-        function openFeedbackModal() {
-            document.getElementById('feedbackForm').reset();
-            document.getElementById('feedbackModal').classList.remove('hidden');
-        }
-
-        function closeFeedbackModal() {
-            document.getElementById('feedbackModal').classList.add('hidden');
-        }
-
-        document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const text = document.getElementById('fbText').value;
-            const img = document.getElementById('fbImage').value;
-            if(!text) return;
-            
-            const payload = {
-                senderEmail: currentUser.email,
-                senderName: currentUser.name,
-                text: text,
-                image: img,
-                timestamp: Date.now()
-            };
-            
-            await fetchDB('feedbacks', 'POST', payload);
-            showMessage('ส่งข้อความถึงคุณครูเรียบร้อยแล้ว!', 'success');
-            closeFeedbackModal();
-        });
-
-        async function loadAdminFeedbacks() {
-            const container = document.getElementById('adminFeedbacksList');
-            container.innerHTML = `<p class="text-gray-400 col-span-full text-center py-10"><i class="fas fa-spinner fa-spin text-2xl"></i><br>กำลังโหลด...</p>`;
-            
-            const data = await fetchDB('feedbacks');
-            if(!data) {
-                container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-gray-400 border col-span-full">ไม่มีข้อความใหม่</div>`;
-                return;
-            }
-            
-            const fbs = objToArray(data).sort((a,b) => b.timestamp - a.timestamp);
-            container.innerHTML = fbs.map(f => {
-                const dateStr = new Date(f.timestamp).toLocaleString('th-TH');
-                return `
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative hover:shadow-md transition">
-                    <button onclick="deleteFeedback('${f.id}')" class="absolute top-6 right-6 text-gray-300 hover:text-red-500 transition text-lg"><i class="fas fa-trash-alt"></i></button>
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center font-bold text-xl"><i class="fas fa-user-graduate"></i></div>
-                        <div>
-                            <div class="font-bold text-slate-800 text-lg">${escapeHtml(f.senderName)}</div>
-                            <div class="text-xs text-blue-500 font-medium">${escapeHtml(f.senderEmail)} • <span class="text-gray-400">${dateStr}</span></div>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 bg-gray-50 p-4 rounded-2xl leading-relaxed whitespace-pre-wrap">${escapeHtml(f.text)}</p>
-                    ${f.image ? `<div class="mt-4 rounded-2xl overflow-hidden border"><img src="${escapeHtml(f.image)}" class="w-full h-auto object-cover" onerror="this.style.display='none'"></div>` : ''}
-                </div>`;
-            }).join('');
-        }
-
-        async function deleteFeedback(id) {
-            if(confirm('ลบข้อความนี้ใช่หรือไม่?')) {
-                await fetchDB(`feedbacks/${id}`, 'DELETE');
-                showMessage("ลบข้อความแล้ว");
-                loadAdminFeedbacks();
-            }
-        }
-
-        // --- ระบบข่าวสาร (CMS) ดึงจาก Firebase ---
-        const getYouTubeEmbedUrl = (url) => {
-            if(!url) return null;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            const match = url.match(regExp);
-            if (match && match[2].length === 11) {
-                return `https://www.youtube.com/embed/${match[2]}`;
-            }
-            return null;
-        };
-
-        const escapeHtml = (unsafe) => {
-            if (!unsafe) return "";
-            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        };
-
-        const createNewsCardHTML = (news) => {
-            const dateStr = new Date(news.timestamp).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-            const ytEmbed = getYouTubeEmbedUrl(news.youtubeUrl);
-            const isDashboard = news.location === 'dashboard';
-            
-            const cardStyle = isDashboard 
-                ? "bg-white p-6 md:p-8 rounded-[30px] border-4 border-indigo-50 shadow-md hover:shadow-lg transition text-left"
-                : "bg-white p-5 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition text-left";
-
-            return `
-            <div class="${cardStyle}">
-                <div class="flex items-center gap-2 text-xs font-bold mb-3 ${isDashboard ? 'text-indigo-500' : 'text-gray-400'}">
-                    <i class="${isDashboard ? 'fas fa-graduation-cap text-lg' : 'far fa-clock'}"></i> 
-                    ${isDashboard ? 'ประกาศจากคุณครู :' : ''} ${dateStr}
-                </div>
-                <p class="text-gray-700 whitespace-pre-wrap font-medium mb-4 ${isDashboard ? 'text-lg' : ''}">${news.text}</p>
-                
-                ${news.imageUrl ? `<img src="${escapeHtml(news.imageUrl)}" onerror="this.style.display='none'" class="w-full rounded-2xl mb-4 max-h-[400px] object-cover border border-gray-200">` : ''}
-                
-                ${ytEmbed ? `<div class="aspect-video w-full rounded-2xl overflow-hidden mb-4 border border-gray-200 shadow-inner">
-                    <iframe width="100%" height="100%" src="${ytEmbed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>` : ''}
-
-                ${news.readMoreUrl ? `
-                <div class="mt-4 text-left">
-                    <a href="${escapeHtml(news.readMoreUrl)}" target="_blank" class="inline-block bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 font-bold py-2 px-4 rounded-xl transition text-sm">
-                        <i class="fas fa-external-link-alt mr-1"></i> อ่านรายละเอียดเพิ่มเติม
-                    </a>
-                </div>` : ''}
-
-                ${news.codeSnippet ? `
-                <div class="mt-4 text-left">
-                    <div class="bg-slate-700 text-slate-300 text-[10px] uppercase font-bold px-4 py-2 rounded-t-xl w-fit flex items-center gap-2"><i class="fas fa-code"></i> โค้ดตัวอย่าง</div>
-                    <pre class="bg-slate-800 text-green-400 p-4 rounded-b-xl rounded-tr-xl overflow-x-auto font-mono text-sm shadow-inner whitespace-pre-wrap border border-slate-700"><code>${escapeHtml(news.codeSnippet)}</code></pre>
-                </div>` : ''}
-            </div>`;
-        };
-
-        const renderPublicFeed = () => {
-            const container = document.getElementById('publicNewsContainer');
-            const filteredData = newsData.filter(n => n.location === 'login').sort((a, b) => b.timestamp - a.timestamp);
-            if (filteredData.length === 0) {
-                container.innerHTML = `<div class="p-6 text-center text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-300">ยังไม่มีข่าวสารในขณะนี้</div>`;
-                return;
-            }
-            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
-        };
-
-        const renderDashboardFeed = () => {
-            const container = document.getElementById('dashboardNewsContainer');
-            const filteredData = newsData.filter(n => n.location === 'dashboard').sort((a, b) => b.timestamp - a.timestamp);
-            if (filteredData.length === 0) {
-                container.innerHTML = ``; 
-                return;
-            }
-            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
-        };
-
-        const renderAdminNews = () => {
-            const container = document.getElementById('adminNewsContainer');
-            if (newsData.length === 0) {
-                container.innerHTML = `<p class="text-gray-400 text-center py-4">ไม่มีรายการ</p>`;
-                return;
-            }
-
-            const sortedData = [...newsData].sort((a, b) => b.timestamp - a.timestamp);
-
-            container.innerHTML = sortedData.map(news => `
-                <div class="bg-white p-4 rounded-2xl border flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div class="flex-grow overflow-hidden">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="px-2 py-1 text-[10px] font-bold rounded ${news.location === 'dashboard' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}">
-                                ${news.location === 'dashboard' ? '🎓 หน้าห้องเรียน' : '📢 หน้าแรกล็อกอิน'}
-                            </span>
-                        </div>
-                        <p class="font-bold text-gray-800 line-clamp-2">${news.text}</p>
-                    </div>
-                    <div class="flex gap-2 whitespace-nowrap">
-                        <button type="button" onclick="editNewsItem('${news.id}')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition text-sm font-bold">แก้ไข</button>
-                        <button type="button" onclick="deleteNewsItem('${news.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition text-sm font-bold">ลบ</button>
-                    </div>
-                </div>`).join('');
-        };
-
-        async function loadNewsData() {
-            const data = await fetchDB('news');
-            if (data === undefined) {
-                const localData = JSON.parse(localStorage.getItem('kidlearning_news_data'));
-                newsData = (localData || []).map(n => ({...n, location: n.location || 'login'}));
-            } else if (data === null) {
-                newsData = [];
-            } else {
-                newsData = objToArray(data).map(n => ({...n, location: n.location || 'login'}));
-            }
-            renderPublicFeed();
-            renderDashboardFeed();
-            renderAdminNews();
-        }
-
-        document.getElementById('newsForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const location = document.getElementById('newsLocation').value;
-            const text = document.getElementById('newsText').value;
-            const imageUrl = document.getElementById('newsImage').value;
-            const youtubeUrl = document.getElementById('newsYoutube').value;
-            const codeSnippet = document.getElementById('newsCode').value;
-            const readMoreUrl = document.getElementById('newsReadMore') ? document.getElementById('newsReadMore').value : '';
-            const editId = document.getElementById('editNewsId').value;
-
-            const payload = { location, text, imageUrl, youtubeUrl, codeSnippet, readMoreUrl, timestamp: Date.now() };
-
-            if (editId) {
-                await fetchDB(`news/${editId}`, 'PATCH', payload);
-                showMessage("แก้ไขประกาศสำเร็จ");
-            } else {
-                await fetchDB('news', 'POST', payload);
-                showMessage("เพิ่มประกาศสำเร็จ");
-            }
-            
-            await loadNewsData();
-            resetNewsForm();
-        });
-
-        function editNewsItem(id) {
-            const item = newsData.find(n => n.id === id);
-            if(item) {
-                document.getElementById('editNewsId').value = item.id;
-                document.getElementById('newsLocation').value = item.location || 'login';
-                document.getElementById('newsText').value = item.text || '';
-                document.getElementById('newsImage').value = item.imageUrl || '';
-                document.getElementById('newsYoutube').value = item.youtubeUrl || '';
-                document.getElementById('newsCode').value = item.codeSnippet || '';
-                if(document.getElementById('newsReadMore')) document.getElementById('newsReadMore').value = item.readMoreUrl || '';
-                
-                document.getElementById('cmsFormTitle').innerText = "2. แก้ไขประกาศ";
-                document.getElementById('btnSaveNews').innerText = "บันทึกการแก้ไข";
-                document.getElementById('btnCancelEdit').classList.remove('hidden');
-                document.getElementById('cmsSection').scrollIntoView({behavior: 'smooth'});
-            }
-        }
-
-        async function deleteNewsItem(id) {
-            if(confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
-                await fetchDB(`news/${id}`, 'DELETE');
-                showMessage("ลบสำเร็จ");
-                await loadNewsData();
-            }
-        }
-
-        function resetNewsForm() {
-            document.getElementById('newsForm').reset();
-            document.getElementById('editNewsId').value = "";
-            document.getElementById('cmsFormTitle').innerText = "1. เพิ่มข้อความใหม่";
-            document.getElementById('btnSaveNews').innerText = "บันทึกประกาศ";
-            document.getElementById('btnCancelEdit').classList.add('hidden');
-        }
-
-        // --- Text-to-Speech Helper ---
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); 
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'th-TH'; 
-                msg.rate = 0.85; 
-                window.speechSynthesis.speak(msg);
-            }
-        }
-
-        // --- Kindergarten Game Variables & Logic ---
-        const KDG_QUESTION_DB = [
-            { q: "สัตว์ตัวไหนคือ สุนัข?", a: "🐶", options: ["🐱", "🐭", "🐰", "🐶"] },
-            { q: "สัตว์ตัวไหนคือ แมว?", a: "🐱", options: ["🐱", "🐷", "🐸", "🐻"] },
-            { q: "สัตว์ตัวไหนคือ ช้าง?", a: "🐘", options: ["🐎", "🐘", "🐪", "🐅"] },
-            { q: "สัตว์ตัวไหนคือ ปลา?", a: "🐟", options: ["🐙", "🐟", "🐢", "🦀"] },
-            { q: "สัตว์ตัวไหนคือ นก?", a: "🐦", options: ["🦋", "🐛", "🐦", "🐝"] },
-            { q: "ผลไม้ชนิดใดคือ แอปเปิ้ล?", a: "🍎", options: ["🍌", "🍉", "🍇", "🍎"] },
-            { q: "ผลไม้ชนิดใดคือ กล้วย?", a: "🍌", options: ["🍓", "🍌", "🍒", "🥭"] },
-            { q: "ผลไม้ชนิดใดคือ แตงโม?", a: "🍉", options: ["🍉", "🍍", "🥑", "🍑"] },
-            { q: "ผลไม้ชนิดใดคือ ส้ม?", a: "🍊", options: ["🍊", "🍋", "🍈", "🥝"] },
-            { q: "ยานพาหนะใดคือ รถยนต์?", a: "🚗", options: ["✈️", "🚂", "🚲", "🚗"] },
-            { q: "ยานพาหนะใดคือ รถไฟ?", a: "🚂", options: ["🚂", "🚁", "⛵", "🚀"] },
-            { q: "ยานพาหนะใดคือ เครื่องบิน?", a: "✈️", options: ["🚤", "✈️", "🛸", "🚜"] },
-            { q: "อะไรคือ พระอาทิตย์?", a: "☀️", options: ["🌙", "⭐", "☁️", "☀️"] },
-            { q: "อะไรคือ ดอกไม้?", a: "🌸", options: ["🌲", "🌵", "🌸", "🍄"] },
-            { q: "สิ่งใดคือ หนังสือ?", a: "📖", options: ["✏️", "🎒", "📖", "✂️"] },
-            { q: "สีใดคือ สีแดง?", a: "🔴", options: ["🔵", "🟢", "🟡", "🔴"] },
-            { q: "สีใดคือ สีน้ำเงิน?", a: "🔵", options: ["🔴", "🟢", "🔵", "🟣"] },
-            { q: "สีใดคือ สีเขียว?", a: "🟢", options: ["🟢", "🟠", "⚪", "🟤"] },
-            { q: "อะไรคือ เสื้อ?", a: "👕", options: ["👖", "👗", "👟", "👕"] },
-            { q: "อะไรคือ รองเท้า?", a: "👟", options: ["🧢", "🧦", "👟", "🧤"] },
-            { q: "สัตว์ตัวไหนคือ ลิง?", a: "🐒", options: ["🦍", "🦧", "🐒", "🐕"] },
-            { q: "สัตว์ตัวไหนคือ หมู?", a: "🐷", options: ["🐮", "🐷", "🐴", "🦌"] },
-            { q: "สัตว์ตัวไหนคือ กบ?", a: "🐸", options: ["🐸", "🐊", "🐍", "🦎"] },
-            { q: "ผลไม้ชนิดใดคือ สตรอว์เบอร์รี?", a: "🍓", options: ["🫐", "🍓", "🍅", "🥥"] },
-            { q: "สิ่งใดคือ ดินสอ?", a: "✏️", options: ["📏", "✏️", "🖋️", "🖍️"] },
-            { q: "ยานพาหนะใดคือ จักรยาน?", a: "🚲", options: ["🏍️", "🛴", "🚲", "🛺"] },
-            { q: "อะไรคือ กางเกง?", a: "👖", options: ["👔", "🩳", "👖", "👘"] },
-            { q: "อะไรคือ พระจันทร์?", a: "🌙", options: ["☀️", "⚡", "🌙", "☄️"] },
-            { q: "สีใดคือ สีเหลือง?", a: "🟡", options: ["🟣", "🟡", "⚫", "🔴"] },
-            { q: "สัตว์ตัวไหนคือ ไก่?", a: "🐔", options: ["🐧", "🦆", "🐔", "🦉"] }
-        ];
-
-        let activeKdgQuestions = [];   
-        let currentKdgQIndex = 0;
-        let kdgScoreTotal = 0;
-        let kdgQuestionStartTime = 0;
-        let kdgVisualTimerInterval = null;
-        let isKdgAnswering = false;
-        let currentKdgQuestionText = "";
-
-        function generateKdgPool() {
-            let shuffledQuestions = [...KDG_QUESTION_DB].sort(() => Math.random() - 0.5);
-            activeKdgQuestions = shuffledQuestions.slice(0, 20).map(qData => {
-                return {
-                    q: qData.q,
-                    a: qData.a,
-                    options: [...qData.options].sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopKdgScorer() {
-            const display = document.getElementById('topKdgScorerDisplay');
-            const data = await fetchDB('kdgLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        function startKdgGame() {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('kdgGameDashboard').classList.remove('hidden-section');
-            
-            generateKdgPool();
-            
-            currentKdgQIndex = 0;
-            kdgScoreTotal = 0;
-            document.getElementById('kdgTotalScore').innerText = kdgScoreTotal;
-            
-            loadKdgQuestion();
-        }
-
-        function replayKdgAudio() {
-            if (currentKdgQuestionText) {
-                speakText(currentKdgQuestionText);
-            }
-        }
-
-        function loadKdgQuestion() {
-            if (currentKdgQIndex >= 20 || currentKdgQIndex >= activeKdgQuestions.length) {
-                endKdgGame();
-                return;
-            }
-
-            isKdgAnswering = false;
-            const qData = activeKdgQuestions[currentKdgQIndex];
-            currentKdgQuestionText = qData.q;
-            
-            document.getElementById('kdgProgress').innerText = `ข้อที่ ${currentKdgQIndex + 1} / 20`;
-            document.getElementById('kdgQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('kdgOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                optionsDiv.innerHTML += `<button onclick="submitKdgAnswer('${opt}', '${qData.a}', this)" class="kdg-option-btn text-7xl md:text-8xl py-6 md:py-10 rounded-3xl w-full h-full flex items-center justify-center transition-transform hover:scale-105">${opt}</button>`;
-            });
-
-            setTimeout(() => { replayKdgAudio(); }, 300);
-
-            kdgQuestionStartTime = Date.now();
-            clearInterval(kdgVisualTimerInterval);
-            document.getElementById('kdgTimerDisplay').innerText = "0.0";
-            kdgVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - kdgQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('kdgTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        function submitKdgAnswer(selectedOpt, correctOpt, btnElement) {
-            if(isKdgAnswering) return; 
-            isKdgAnswering = true;
-            clearInterval(kdgVisualTimerInterval);
-            window.speechSynthesis.cancel(); 
-            
-            const timeElapsed = (Date.now() - kdgQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('kdg-option-btn', 'bg-green-400');
-                btnElement.classList.add('border-green-500', 'shadow-[0_0_20px_rgba(74,222,128,0.5)]');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-                if (pointsEarned > 0) {
-                    showMessage(`เก่งมาก! +${pointsEarned} คะแนน!`, 'success');
-                } else {
-                    showMessage(`ถูกต้อง แต่หมดเวลา! (0 คะแนน)`, 'error');
-                }
-            } else {
-                btnElement.classList.replace('kdg-option-btn', 'bg-red-400');
-                btnElement.classList.add('border-red-500');
-                showMessage(`ตอบผิดจ้า! (0 คะแนน)`, 'error');
-                
-                Array.from(document.getElementById('kdgOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('kdg-option-btn', 'bg-green-200');
-                        btn.classList.add('border-green-400');
-                    }
-                });
-            }
-
-            kdgScoreTotal += pointsEarned;
-            document.getElementById('kdgTotalScore').innerText = kdgScoreTotal;
-
-            setTimeout(() => {
-                currentKdgQIndex++;
-                loadKdgQuestion();
-            }, 1500);
-        }
-
-        function quitKdgGame() {
-            if(confirm("หนูต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่ไหมจ๊ะ?")) {
-                window.speechSynthesis.cancel();
-                endKdgGame();
-            }
-        }
-
-        async function endKdgGame() {
-            clearInterval(kdgVisualTimerInterval);
-            window.speechSynthesis.cancel();
-            document.getElementById('kdgGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(kdgScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/kdgHistory/${ts}`, 'PUT', { score: kdgScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: kdgScoreTotal, date: ts };
-            await fetchDB(`kdgLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopKdgScorer();
-        }
-
-        // --- Math Game Variables & Logic ---
-        let mathQuestionsPool = [];
-        let activeQuestions = [];   
-        let currentMathQIndex = 0;
-        let mathScoreTotal = 0;
-        let questionStartTime = 0;
-        let visualTimerInterval = null;
-        let isAnswering = false;
-
-        function generateMathPool() {
-            mathQuestionsPool = [];
-            const ops = ['+', '-', 'x'];
-            while (mathQuestionsPool.length < 200) {
-                let a = Math.floor(Math.random() * 50) + 1;
-                let b = Math.floor(Math.random() * 50) + 1;
-                let op = ops[Math.floor(Math.random() * ops.length)];
-                
-                if(op === 'x') {
-                    a = Math.floor(Math.random() * 12) + 2;
-                    b = Math.floor(Math.random() * 12) + 2;
-                }
-                
-                if (op === '-' && b > a) { let temp = a; a = b; b = temp; }
-                
-                let answer;
-                if(op === '+') answer = a + b;
-                if(op === '-') answer = a - b;
-                if(op === 'x') answer = a * b;
-
-                let optionsSet = new Set([answer]);
-                while(optionsSet.size < 4) {
-                    let fake = answer + (Math.floor(Math.random() * 21) - 10);
-                    if(fake >= 0 && fake !== answer) optionsSet.add(fake);
-                }
-                
-                mathQuestionsPool.push({
-                    q: `${a} ${op} ${b}`,
-                    a: answer,
-                    options: Array.from(optionsSet).sort(() => Math.random() - 0.5)
-                });
-            }
-        }
-
-        async function fetchTopMathScorer() {
-            const display = document.getElementById('topScorerDisplay');
-            const data = await fetchDB('mathLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name); 
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        function startMathGame() {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('mathGameDashboard').classList.remove('hidden-section');
-            
-            generateMathPool();
-            activeQuestions = [...mathQuestionsPool].sort(() => Math.random() - 0.5).slice(0, 50);
-            
-            currentMathQIndex = 0;
-            mathScoreTotal = 0;
-            document.getElementById('mathTotalScore').innerText = mathScoreTotal;
-            
-            loadMathQuestion();
-        }
-
-        function loadMathQuestion() {
-            if (currentMathQIndex >= 50) {
-                endMathGame();
-                return;
-            }
-
-            isAnswering = false;
-            const qData = activeQuestions[currentMathQIndex];
-            document.getElementById('mathProgress').innerText = `ข้อที่ ${currentMathQIndex + 1} / 50`;
-            document.getElementById('mathQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('mathOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                optionsDiv.innerHTML += `<button onclick="submitMathAnswer(${opt}, ${qData.a}, this)" class="math-option-btn text-3xl md:text-5xl font-black py-6 md:py-8 rounded-3xl w-full">${opt}</button>`;
-            });
-
-            questionStartTime = Date.now();
-            clearInterval(visualTimerInterval);
-            document.getElementById('mathTimerDisplay').innerText = "0.0";
-            visualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - questionStartTime) / 1000).toFixed(1);
-                document.getElementById('mathTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        function submitMathAnswer(selectedOpt, correctOpt, btnElement) {
-            if(isAnswering) return; 
-            isAnswering = true;
-            clearInterval(visualTimerInterval);
-            
-            const timeElapsed = (Date.now() - questionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('math-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('math-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-            }
-
-            mathScoreTotal += pointsEarned;
-            document.getElementById('mathTotalScore').innerText = mathScoreTotal;
-
-            setTimeout(() => {
-                currentMathQIndex++;
-                loadMathQuestion();
-            }, 1200);
-        }
-
-        function quitMathGame() {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endMathGame();
-            }
-        }
-
-        async function endMathGame() {
-            clearInterval(visualTimerInterval);
-            document.getElementById('mathGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(mathScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/mathHistory/${ts}`, 'PUT', { score: mathScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: mathScoreTotal, date: ts };
-            await fetchDB(`mathLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopMathScorer();
-        }
-
-        // --- English Vocab Game Variables & Logic ---
-        function generateEngPool() {
-            let shuffledVocab = [...ENG_VOCAB_DB].sort(() => Math.random() - 0.5);
-            activeEngQuestions = shuffledVocab.slice(0, 50).map(vocab => {
-                let answer = vocab.th;
-                let optionsSet = new Set([answer]);
-                while(optionsSet.size < 4) {
-                    let wrongVocab = ENG_VOCAB_DB[Math.floor(Math.random() * ENG_VOCAB_DB.length)];
-                    if(wrongVocab.th !== answer) optionsSet.add(wrongVocab.th);
-                }
-                return {
-                    q: vocab.en,
-                    a: answer,
-                    options: Array.from(optionsSet).sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopEngScorer() {
-            const display = document.getElementById('topEngScorerDisplay');
-            const data = await fetchDB('engLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        function startEngGame() {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('engGameDashboard').classList.remove('hidden-section');
-            
-            generateEngPool();
-            
-            currentEngQIndex = 0;
-            engScoreTotal = 0;
-            document.getElementById('engTotalScore').innerText = engScoreTotal;
-            
-            loadEngQuestion();
-        }
-
-        function loadEngQuestion() {
-            if (currentEngQIndex >= 50) {
-                endEngGame();
-                return;
-            }
-
-            isEngAnswering = false;
-            const qData = activeEngQuestions[currentEngQIndex];
-            document.getElementById('engProgress').innerText = `ข้อที่ ${currentEngQIndex + 1} / 50`;
-            document.getElementById('engQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('engOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                const safeOpt = opt.replace(/'/g, "\\'");
-                const safeA = qData.a.replace(/'/g, "\\'");
-                optionsDiv.innerHTML += `<button onclick="submitEngAnswer('${safeOpt}', '${safeA}', this)" class="eng-option-btn text-2xl md:text-4xl font-black py-6 md:py-8 rounded-3xl w-full">${opt}</button>`;
-            });
-
-            engQuestionStartTime = Date.now();
-            clearInterval(engVisualTimerInterval);
-            document.getElementById('engTimerDisplay').innerText = "0.0";
-            engVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - engQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('engTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        function submitEngAnswer(selectedOpt, correctOpt, btnElement) {
-            if(isEngAnswering) return; 
-            isEngAnswering = true;
-            clearInterval(engVisualTimerInterval);
-            
-            const timeElapsed = (Date.now() - engQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('eng-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('eng-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-                
-                Array.from(document.getElementById('engOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('eng-option-btn', 'bg-green-400');
-                        btn.classList.add('text-white', 'border-green-500');
-                    }
-                });
-            }
-
-            engScoreTotal += pointsEarned;
-            document.getElementById('engTotalScore').innerText = engScoreTotal;
-
-            setTimeout(() => {
-                currentEngQIndex++;
-                loadEngQuestion();
-            }, 1200);
-        }
-
-        function quitEngGame() {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endEngGame();
-            }
-        }
-
-        async function endEngGame() {
-            clearInterval(engVisualTimerInterval);
-            document.getElementById('engGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(engScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/engHistory/${ts}`, 'PUT', { score: engScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: engScoreTotal, date: ts };
-            await fetchDB(`engLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopEngScorer();
-        }
-
-        // --- Science Game Variables & Logic ---
-        function generateSciPool() {
-            let shuffledQuestions = [...SCI_QUESTION_DB].sort(() => Math.random() - 0.5);
-            activeSciQuestions = shuffledQuestions.slice(0, 50).map(qData => {
-                return {
-                    q: qData.q,
-                    a: qData.a,
-                    options: [...qData.options].sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopSciScorer() {
-            const display = document.getElementById('topSciScorerDisplay');
-            const data = await fetchDB('sciLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        function startSciGame() {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('sciGameDashboard').classList.remove('hidden-section');
-            
-            generateSciPool();
-            
-            currentSciQIndex = 0;
-            sciScoreTotal = 0;
-            document.getElementById('sciTotalScore').innerText = sciScoreTotal;
-            
-            loadSciQuestion();
-        }
-
-        function loadSciQuestion() {
-            if (currentSciQIndex >= 50 || currentSciQIndex >= activeSciQuestions.length) {
-                endSciGame();
-                return;
-            }
-
-            isSciAnswering = false;
-            const qData = activeSciQuestions[currentSciQIndex];
-            document.getElementById('sciProgress').innerText = `ข้อที่ ${currentSciQIndex + 1} / 50`;
-            document.getElementById('sciQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('sciOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                const safeOpt = opt.replace(/'/g, "\\'");
-                const safeA = qData.a.replace(/'/g, "\\'");
-                optionsDiv.innerHTML += `<button onclick="submitSciAnswer('${safeOpt}', '${safeA}', this)" class="sci-option-btn text-xl md:text-3xl font-black py-4 md:py-8 rounded-3xl w-full h-full">${opt}</button>`;
-            });
-
-            sciQuestionStartTime = Date.now();
-            clearInterval(sciVisualTimerInterval);
-            document.getElementById('sciTimerDisplay').innerText = "0.0";
-            sciVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - sciQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('sciTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        function submitSciAnswer(selectedOpt, correctOpt, btnElement) {
-            if(isSciAnswering) return; 
-            isSciAnswering = true;
-            clearInterval(sciVisualTimerInterval);
-            
-            const timeElapsed = (Date.now() - sciQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('sci-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('sci-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-                
-                Array.from(document.getElementById('sciOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('sci-option-btn', 'bg-green-400');
-                        btn.classList.add('text-white', 'border-green-500');
-                    }
-                });
-            }
-
-            sciScoreTotal += pointsEarned;
-            document.getElementById('sciTotalScore').innerText = sciScoreTotal;
-
-            setTimeout(() => {
-                currentSciQIndex++;
-                loadSciQuestion();
-            }, 1200);
-        }
-
-        function quitSciGame() {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endSciGame();
-            }
-        }
-
-        async function endSciGame() {
-            clearInterval(sciVisualTimerInterval);
-            document.getElementById('sciGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(sciScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/sciHistory/${ts}`, 'PUT', { score: sciScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: sciScoreTotal, date: ts };
-            await fetchDB(`sciLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopSciScorer();
-        }
-
-        // --- Thai Language Game Variables & Logic ---
-        function generateThaiPool() {
-            let shuffledQuestions = [...THAI_QUESTION_DB].sort(() => Math.random() - 0.5);
-            activeThaiQuestions = shuffledQuestions.slice(0, 50).map(qData => {
-                return {
-                    q: qData.q,
-                    a: qData.a,
-                    options: [...qData.options].sort(() => Math.random() - 0.5)
-                };
-            });
-        }
-
-        async function fetchTopThaiScorer() {
-            const display = document.getElementById('topThaiScorerDisplay');
-            const data = await fetchDB('thaiLeaderboard'); 
-            if(data) {
-                let scores = objToArray(data).filter(s => s.name);
-                if(scores.length > 0) {
-                    scores.sort((a,b) => b.score - a.score);
-                    display.innerHTML = `🏆 แชมป์: <b>${scores[0].name}</b> (${scores[0].score} แต้ม)`;
-                    return;
-                }
-            }
-            display.innerText = "🏆 ยังไม่มีแชมป์";
-        }
-
-        function startThaiGame() {
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-            document.getElementById('thaiGameDashboard').classList.remove('hidden-section');
-            
-            generateThaiPool();
-            
-            currentThaiQIndex = 0;
-            thaiScoreTotal = 0;
-            document.getElementById('thaiTotalScore').innerText = thaiScoreTotal;
-            
-            loadThaiQuestion();
-        }
-
-        function loadThaiQuestion() {
-            if (currentThaiQIndex >= 50 || currentThaiQIndex >= activeThaiQuestions.length) {
-                endThaiGame();
-                return;
-            }
-
-            isThaiAnswering = false;
-            const qData = activeThaiQuestions[currentThaiQIndex];
-            document.getElementById('thaiProgress').innerText = `ข้อที่ ${currentThaiQIndex + 1} / 50`;
-            document.getElementById('thaiQText').innerText = qData.q;
-            
-            const optionsDiv = document.getElementById('thaiOptions');
-            optionsDiv.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                const safeOpt = opt.replace(/'/g, "\\'");
-                const safeA = qData.a.replace(/'/g, "\\'");
-                optionsDiv.innerHTML += `<button onclick="submitThaiAnswer('${safeOpt}', '${safeA}', this)" class="thai-option-btn text-xl md:text-3xl font-black py-4 md:py-8 rounded-3xl w-full h-full">${opt}</button>`;
-            });
-
-            thaiQuestionStartTime = Date.now();
-            clearInterval(thaiVisualTimerInterval);
-            document.getElementById('thaiTimerDisplay').innerText = "0.0";
-            thaiVisualTimerInterval = setInterval(() => {
-                let seconds = ((Date.now() - thaiQuestionStartTime) / 1000).toFixed(1);
-                document.getElementById('thaiTimerDisplay').innerText = seconds;
-            }, 100);
-        }
-
-        function submitThaiAnswer(selectedOpt, correctOpt, btnElement) {
-            if(isThaiAnswering) return; 
-            isThaiAnswering = true;
-            clearInterval(thaiVisualTimerInterval);
-            
-            const timeElapsed = (Date.now() - thaiQuestionStartTime) / 1000;
-            let pointsEarned = 0;
-
-            if (selectedOpt === correctOpt) {
-                btnElement.classList.replace('thai-option-btn', 'bg-green-500');
-                btnElement.classList.add('text-white', 'border-green-600');
-                
-                if (timeElapsed <= 3.0) pointsEarned = 10;
-                else if (timeElapsed <= 4.0) pointsEarned = 9;
-                else if (timeElapsed <= 5.0) pointsEarned = 8;
-                else if (timeElapsed <= 10.0) pointsEarned = 7;
-                else if (timeElapsed <= 20.0) pointsEarned = 5;
-                else pointsEarned = 0;
-                
-            } else {
-                btnElement.classList.replace('thai-option-btn', 'bg-red-500');
-                btnElement.classList.add('text-white', 'border-red-600');
-                
-                Array.from(document.getElementById('thaiOptions').children).forEach(btn => {
-                    if(btn.innerText === correctOpt) {
-                        btn.classList.replace('thai-option-btn', 'bg-green-400');
-                        btn.classList.add('text-white', 'border-green-500');
-                    }
-                });
-            }
-
-            thaiScoreTotal += pointsEarned;
-            document.getElementById('thaiTotalScore').innerText = thaiScoreTotal;
-
-            setTimeout(() => {
-                currentThaiQIndex++;
-                loadThaiQuestion();
-            }, 1200);
-        }
-
-        function quitThaiGame() {
-            if(confirm("คุณต้องการสรุปคะแนนและออกจากการแข่งขันเลยใช่หรือไม่?")) {
-                endThaiGame();
-            }
-        }
-
-        async function endThaiGame() {
-            clearInterval(thaiVisualTimerInterval);
-            document.getElementById('thaiGameDashboard').classList.add('hidden-section');
-            
-            showGameOverModal(thaiScoreTotal);
-            
-            const safeKey = sanitizeKey(currentUser.email);
-            const ts = Date.now();
-            
-            await fetchDB(`users/${safeKey}/thaiHistory/${ts}`, 'PUT', { score: thaiScoreTotal, date: ts });
-            
-            const payload = { id: safeKey, name: currentUser.name, score: thaiScoreTotal, date: ts };
-            await fetchDB(`thaiLeaderboard/${ts}_${safeKey}`, 'PUT', payload);
-            
-            fetchTopThaiScorer();
-        }
-
-        // --- Auth Users & App Initialization ---
-        
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const safeKey = sanitizeKey(email);
-
-            const user = await fetchDB(`users/${safeKey}`);
-            if (user === undefined) return;
-            
-            if (user === null) {
-                showMessage("ไม่พบบัญชีผู้ใช้นี้ กรุณาสมัครสมาชิกก่อนนะจ๊ะ", 'error');
-            } else if (user.password !== password) {
-                showMessage("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่", 'error');
-            } else {
-                currentUser = user;
-                if (!currentUser.permissions) currentUser.permissions = [];
-                
-                // --- Daily Credit Bonus Check ---
-                const todayStr = new Date().toLocaleDateString('th-TH');
-                let credits = currentUser.credits || 0;
-                if (currentUser.lastLoginDate !== todayStr) {
-                    if (credits < 10) {
-                        credits += 10;
-                        showMessage("🎁 รับโบนัสล็อกอินรายวัน +10 เครดิต!", 'success');
-                    }
-                    currentUser.credits = credits;
-                    currentUser.lastLoginDate = todayStr;
-                    fetchDB(`users/${safeKey}`, 'PATCH', { credits: credits, lastLoginDate: todayStr });
-                }
-
-                document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
-                if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = currentUser.credits || 0;
-                if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = currentUser.credits || 0;
-                if(document.getElementById('creditModalName')) document.getElementById('creditModalName').innerText = currentUser.name;
-                
-                toggleSection('menu');
-                document.getElementById('loginForm').reset();
-            }
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const safeKey = sanitizeKey(email);
-
-            if(!name || !email || !password) return showMessage("กรุณากรอกข้อมูลให้ครบถ้วน", 'error');
-
-            const existingUser = await fetchDB(`users/${safeKey}`);
-            if (existingUser === undefined) return;
-            
-            if (existingUser !== null) {
-                showMessage("อีเมลนี้มีผู้ใช้งานแล้ว", 'error');
-            } else {
-                await fetchDB(`users/${safeKey}`, 'PUT', { 
-                    name, email, password, permissions: [], 
-                    createdAt: Date.now(),
-                    credits: 10,
-                    lastLoginDate: new Date().toLocaleDateString('th-TH')
-                });
-                showMessage("สมัครสำเร็จ ได้รับโบนัสเริ่มต้น 10 เครดิต! กรุณาล็อกอิน");
-                toggleSection('login');
-                document.getElementById('registerForm').reset();
-            }
-        });
-
-        async function loadTermSettings() {
-            const settingsData = await fetchDB('termSettings');
-            termSettingsData = settingsData || {};
-            const customData = await fetchDB('customTerms');
-            customTermsData = objToArray(customData) || [];
-        }
-
-        // --- ระบบนำทางหน้า ---
-        let termsVisible = true;
-        function toggleTermCards() {
-            const grid = document.getElementById('termCardsGrid');
-            const btn = document.getElementById('toggleTermsBtn');
-            termsVisible = !termsVisible;
-            
-            if (termsVisible) {
-                grid.classList.remove('hidden');
-                btn.innerHTML = '<i class="fas fa-eye-slash"></i> ซ่อนชั้นเรียน (อ.1 - ป.6)';
-                btn.classList.remove('bg-orange-100', 'text-orange-600');
-                btn.classList.add('bg-gray-100', 'text-gray-600');
-            } else {
-                grid.classList.add('hidden');
-                btn.innerHTML = '<i class="fas fa-eye"></i> แสดงชั้นเรียน (อ.1 - ป.6)';
-                btn.classList.remove('bg-gray-100', 'text-gray-600');
-                btn.classList.add('bg-orange-100', 'text-orange-600');
-            }
-        }
-
-        async function toggleSection(s) {
-            document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
-            if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
-            else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
-            else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); loadNewsData(); }
-            else if (s === 'menu') { 
-                await loadTermSettings(); 
-                document.getElementById('mainContent').classList.remove('hidden-section'); 
-                document.getElementById('kdgGameDashboard').classList.add('hidden-section');
-                document.getElementById('mathGameDashboard').classList.add('hidden-section');
-                document.getElementById('engGameDashboard').classList.add('hidden-section');
-                document.getElementById('sciGameDashboard').classList.add('hidden-section');
-                document.getElementById('thaiGameDashboard').classList.add('hidden-section');
-                document.getElementById('termSelectionContainer').classList.remove('hidden-section');
-                
-                fetchTopKdgScorer();
-                fetchTopMathScorer(); 
-                fetchTopEngScorer(); 
-                fetchTopSciScorer(); 
-                fetchTopThaiScorer();
-                renderTermCards(); 
-                renderDashboardFeed(); 
-            }
-            else if (s === 'admin') { 
-                await loadTermSettings(); 
-                document.getElementById('adminSection').classList.remove('hidden-section'); 
-                loadAdminStats();
-                refreshAdminUsers(); 
-                initAdminSelect(); 
-                renderAdminBanners();
-            }
-        }
-
-        function checkAdminPassword() {
-            if (document.getElementById('adminPasswordInput').value === "1471200") {
-                document.getElementById('adminPasswordInput').value = "";
-                toggleSection('admin');
-            } else showMessage("รหัสไม่ถูกต้อง", "error");
-        }
-
-        function checkCmsPassword() {
-            if (document.getElementById('cmsPasswordInput').value === "1471200") {
-                document.getElementById('cmsPasswordInput').value = "";
-                toggleSection('cms');
-            } else showMessage("รหัสอัพเดทไม่ถูกต้อง", "error");
-        }
-
-        function renderTermCards() {
-            const grid = document.getElementById('termCardsGrid');
-            const userPerms = currentUser.permissions || [];
-            
-            grid.innerHTML = getAllTerms().map(t => {
-                const hasAccess = userPerms.includes(t.id);
-                const settings = termSettingsData[t.id] || {};
-                const titleName = settings.title || t.defaultName;
-                const subtitle = settings.subtitle || 'เข้าสู่บทเรียนและแบบทดสอบ';
-                const bgImage = settings.imageUrl || '';
-                
-                const bgStyle = bgImage ? `background-image: url('${bgImage}'); background-size: cover; background-position: center;` : '';
-                const fallbackClass = bgImage ? '' : t.fallbackBg;
-
-                let lockedText = "ปลดล็อกเข้าเรียน";
-                if (t.id.startsWith('an')) {
-                    lockedText = "ปลดล็อก 99 บาท";
-                } else if (t.id.startsWith('p')) {
-                    lockedText = "ปลดล็อก 199 บาท";
-                }
-
-                return `
-                <div onclick="selectTerm('${t.id}', '${titleName}')" class="term-banner ${fallbackClass} p-8 md:p-12 min-h-[320px] flex items-center justify-between ${!hasAccess ? 'locked' : ''}" style="${bgStyle}">
-                    ${bgImage ? '<div class="banner-overlay"></div>' : ''}
-                    
-                    <div class="relative z-10 flex items-center gap-8 text-white w-full">
-                        <div class="w-20 h-20 md:w-28 md:h-28 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-4xl md:text-5xl shadow-inner flex-shrink-0">
-                            <i class="fas ${hasAccess ? t.icon : 'fa-lock'}"></i>
-                        </div>
-                        <div class="text-left flex-grow">
-                            <h3 class="text-3xl md:text-5xl font-black drop-shadow-lg">${titleName}</h3>
-                            <p class="text-base md:text-xl opacity-90 font-medium drop-shadow-md mt-2">${subtitle}</p>
-                        </div>
-                        <div class="hidden md:block">
-                            ${hasAccess 
-                                ? '<button class="bg-white text-gray-800 px-8 py-4 text-lg rounded-full font-bold shadow-xl hover:bg-gray-100 transition hover:scale-105">เข้าเรียน <i class="fas fa-arrow-right ml-2"></i></button>' 
-                                : '<span class="bg-black/40 backdrop-blur-sm text-white px-8 py-4 text-lg rounded-full font-bold border border-white/30"><i class="fas fa-lock mr-2"></i> ' + lockedText + '</span>'
-                            }
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        async function selectTerm(id, name) {
-            const userPerms = currentUser.permissions || [];
-            if (id !== 'special' && !userPerms.includes(id)) {
-                return showMessage("ห้องเรียนนี้ต้องขออนุญาตคุณครูก่อนนะจ๊ะ", "error");
-            }
-            
-            document.getElementById('termSelectionContainer').classList.add('hidden-section');
-            document.getElementById('contentDashboard').classList.remove('hidden-section');
-            document.getElementById('currentTermView').innerHTML = id === 'special' ? `🎁 ${name}` : `<i class="fas fa-graduation-cap"></i> ${name}`;
-            
-            const unitsData = await fetchDB('units');
-            if (unitsData === undefined) return;
-
-            const allUnits = objToArray(unitsData);
-            const filteredUnits = allUnits.filter(u => u.term === id);
-
-            const grid = document.getElementById('dynamicUnitGrid');
-            grid.innerHTML = filteredUnits.length ? filteredUnits.map(u => `
-                <div onclick="window.open('${u.link}', '_blank')" class="bg-white p-8 rounded-3xl border-4 border-orange-50 hover:border-orange-400 hover:shadow-xl cursor-pointer text-center group transition">
-                    <div class="mb-4 text-indigo-400 group-hover:scale-110 transition duration-300"><i class="fas fa-play-circle text-5xl"></i></div>
-                    <h4 class="font-black text-gray-700 text-lg">${u.name}</h4>
-                    <p class="text-xs text-gray-400 mt-2">คลิกเพื่อเริ่มบทเรียน</p>
-                </div>
-            `).join('') : '<p class="col-span-full text-center text-gray-400 py-10 font-bold">ยังไม่มีบทเรียนในห้องนี้</p>';
-        }
-
-        function backToTerms() {
-            document.getElementById('termSelectionContainer').classList.remove('hidden-section');
-            document.getElementById('contentDashboard').classList.add('hidden-section');
-        }
-
-        // --- Admin Management ---
-        function switchAdminTab(tab) {
-            document.getElementById('tabContentUsers').classList.toggle('hidden-section', tab !== 'users');
-            document.getElementById('tabContentUnits').classList.toggle('hidden-section', tab !== 'units');
-            document.getElementById('tabContentBanners').classList.toggle('hidden-section', tab !== 'banners');
-            document.getElementById('tabContentLeaderboards').classList.toggle('hidden-section', tab !== 'leaderboards');
-            document.getElementById('tabContentFeedbacks').classList.toggle('hidden-section', tab !== 'feedbacks');
-            document.getElementById('tabContentTopups').classList.toggle('hidden-section', tab !== 'topups');
-            
-            const activeClass = ['text-indigo-600', 'bg-indigo-50'];
-            const inactiveClass = ['text-gray-500', 'hover:bg-gray-200'];
-
-            const setBtnStyle = (btnId, isActive) => {
-                const btn = document.getElementById(btnId);
-                if(isActive) {
-                    btn.classList.add(...activeClass); btn.classList.remove(...inactiveClass);
-                } else {
-                    btn.classList.add(...inactiveClass); btn.classList.remove(...activeClass);
-                }
-            };
-
-            setBtnStyle('tabUsersBtn', tab === 'users');
-            setBtnStyle('tabUnitsBtn', tab === 'units');
-            setBtnStyle('tabBannersBtn', tab === 'banners');
-            setBtnStyle('tabLeaderboardsBtn', tab === 'leaderboards');
-            setBtnStyle('tabFeedbacksBtn', tab === 'feedbacks');
-            setBtnStyle('tabTopupsBtn', tab === 'topups');
-
-            if(tab === 'feedbacks') loadAdminFeedbacks();
-            if(tab === 'topups') loadAdminTopups();
-        }
-
-        async function refreshAdminUsers() {
-            const usersData = await fetchDB('users');
-            if (usersData === undefined) return;
-
-            const users = objToArray(usersData);
-            
-            // เรียงลำดับจากเก่าไปใหม่ (อิงจากเวลาสมัคร createdAt)
-            users.sort((a, b) => {
-                const timeA = a.createdAt || 0; 
-                const timeB = b.createdAt || 0;
-                return timeA - timeB; 
-            });
-
-            document.getElementById('userTableBody').innerHTML = users.map(u => {
-                const perms = u.permissions || [];
-                const joinDateStr = u.createdAt 
-                    ? new Date(u.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) 
-                    : 'ระบบเดิม';
-                const userCredit = u.credits || 0;
-
-                return `
-                <tr class="border-b hover:bg-slate-50">
-                    <td class="p-4">
-                        <div class="font-bold text-gray-800">${u.name}</div>
-                        <div class="text-xs text-slate-400">${u.email}</div>
-                        <div class="text-[10px] text-emerald-500 mt-1 font-medium"><i class="far fa-calendar-alt"></i> สมัครเมื่อ: ${joinDateStr}</div>
-                    </td>
-                    <td class="p-4">
-                        <div class="flex flex-wrap gap-1">
-                            ${getAllTerms().map(t => `<button onclick="updatePermGS('${u.email}', '${t.id}')" class="text-[9px] px-2 py-1 rounded-full border transition ${perms.includes(t.id) ? 'bg-indigo-600 text-white shadow-sm' : 'bg-gray-100 text-slate-400 hover:bg-gray-200'}">${termSettingsData[t.id]?.title || t.defaultName}</button>`).join('')}
-                        </div>
-                    </td>
-                    <td class="p-4 text-center border-l border-gray-100">
-                        <div class="flex flex-col items-center justify-center gap-1">
-                            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wide">เครดิต</div>
-                            <div class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-black flex items-center gap-1 shadow-inner border border-yellow-200">
-                                <i class="fas fa-coins"></i> ${userCredit}
-                            </div>
-                            <button onclick="addCreditGS('${u.email}', 100)" class="mt-1 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm transition"><i class="fas fa-plus"></i> 100</button>
-                        </div>
-                    </td>
-                    <td class="p-4 text-center border-l border-gray-100">
-                        <button onclick="deleteUserGS('${u.email}')" class="text-red-300 hover:text-red-500 hover:bg-red-50 w-8 h-8 rounded-full transition" title="ลบผู้ใช้นี้">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>`
-            }).join('');
-        }
-
-        async function addCreditGS(email, amount) {
-            if(confirm(`ยืนยันการเพิ่ม ${amount} เครดิต ให้กับผู้ใช้นี้?`)) {
-                const safeKey = sanitizeKey(email);
-                const user = await fetchDB(`users/${safeKey}`);
-                let newCredits = (user.credits || 0) + amount;
-                await fetchDB(`users/${safeKey}/credits`, 'PUT', newCredits);
-                showMessage(`เพิ่ม ${amount} เครดิตสำเร็จ`, "success");
-                refreshAdminUsers();
-            }
-        }
-
-        async function updatePermGS(email, termId) { 
-            const safeKey = sanitizeKey(email);
-            const user = await fetchDB(`users/${safeKey}`);
-            let perms = user.permissions || [];
-            
-            if (perms.includes(termId)) {
-                perms = perms.filter(p => p !== termId);
-            } else {
-                perms.push(termId);
-            }
-            await fetchDB(`users/${safeKey}/permissions`, 'PUT', perms);
-            refreshAdminUsers(); 
-        }
-
-        async function deleteUserGS(email) { 
-            if(confirm('ลบผู้ใช้นี้?')) { 
-                const safeKey = sanitizeKey(email);
-                await fetchDB(`users/${safeKey}`, 'DELETE');
-                refreshAdminUsers(); 
-            } 
-        }
-
-        function initAdminSelect() {
-            const allOptions = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
-            document.getElementById('unitTerm').innerHTML = allOptions.map(t => {
-                const customTitle = termSettingsData[t.id]?.title;
-                return `<option value="${t.id}">${customTitle || t.defaultName}</option>`;
-            }).join('');
-            refreshAdminUnits();
-        }
-
-        async function refreshAdminUnits() {
-            const unitsData = await fetchDB('units');
-            if (unitsData === undefined) return;
-
-            const units = objToArray(unitsData);
-            const all = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
-            
-            document.getElementById('unitTableBody').innerHTML = units.map(u => {
-                const termInfo = all.find(t=>t.id===u.term);
-                const termName = termSettingsData[u.term]?.title || termInfo?.defaultName || u.term;
-                return `
-                <tr class="border-b">
-                    <td class="p-4 font-bold text-slate-700">${u.name}</td>
-                    <td class="p-4 text-xs font-bold text-orange-600">${termName}</td>
-                    <td class="p-4 text-center"><button onclick="deleteUnitGS('${u.id}')" class="text-red-400"><i class="fas fa-trash"></i></button></td>
-                </tr>`;
-            }).join('');
-        }
-
-        async function saveUnitGS() {
-            const name = document.getElementById('unitName').value;
-            const term = document.getElementById('unitTerm').value;
-            const link = document.getElementById('unitLink').value;
-            if(!name || !link) return showMessage("กรอกข้อมูลให้ครบ", "error");
-            
-            await fetchDB('units', 'POST', { name, term, link });
-            document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
-            refreshAdminUnits();
-        }
-
-        async function deleteUnitGS(id) { 
-            if(confirm('ลบบทเรียนนี้?')) { 
-                await fetchDB(`units/${id}`, 'DELETE'); 
-                refreshAdminUnits(); 
-            } 
-        }
-
-        function renderAdminBanners() {
-            const container = document.getElementById('adminBannersList');
-            
-            let htmlContent = getAllTerms().map(t => {
-                const settings = termSettingsData[t.id] || {};
-                const currentTitle = settings.title || t.defaultName;
-                const currentSub = settings.subtitle || 'เข้าสู่บทเรียนและแบบทดสอบ';
-                const currentImg = settings.imageUrl || '';
-                const isCustom = t.id.startsWith('custom_');
-
-                return `
-                <div class="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden">
-                    ${isCustom ? `
-                        <button onclick="deleteCustomTerm('${t.id}')" class="absolute top-4 right-4 text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 w-8 h-8 rounded-full transition flex items-center justify-center" title="ลบห้องเรียนนี้">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    ` : ''}
-                    <div class="flex items-center gap-2 mb-4 pr-10">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-lg"><i class="fas ${t.icon}"></i></div>
-                        <h4 class="font-black text-lg text-gray-800 line-clamp-1">รหัส: ${t.id} <span class="text-xs text-gray-400 font-normal">(${t.defaultName})</span></h4>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">ชื่อแสดงผล</label>
-                            <input type="text" id="banner_title_${t.id}" value="${currentTitle}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น อนุบาล 1">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">คำอธิบาย</label>
-                            <input type="text" id="banner_sub_${t.id}" value="${currentSub}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น เข้าสู่บทเรียนแสนสนุก">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">ลิงก์ภาพพื้นหลัง (URL)</label>
-                            <input type="url" id="banner_img_${t.id}" value="${currentImg}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="ปล่อยว่างเพื่อใช้สีปกติ">
-                        </div>
-                        <button onclick="saveBannerSetting('${t.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition mt-2 shadow-md">บันทึกแบนเนอร์นี้</button>
-                    </div>
-                </div>`;
-            }).join('');
-
-            htmlContent += `
-            <div class="col-span-1 md:col-span-2 mt-2">
-                <button onclick="createNewCustomTerm()" class="w-full border-4 border-dashed border-indigo-200 text-indigo-500 hover:border-indigo-400 hover:bg-indigo-50 font-black py-8 rounded-3xl transition duration-300 flex items-center justify-center gap-3 text-xl">
-                    <i class="fas fa-plus-circle text-3xl"></i> เพิ่มห้องเรียน / ระดับชั้นใหม่
-                </button>
-            </div>
-            `;
-
-            container.innerHTML = htmlContent;
-        }
-
-        async function saveBannerSetting(termId) {
-            const title = document.getElementById(`banner_title_${termId}`).value;
-            const subtitle = document.getElementById(`banner_sub_${termId}`).value;
-            const imageUrl = document.getElementById(`banner_img_${termId}`).value;
-
-            const payload = { title, subtitle, imageUrl };
-            
-            await fetchDB(`termSettings/${termId}`, 'PUT', payload);
-            showMessage("บันทึกการตั้งค่าแบนเนอร์สำเร็จ");
-            
-            await loadTermSettings();
-            initAdminSelect();
-            refreshAdminUsers();
-        }
-
-        async function createNewCustomTerm() {
-            const name = prompt("กรุณาตั้งชื่อห้องเรียนหรือระดับชั้นใหม่ (เช่น มัธยมศึกษาปีที่ 1):");
-            if (!name || name.trim() === '') return;
-
-            const newId = 'custom_' + Date.now();
-            const payload = {
-                id: newId,
-                defaultName: name.trim(),
-                icon: 'fa-star',
-                fallbackBg: 'bg-gradient-to-r from-teal-400 to-emerald-400'
-            };
-
-            await fetchDB(`customTerms/${newId}`, 'PUT', payload);
-            
-            await fetchDB(`termSettings/${newId}`, 'PUT', {
-                title: name.trim(),
-                subtitle: 'เข้าสู่บทเรียนและแบบทดสอบ',
-                imageUrl: ''
-            });
-
-            showMessage("สร้างห้องเรียนใหม่สำเร็จ!");
-            
-            await loadTermSettings();
-            renderAdminBanners();
-            initAdminSelect();
-            refreshAdminUsers(); 
-        }
-
-        async function deleteCustomTerm(id) {
-            if(confirm("คุณต้องการลบห้องเรียนนี้ใช่หรือไม่? (ข้อมูลแบนเนอร์จะหายไปทั้งหมด แต่บทเรียนย่อยอาจจะยังคงค้างอยู่ในระบบ)")) {
-                await fetchDB(`customTerms/${id}`, 'DELETE');
-                await fetchDB(`termSettings/${id}`, 'DELETE');
-                
-                showMessage("ลบห้องเรียนสำเร็จ");
-
-                await loadTermSettings();
-                renderAdminBanners();
-                initAdminSelect();
-                refreshAdminUsers();
-            }
-        }
-
-        // --- Admin Leaderboard Load Logic ---
-        async function loadAdminLeaderboard(subject) {
-            let dbKey = '';
-            let title = '';
-            
-            if(subject === 'kdg') { dbKey = 'kdgLeaderboard'; title = '<i class="fas fa-baby text-orange-500"></i> สถิติแข่งขันอนุบาล'; }
-            if(subject === 'math') { dbKey = 'mathLeaderboard'; title = '<i class="fas fa-calculator text-pink-500"></i> สถิติแข่งขันคณิตคิดเร็ว'; }
-            if(subject === 'eng') { dbKey = 'engLeaderboard'; title = '<i class="fas fa-globe text-blue-500"></i> สถิติแข่งขันภาษาอังกฤษ'; }
-            if(subject === 'sci') { dbKey = 'sciLeaderboard'; title = '<i class="fas fa-flask text-emerald-500"></i> สถิติแข่งขันวิทยาศาสตร์'; }
-            if(subject === 'thai') { dbKey = 'thaiLeaderboard'; title = '<i class="fas fa-book text-purple-500"></i> สถิติแข่งขันภาษาไทย'; }
-
-            document.getElementById('adminLbTitle').innerHTML = title;
-            const tbody = document.getElementById('adminLbTableBody');
-            tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center"><i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i><br>กำลังโหลดข้อมูล...</td></tr>`;
-
-            const data = await fetchDB(dbKey);
-            
-            if(!data) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ยังไม่มีข้อมูลการแข่งขันในหมวดนี้</td></tr>`;
-                return;
-            }
-
-            let scores = objToArray(data).filter(s => s.name);
-            scores.sort((a,b) => b.score - a.score);
-
-            if(scores.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">ยังไม่มีข้อมูลการแข่งขันในหมวดนี้</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = scores.map((s, index) => {
-                const dateStr = new Date(s.date).toLocaleString('th-TH', { 
-                    year: 'numeric', month: 'short', day: 'numeric', 
-                    hour: '2-digit', minute: '2-digit' 
-                });
-                
-                let rankTrophy = index + 1;
-                if(index === 0) rankTrophy = '<span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs">🥇 1</span>';
-                if(index === 1) rankTrophy = '<span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-xs">🥈 2</span>';
-                if(index === 2) rankTrophy = '<span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs">🥉 3</span>';
-
-                return `
-                <tr class="border-b border-gray-50 hover:bg-slate-50 transition">
-                    <td class="p-5 font-black text-gray-500">${rankTrophy}</td>
-                    <td class="p-5 font-bold text-slate-800">${s.name}</td>
-                    <td class="p-5 font-black text-indigo-600 text-lg">${s.score} <span class="text-xs text-gray-400 font-normal">แต้ม</span></td>
-                    <td class="p-5 text-xs text-gray-500"><i class="far fa-clock"></i> ${dateStr}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function logout() {
-            location.reload();
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadNewsData();
-            initVisitorStats();
-        });
-
-    </script>
+        try {
+          await fetch(DB_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(appState)
+          });
+        } catch (error) {
+          console.error("Error resetting DB:", error);
+        }
+
+        updateDOM();
+        closeControlModal();
+        showToast("รีเซ็ตหน้าจอเป็นค่าตั้งต้นเรียบร้อยแล้ว", "rotate-ccw", "bg-amber-500");
+      }
+    }
+
+    // Toast Notification controller
+    function showToast(message, iconName, bgClass) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      const toastIconBg = document.getElementById('toast-icon-bg');
+      
+      // Update toast UI
+      toastMsg.innerText = message;
+      toastIconBg.className = `p-1 rounded-lg ${bgClass} text-white`;
+      
+      const iconEl = document.getElementById('toast-icon');
+      iconEl.setAttribute('data-lucide', iconName);
+      lucide.createIcons();
+
+      // Trigger animation
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
+
+    // On Load Initialization
+    window.onload = async function() {
+      // Render Lucide icons
+      lucide.createIcons();
+      
+      // Fetch data from Firebase Realtime Database
+      try {
+        const response = await fetch(DB_URL);
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            // Merge defaults with DB data
+            appState = { ...DEFAULT_SETTINGS, ...data };
+          }
+        }
+      } catch (error) {
+        console.error("Error loading from DB, using default settings:", error);
+      }
+
+      // Apply data to UI
+      updateDOM();
+
+      // Setup Enter key support for password field
+      document.getElementById('admin-password').addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+          verifyPasscode();
+        }
+      });
+    }
+  </script>
 </body>
 </html>
