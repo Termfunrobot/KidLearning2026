@@ -109,20 +109,9 @@
     <div id="firebaseErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl text-center">
             <div class="text-red-500 text-6xl mb-4"><i class="fas fa-exclamation-triangle"></i></div>
-            <h2 class="text-2xl font-black text-gray-800 mb-4">ฐานข้อมูลถูกล็อค</h2>
+            <h2 class="text-2xl font-black text-gray-800 mb-4">เข้าถึงข้อมูลไม่ได้</h2>
             <p class="text-gray-600 mb-6 font-medium text-left">
-                ระบบไม่สามารถเข้าถึงข้อมูลได้ (Permission Denied) กรุณาปลดล็อคใน Firebase ตามนี้:<br><br>
-                1. ไปที่ Firebase Console -> <b>Realtime Database</b><br>
-                2. เลือกแถบ <b>Rules</b><br>
-                3. เปลี่ยนโค้ดให้เป็นตามนี้แล้วกด Publish:<br>
-                <code class="block bg-gray-100 p-4 rounded-xl mt-2 text-sm text-left text-blue-600 font-mono">
-                {<br>
-                &nbsp;&nbsp;"rules": {<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;".read": true,<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;".write": true<br>
-                &nbsp;&nbsp;}<br>
-                }
-                </code>
+                ระบบถูกตั้งค่า Security Rules ป้องกันไว้ หรือเซิร์ฟเวอร์ปฏิเสธการเชื่อมต่อ กรุณาตรวจสอบการตั้งค่า `.read` และ `.write` ในหน้า Firebase Console
             </p>
             <button onclick="document.getElementById('firebaseErrorModal').classList.add('hidden')" class="w-full bg-red-500 text-white font-bold py-4 rounded-xl hover:bg-red-600 transition shadow-lg">รับทราบและปิดหน้าต่าง</button>
         </div>
@@ -868,8 +857,8 @@
     <script>
     (function() {
 
-        // URL ของ Firebase Realtime Database
-        const FIREBASE_DB_URL = "https://tess-71c84-default-rtdb.asia-southeast1.firebasedatabase.app";
+        // อัปเดต URL ใหม่ตามที่คุณให้มา
+        const FIREBASE_DB_URL = "https://test-mode-175a8-default-rtdb.firebaseio.com";
 
         const BASE_TERMS = [
             { id: 'an1', defaultName: 'อนุบาล 1', icon: 'fa-baby', fallbackBg: 'bg-gradient-to-r from-pink-400 to-rose-400', level: 'kdg' },
@@ -947,6 +936,7 @@
                 if(!isBackground) showLoading(false);
                 
                 if (!res.ok) {
+                    // ปรับหน้าต่างเตือนให้ตรงกับ Security Rules 
                     if (result && result.error && result.error.includes("Permission denied")) {
                         document.getElementById('firebaseErrorModal').classList.remove('hidden');
                     }
@@ -3203,15 +3193,16 @@
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-      // ตั้งค่า Firebase Config (อย่าลืมแก้ข้อมูลให้ตรงกับโปรเจกต์ของคุณ ⚠️)
+      // อัปเดต Firebase Config ตามข้อมูลใหม่
       const firebaseConfig = {
-        apiKey: "ใส่_API_KEY_ของคุณที่นี่",
-        authDomain: "tess-71c84.firebaseapp.com",
-        databaseURL: "https://tess-71c84-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "tess-71c84",
-        storageBucket: "tess-71c84.appspot.com",
-        messagingSenderId: "ใส่_SENDER_ID_ของคุณที่นี่",
-        appId: "ใส่_APP_ID_ของคุณที่นี่"
+        apiKey: "AIzaSyAjIHXXbkaDllqHxsp01QT08T6MyLWziqI",
+        authDomain: "test-mode-175a8.firebaseapp.com",
+        databaseURL: "https://test-mode-175a8-default-rtdb.firebaseio.com",
+        projectId: "test-mode-175a8",
+        storageBucket: "test-mode-175a8.firebasestorage.app",
+        messagingSenderId: "123405704419",
+        appId: "1:123405704419:web:d9ff94c5407e24a1fef9d6",
+        measurementId: "G-BJRHD7FB2P"
       };
 
       const app = initializeApp(firebaseConfig);
@@ -3224,7 +3215,6 @@
               const result = await signInWithPopup(auth, provider);
               const user = result.user;
               
-              // ส่งชื่อและอีเมลที่ได้จาก Google กลับเข้าไปให้ระบบหลักทำงานต่อ
               if (window.processGoogleUser) {
                   window.processGoogleUser(user.displayName, user.email);
               }
