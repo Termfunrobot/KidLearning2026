@@ -646,8 +646,9 @@
             setTimeout(() => b.style.display = 'none', 3000);
         }
 
-        const sanitizeKey = (email) => {
-            if (!email) return 'user_' + Date.now(); // ป้องกัน Error กรณีไม่มีอีเมล
+        const sanitizeKey = (email, uid) => {
+            // หากไม่มีอีเมล ให้ใช้รหัส Google UID ทับแทน เพื่อไม่ให้สร้างบัญชีซ้ำ
+            if (!email || email.trim() === "") return 'user_' + (uid || Date.now()); 
             return String(email).trim().toLowerCase().replace(/[.#$[\]\/\s]/g, '_');
         };
         
@@ -664,7 +665,7 @@
             const scoreDisplay = document.getElementById('userTotalScoreDisplay');
             if(scoreDisplay) scoreDisplay.innerText = currentUser.totalGameScore.toLocaleString();
 
-            const safeKey = sanitizeKey(currentUser.email);
+            const safeKey = sanitizeKey(currentUser.email, currentUser.uid);
             fetchDB(`users/${safeKey}/totalGameScore`, 'PUT', currentUser.totalGameScore);
         }
 
@@ -706,7 +707,6 @@
 
         async function initVisitorStats() {
             try {
-                // เปลี่ยนเป็น totalVisitorsNew เพื่อเริ่มนับ 1 ใหม่
                 let totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitorsNew.json`);
                 let total = await totalRes.json();
                 
@@ -758,7 +758,6 @@
                 const lastAdminLogin = await lastLoginRes.json() || 0;
 
                 const users = objToArray(usersData);
-                // นับสมาชิกเฉพาะคนที่มีอีเมล (@) เข้าใช้งานจริงๆ
                 const validUsers = users.filter(u => u.email && u.email.includes('@'));
                 
                 let totalMembers = validUsers.length;
@@ -808,7 +807,6 @@
             if(!usersData) return;
             const users = objToArray(usersData);
             
-            // นับสมาชิกเฉพาะคนที่มีอีเมล (@) เข้าใช้งานจริงๆ ในหน้าแอดมิน
             const validUsers = users.filter(u => u.email && u.email.includes('@'));
             
             const lastLoginData = await fetchDB('stats/lastAdminLogin');
@@ -1806,7 +1804,7 @@
 
             if (confirm("ต้องการใช้ 10 เครดิต แลกรับ 10,000 คะแนน ใช่หรือไม่?")) {
                 showLoading(true);
-                const safeKey = sanitizeKey(currentUser.email);
+                const safeKey = sanitizeKey(currentUser.email, currentUser.uid);
                 
                 let newCredits = currentUser.credits - 10;
                 await fetchDB(`users/${safeKey}/credits`, 'PUT', newCredits);
@@ -1866,10 +1864,10 @@
         window.deletePromoCode = deletePromoCode;
         window.exchangeCreditForScore = exchangeCreditForScore;
 
-        window.processGoogleUser = async function(name, email) {
+        window.processGoogleUser = async function(name, email, uid) {
             try {
                 showLoading(true);
-                const safeKey = sanitizeKey(email);
+                const safeKey = sanitizeKey(email, uid);
                 let user = await fetchDB(`users/${safeKey}`);
                 
                 if (user === undefined) {
@@ -1881,6 +1879,7 @@
                     user = { 
                         name: name || "นักเรียน", 
                         email: email || "ไม่ระบุ", 
+                        uid: uid || "",
                         password: "google_auth", 
                         permissions: [], 
                         createdAt: Date.now(),
@@ -1968,7 +1967,8 @@
               // ----------------------------------------
 
               if (window.processGoogleUser) {
-                  window.processGoogleUser(user.displayName, user.email);
+                  // ส่ง uid แนบไปเป็นตัวที่ 3 เพื่อป้องกันการปั้มยูสเซอร์เดิม
+                  window.processGoogleUser(user.displayName, user.email, user.uid);
               }
           } catch (error) {
               console.error("Google Login Error:", error);
