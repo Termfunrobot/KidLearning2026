@@ -84,7 +84,7 @@
         <div class="flex items-center gap-2" title="สมาชิกทั้งหมด"><i class="fas fa-user-graduate text-purple-400"></i> สมาชิก: <span id="statTotalMembers">...</span></div>
         <div class="flex items-center gap-1" title="สมาชิกใหม่"><span id="statNewMembers" class="text-pink-400 bg-pink-900/50 px-2 py-0.5 rounded-md hidden">...</span></div>
         <div class="text-slate-500 hidden" id="topupDivider">|</div>
-        <div class="flex items-center gap-2 hidden cursor-pointer hover:text-yellow-300 transition" title="แจ้งเติมเครดิตค้างตรวจสอบ" id="statPendingTopupsContainer" onclick="toggleSection('admin-verify')">
+        <div class="flex items-center gap-2 hidden cursor-pointer hover:text-yellow-300 transition" title="แจ้งเติมเครดิตค้างตรวจสอบ" id="statPendingTopupsContainer" onclick="toggleSection('admin')">
             <i class="fas fa-file-invoice-dollar text-yellow-400"></i> แจ้งโอน: <span id="statPendingTopups" class="text-yellow-400 bg-yellow-900/50 px-2 py-0.5 rounded-md">0</span>
         </div>
     </div>
@@ -212,29 +212,6 @@
                     </button>
                     <p class="text-xs text-gray-400 text-center mt-4">* ใช้บัญชี Google ของหนูหรือผู้ปกครองเพื่อเข้าสู่ระบบ/สมัครสมาชิก อัตโนมัติ</p>
                 </div>
-
-                <div class="mt-8 text-center border-t-2 border-gray-100 pt-6">
-                    <div class="flex justify-center gap-4 text-xs font-bold">
-                        <button onclick="toggleSection('admin-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-user-shield"></i> แอดมินระบบ</button>
-                        <span class="text-gray-300">|</span>
-                        <button onclick="toggleSection('cms-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-edit"></i> จัดการข่าวสาร</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="adminVerifySection" class="hidden-section text-center">
-                <h2 class="text-xl font-bold mb-4 text-orange-600">แอดมินระบบ</h2>
-                <input type="password" id="adminPasswordInput" class="w-full px-5 py-4 bg-gray-100 border-2 border-orange-200 rounded-2xl mb-4 text-center text-2xl tracking-[1em]" placeholder="••••">
-                <button onclick="checkAdminPassword()" class="w-full bg-slate-800 text-white font-bold py-4 rounded-2xl">ยืนยัน</button>
-                <button onclick="toggleSection('login')" class="mt-4 text-gray-400 font-bold">ยกเลิก</button>
-            </div>
-
-            <div id="cmsVerifySection" class="hidden-section text-center">
-                <h2 class="text-xl font-bold mb-4 text-orange-600">ระบบจัดการข่าวสาร</h2>
-                <p class="text-xs text-gray-400 mb-4">กรอกรหัสผ่านเพื่อแก้ไขประกาศและหน้าแรก</p>
-                <input type="password" id="cmsPasswordInput" class="w-full px-5 py-4 bg-gray-100 border-2 border-orange-200 rounded-2xl mb-4 text-center text-2xl tracking-[1em]" placeholder="••••">
-                <button onclick="checkCmsPassword()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition">เข้าสู่ระบบอัพเดท</button>
-                <button onclick="toggleSection('login')" class="mt-4 text-gray-400 font-bold">ยกเลิก</button>
             </div>
         </div>
 
@@ -251,7 +228,7 @@
         <div class="max-w-4xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
             <div class="bg-blue-600 p-8 text-white flex justify-between items-center">
                 <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-edit"></i> ระบบอัพเดทข่าวสารหน้าแรก & ห้องเรียน</h2>
-                <button onclick="toggleSection('login')" class="bg-white/20 hover:bg-white/30 transition px-6 py-2 rounded-xl font-bold">ออก</button>
+                <button onclick="toggleSection('menu')" class="bg-white/20 hover:bg-white/30 transition px-6 py-2 rounded-xl font-bold">กลับหน้าแรก</button>
             </div>
             
             <div class="p-8">
@@ -339,6 +316,15 @@
                 <button onclick="openFeedbackModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2">
                     <i class="fas fa-comment-dots"></i><span class="hidden sm:inline"> ส่งข้อความ</span>
                 </button>
+
+                <!-- ปุ่มแอดมิน (ซ่อนไว้ก่อน จะแสดงเฉพาะ woottermfun1@gmail.com) -->
+                <button id="navAdminBtn" onclick="toggleSection('admin')" class="hidden bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2" title="เข้าสู่ระบบหลังบ้าน">
+                    <i class="fas fa-user-shield"></i><span class="hidden sm:inline"> แอดมิน</span>
+                </button>
+                <button id="navCmsBtn" onclick="toggleSection('cms')" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2" title="จัดการข่าวสาร/ประกาศ">
+                    <i class="fas fa-edit"></i><span class="hidden sm:inline"> ข่าวสาร</span>
+                </button>
+
                 <div id="userNameDisplay" class="font-bold text-gray-800 hidden md:block"></div>
                 <button onclick="logout()" class="bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition"><i class="fas fa-sign-out-alt"></i></button>
             </div>
@@ -481,7 +467,7 @@
         <div class="max-w-6xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[80vh]">
             <div class="bg-slate-800 p-8 text-white flex justify-between items-center">
                 <h2 class="text-2xl font-bold">Admin Panel</h2>
-                <button onclick="logout()" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">ออก</button>
+                <button onclick="toggleSection('menu')" class="bg-white/10 px-6 py-2 rounded-xl font-bold hover:bg-white/20 transition">กลับหน้าแรก</button>
             </div>
             
             <div class="p-8 pb-0">
@@ -632,13 +618,11 @@
         const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
         function verifyAdminAction(type = 'admin') {
-            const systemName = type === 'cms' ? 'ระบบจัดการข่าวสาร' : 'แอดมินดูแลระบบ';
-            const pass = prompt(`🔒 ระบบป้องกันความปลอดภัย\nกรุณากรอกรหัสผ่าน ${systemName} เพื่อยืนยันการทำรายการนี้:`);
-            if (pass !== "1471200") {
-                alert("❌ รหัสผ่านไม่ถูกต้อง! ระบบปฏิเสธการทำรายการเพื่อความปลอดภัย");
-                return false;
+            if (currentUser && currentUser.email === 'woottermfun1@gmail.com') {
+                return true;
             }
-            return true;
+            alert("❌ สิทธิ์ถูกปฏิเสธ! ฟังก์ชันนี้เฉพาะแอดมินระบบเท่านั้น");
+            return false;
         }
 
         function showLoading(s) { document.getElementById('loadingOverlay').classList.toggle('hidden', !s); }
@@ -1346,12 +1330,14 @@
         }
 
         async function toggleSection(s) {
-            document.querySelectorAll('#authWrapper, #loginSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
+            document.querySelectorAll('#authWrapper, #loginSection, #mainContent, #adminSection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
             
             if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
-            else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
-            else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); loadNewsData(); }
+            else if (s === 'cms') { 
+                if(!verifyAdminAction('cms')) return;
+                document.getElementById('cmsSection').classList.remove('hidden-section'); 
+                loadNewsData(); 
+            }
             else if (s === 'menu') { 
                 await loadTermSettings(); 
                 document.getElementById('mainContent').classList.remove('hidden-section'); 
@@ -1362,6 +1348,7 @@
                 switchStudentTab('pri');
             }
             else if (s === 'admin') { 
+                if(!verifyAdminAction('admin')) return;
                 await loadTermSettings(); 
                 document.getElementById('adminSection').classList.remove('hidden-section'); 
                 loadAdminStats();
@@ -1370,20 +1357,6 @@
                 renderAdminBanners();
                 loadAdminPromoCodes(); 
             }
-        }
-
-        function checkAdminPassword() {
-            if (document.getElementById('adminPasswordInput').value === "1471200") {
-                document.getElementById('adminPasswordInput').value = "";
-                toggleSection('admin');
-            } else showMessage("รหัสไม่ถูกต้อง", "error");
-        }
-
-        function checkCmsPassword() {
-            if (document.getElementById('cmsPasswordInput').value === "1471200") {
-                document.getElementById('cmsPasswordInput').value = "";
-                toggleSection('cms');
-            } else showMessage("รหัสอัพเดทไม่ถูกต้อง", "error");
         }
 
         function renderTermCards() {
@@ -1701,4 +1674,270 @@
                         </button>
                     ` : ''}
                     <div class="flex items-center gap-2 mb-4 pr-10">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-500 rounded-xl flex items-center
+                        <div class="w-10 h-10 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-lg"><i class="fas ${t.icon}"></i></div>
+                        <h4 class="font-black text-lg text-gray-800 line-clamp-1">รหัส: ${t.id} <span class="text-xs text-gray-400 font-normal">(${t.defaultName})</span></h4>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ชื่อแสดงผล</label>
+                            <input type="text" id="banner_title_${t.id}" value="${currentTitle}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น อนุบาล 1">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">คำอธิบาย</label>
+                            <input type="text" id="banner_sub_${t.id}" value="${currentSub}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น เข้าสู่บทเรียนแสนสนุก">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ลิงก์ภาพพื้นหลัง (URL)</label>
+                            <input type="url" id="banner_img_${t.id}" value="${currentImg}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="ปล่อยว่างเพื่อใช้สีปกติ">
+                        </div>
+                        <button onclick="saveBannerSetting('${t.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition mt-2 shadow-md">บันทึกแบนเนอร์นี้</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            htmlContent += `
+            <div class="col-span-1 md:col-span-2 mt-2">
+                <button onclick="createNewCustomTerm()" class="w-full border-4 border-dashed border-indigo-200 text-indigo-500 hover:border-indigo-400 hover:bg-indigo-50 font-black py-8 rounded-3xl transition duration-300 flex items-center justify-center gap-3 text-xl">
+                    <i class="fas fa-plus-circle text-3xl"></i> เพิ่มห้องเรียน / ระดับชั้นใหม่
+                </button>
+            </div>
+            `;
+
+            container.innerHTML = htmlContent;
+        }
+
+        async function saveBannerSetting(termId) {
+            if (!verifyAdminAction()) return; 
+
+            const title = document.getElementById(`banner_title_${termId}`).value;
+            const subtitle = document.getElementById(`banner_sub_${termId}`).value;
+            const imageUrl = document.getElementById(`banner_img_${termId}`).value;
+
+            const payload = { title, subtitle, imageUrl };
+            
+            await fetchDB(`termSettings/${termId}`, 'PUT', payload);
+            showMessage("บันทึกการตั้งค่าแบนเนอร์สำเร็จ");
+            
+            await loadTermSettings();
+            initAdminSelect();
+            refreshAdminUsers();
+        }
+
+        async function createNewCustomTerm() {
+            if (!verifyAdminAction()) return; 
+
+            const name = prompt("กรุณาตั้งชื่อห้องเรียนหรือระดับชั้นใหม่ (เช่น มัธยมศึกษาปีที่ 1 หรือ วิชาไฟฟ้า):");
+            if (!name || name.trim() === '') return;
+
+            const newId = 'custom_' + Date.now();
+            const payload = {
+                id: newId,
+                defaultName: name.trim(),
+                icon: 'fa-star',
+                fallbackBg: 'bg-gradient-to-r from-teal-400 to-emerald-400'
+            };
+
+            await fetchDB(`customTerms/${newId}`, 'PUT', payload);
+            
+            await fetchDB(`termSettings/${newId}`, 'PUT', {
+                title: name.trim(),
+                subtitle: 'เข้าสู่บทเรียนและแบบทดสอบ',
+                imageUrl: ''
+            });
+
+            showMessage("สร้างห้องเรียนใหม่สำเร็จ!");
+            
+            await loadTermSettings();
+            renderAdminBanners();
+            initAdminSelect();
+            refreshAdminUsers(); 
+        }
+
+        async function deleteCustomTerm(id) {
+            if (!verifyAdminAction()) return; 
+
+            if(confirm("คุณต้องการลบห้องเรียนนี้ใช่หรือไม่? (ข้อมูลแบนเนอร์จะหายไปทั้งหมด แต่บทเรียนย่อยอาจจะยังคงค้างอยู่ในระบบ)")) {
+                await fetchDB(`customTerms/${id}`, 'DELETE');
+                await fetchDB(`termSettings/${id}`, 'DELETE');
+                
+                showMessage("ลบห้องเรียนสำเร็จ");
+
+                await loadTermSettings();
+                renderAdminBanners();
+                initAdminSelect();
+                refreshAdminUsers();
+            }
+        }
+
+        async function exchangeCreditForScore() {
+            if (!currentUser) return;
+            
+            if ((currentUser.credits || 0) < 10) {
+                showMessage("เครดิตไม่พอจ้า หนูต้องมีอย่างน้อย 10 เครดิตนะ", "error");
+                return;
+            }
+
+            if (confirm("ต้องการใช้ 10 เครดิต แลกรับ 10,000 คะแนน ใช่หรือไม่?")) {
+                showLoading(true);
+                const safeKey = sanitizeKey(currentUser.email);
+                
+                let newCredits = currentUser.credits - 10;
+                await fetchDB(`users/${safeKey}/credits`, 'PUT', newCredits);
+                currentUser.credits = newCredits; 
+                
+                if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = newCredits;
+                if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = newCredits;
+
+                updateTotalGameScore(10000);
+                
+                showLoading(false);
+                showMessage("แลกคะแนนสำเร็จ! ได้รับ 10,000 คะแนนแล้วจ้า", "success");
+                
+                loadTopTenLeaderboard();
+            }
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadNewsData();
+            initVisitorStats();
+        });
+
+        window.switchStudentTab = switchStudentTab;
+        window.toggleSection = toggleSection;
+        window.closeTopupModal = closeTopupModal;
+        window.openTopupModal = openTopupModal;
+        window.closeCreditModal = closeCreditModal;
+        window.openCreditModal = openCreditModal;
+        window.closeFeedbackModal = closeFeedbackModal;
+        window.openFeedbackModal = openFeedbackModal;
+        window.openPromoModal = openPromoModal;
+        window.closePromoModal = closePromoModal;
+        window.resetNewsForm = resetNewsForm;
+        window.editNewsItem = editNewsItem;
+        window.deleteNewsItem = deleteNewsItem;
+        window.logout = logout;
+        window.selectTerm = selectTerm;
+        window.backToTerms = backToTerms;
+        window.switchAdminTab = switchAdminTab;
+        window.saveUnitGS = saveUnitGS;
+        window.deleteUnitGS = deleteUnitGS;
+        window.saveBannerSetting = saveBannerSetting;
+        window.createNewCustomTerm = createNewCustomTerm;
+        window.deleteCustomTerm = deleteCustomTerm;
+        window.approveTopup = approveTopup;
+        window.rejectTopup = rejectTopup;
+        window.deleteFeedback = deleteFeedback;
+        window.updatePermGS = updatePermGS;
+        window.addCreditGS = addCreditGS;
+        window.reduceCreditGS = reduceCreditGS;
+        window.deleteUserGS = deleteUserGS;
+        window.createPromoCodeGS = createPromoCodeGS;
+        window.deletePromoCode = deletePromoCode;
+        window.exchangeCreditForScore = exchangeCreditForScore;
+
+        window.processGoogleUser = async function(name, email) {
+            showLoading(true);
+            const safeKey = sanitizeKey(email);
+            let user = await fetchDB(`users/${safeKey}`);
+            
+            if (user === undefined) {
+                showLoading(false);
+                return;
+            }
+            
+            if (user === null) {
+                user = { 
+                    name: name, 
+                    email: email, 
+                    password: "google_auth", 
+                    permissions: [], 
+                    createdAt: Date.now(),
+                    credits: 10,
+                    totalGameScore: 0,
+                    lastLoginDate: new Date().toLocaleDateString('th-TH')
+                };
+                await fetchDB(`users/${safeKey}`, 'PUT', user);
+                showMessage("สมัครสมาชิกด้วย Google สำเร็จ! รับ 10 เครดิต", "success");
+            }
+
+            currentUser = user;
+            if (!currentUser.permissions) currentUser.permissions = [];
+            
+            const todayStr = new Date().toLocaleDateString('th-TH');
+            let credits = currentUser.credits || 0;
+            if (currentUser.lastLoginDate !== todayStr) {
+                if (credits < 10) {
+                    credits += 10;
+                    showMessage("🎁 รับโบนัสล็อกอินรายวัน +10 เครดิต!", 'success');
+                }
+                currentUser.credits = credits;
+                currentUser.lastLoginDate = todayStr;
+                fetchDB(`users/${safeKey}`, 'PATCH', { credits: credits, lastLoginDate: todayStr });
+            }
+
+            document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
+
+            // --- ส่วนที่เพิ่มใหม่ สำหรับแอดมิน ---
+            if (currentUser.email === 'woottermfun1@gmail.com') {
+                document.getElementById('navAdminBtn').classList.remove('hidden');
+                document.getElementById('navCmsBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('navAdminBtn').classList.add('hidden');
+                document.getElementById('navCmsBtn').classList.add('hidden');
+            }
+            // --------------------------------
+
+            if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = currentUser.credits || 0;
+            if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = currentUser.credits || 0;
+            if(document.getElementById('creditModalName')) document.getElementById('creditModalName').innerText = currentUser.name;
+            if(document.getElementById('userTotalScoreDisplay')) document.getElementById('userTotalScoreDisplay').innerText = (currentUser.totalGameScore || 0).toLocaleString();
+            
+            showLoading(false);
+            toggleSection('menu');
+        };
+
+    })(); 
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+      import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAjIHXXbkaDllqHxsp01QT08T6MyLWziqI",
+        authDomain: "test-mode-175a8.firebaseapp.com",
+        databaseURL: "https://test-mode-175a8-default-rtdb.firebaseio.com",
+        projectId: "test-mode-175a8",
+        storageBucket: "test-mode-175a8.firebasestorage.app",
+        messagingSenderId: "123405704419",
+        appId: "1:123405704419:web:67b0e9cadfc7a849fef9d6",
+        measurementId: "G-0Q71472SSS"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const analytics = getAnalytics(app);
+      const provider = new GoogleAuthProvider();
+
+      window.loginWithGoogle = async () => {
+          try {
+              const result = await signInWithPopup(auth, provider);
+              const user = result.user;
+              
+              if (window.processGoogleUser) {
+                  window.processGoogleUser(user.displayName, user.email);
+              }
+          } catch (error) {
+              console.error("Google Login Error:", error);
+              alert("เกิดข้อผิดพลาดในการล็อกอิน หรือยกเลิกการล็อกอิน");
+          }
+      };
+    </script>
+</body>
+</html>
