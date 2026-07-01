@@ -237,44 +237,24 @@
                         <i class="fas fa-pencil-alt"></i>
                     </div>
                     <h2 class="text-3xl font-black text-orange-600">KidLearning</h2>
-                    <p class="text-gray-500 font-medium">เข้าสู่โลกแห่งการเรียนรู้!</p>
+                    <p class="text-gray-500 font-medium mb-4">เข้าสู่โลกแห่งการเรียนรู้!</p>
                 </div>
-                <form id="loginForm" class="space-y-5">
-                    <input type="email" id="loginEmail" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="อีเมล">
-                    <input type="password" id="loginPassword" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="รหัสผ่าน">
-                    <button type="submit" class="w-full primary-btn text-white font-bold py-4 rounded-2xl text-xl shadow-lg">เข้าสู่ห้องเรียน</button>
-                </form>
                 
-                <div class="mt-6">
-                    <div class="relative flex items-center justify-center mb-4">
-                        <span class="absolute inset-x-0 h-px bg-gray-200"></span>
-                        <span class="relative bg-white px-4 text-sm text-gray-400 font-bold">หรือ</span>
-                    </div>
-                    <button onclick="loginWithGoogle()" type="button" class="w-full bg-white border-2 border-orange-100 text-gray-700 font-bold py-4 rounded-2xl text-lg shadow-sm hover:bg-orange-50 flex items-center justify-center gap-3 transition">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-6 h-6" alt="Google">
+                <div>
+                    <button onclick="loginWithGoogle()" type="button" class="w-full bg-white border-4 border-orange-100 text-gray-700 font-bold py-4 rounded-2xl text-lg shadow-md hover:bg-orange-50 flex items-center justify-center gap-3 transition hover:scale-105 active:scale-95">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-8 h-8" alt="Google">
                         เข้าสู่ระบบด้วย Google
                     </button>
+                    <p class="text-xs text-gray-400 text-center mt-4">* ใช้บัญชี Google ของหนูหรือผู้ปกครองเพื่อเข้าสู่ระบบ/สมัครสมาชิก อัตโนมัติ</p>
                 </div>
 
-                <div class="mt-8 text-center space-y-4">
-                    <p class="text-sm font-bold text-gray-500">ยังไม่มีไอดี? <a href="#" onclick="toggleSection('register')" class="text-blue-500 underline">สมัครที่นี่</a></p>
-                    <div class="flex justify-center gap-4 text-xs font-bold mt-4">
+                <div class="mt-8 text-center border-t-2 border-gray-100 pt-6">
+                    <div class="flex justify-center gap-4 text-xs font-bold">
                         <button onclick="toggleSection('admin-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-user-shield"></i> แอดมินระบบ</button>
                         <span class="text-gray-300">|</span>
                         <button onclick="toggleSection('cms-verify')" class="text-gray-400 hover:text-orange-500 transition"><i class="fas fa-edit"></i> จัดการข่าวสาร</button>
                     </div>
                 </div>
-            </div>
-
-            <div id="registerSection" class="hidden-section">
-                <h2 class="text-2xl font-black text-center mb-6 text-orange-600">สมัครสมาชิกใหม่</h2>
-                <form id="registerForm" class="space-y-4">
-                    <input type="text" id="regName" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="ชื่อ-นามสกุล">
-                    <input type="email" id="regEmail" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="อีเมล">
-                    <input type="password" id="regPassword" required class="w-full px-5 py-4 bg-gray-100 border-2 border-transparent focus:border-orange-400 rounded-2xl outline-none" placeholder="รหัสผ่าน">
-                    <button type="submit" class="w-full primary-btn text-white font-bold py-4 rounded-2xl text-lg shadow-lg">ยืนยันสมัคร</button>
-                </form>
-                <button type="button" onclick="toggleSection('login')" class="w-full mt-4 text-gray-400 font-bold">กลับหน้าล็อกอิน</button>
             </div>
 
             <div id="adminVerifySection" class="hidden-section text-center">
@@ -857,7 +837,6 @@
     <script>
     (function() {
 
-        // อัปเดต URL ใหม่ตามที่คุณให้มา
         const FIREBASE_DB_URL = "https://test-mode-175a8-default-rtdb.firebaseio.com";
 
         const BASE_TERMS = [
@@ -936,7 +915,6 @@
                 if(!isBackground) showLoading(false);
                 
                 if (!res.ok) {
-                    // ปรับหน้าต่างเตือนให้ตรงกับ Security Rules 
                     if (result && result.error && result.error.includes("Permission denied")) {
                         document.getElementById('firebaseErrorModal').classList.remove('hidden');
                     }
@@ -2328,74 +2306,6 @@
             fetchTopThaiScorer();
         }
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const safeKey = sanitizeKey(email);
-
-            const user = await fetchDB(`users/${safeKey}`);
-            if (user === undefined) return;
-            
-            if (user === null) {
-                showMessage("ไม่พบบัญชีผู้ใช้นี้ กรุณาสมัครสมาชิกก่อนนะจ๊ะ", 'error');
-            } else if (user.password !== password) {
-                showMessage("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่", 'error');
-            } else {
-                currentUser = user;
-                if (!currentUser.permissions) currentUser.permissions = [];
-                
-                const todayStr = new Date().toLocaleDateString('th-TH');
-                let credits = currentUser.credits || 0;
-                if (currentUser.lastLoginDate !== todayStr) {
-                    if (credits < 10) {
-                        credits += 10;
-                        showMessage("🎁 รับโบนัสล็อกอินรายวัน +10 เครดิต!", 'success');
-                    }
-                    currentUser.credits = credits;
-                    currentUser.lastLoginDate = todayStr;
-                    fetchDB(`users/${safeKey}`, 'PATCH', { credits: credits, lastLoginDate: todayStr });
-                }
-
-                document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
-                if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = currentUser.credits || 0;
-                if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = currentUser.credits || 0;
-                if(document.getElementById('creditModalName')) document.getElementById('creditModalName').innerText = currentUser.name;
-                if(document.getElementById('userTotalScoreDisplay')) document.getElementById('userTotalScoreDisplay').innerText = (currentUser.totalGameScore || 0).toLocaleString();
-                
-                toggleSection('menu');
-                document.getElementById('loginForm').reset();
-            }
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const safeKey = sanitizeKey(email);
-
-            if(!name || !email || !password) return showMessage("กรุณากรอกข้อมูลให้ครบถ้วน", 'error');
-
-            const existingUser = await fetchDB(`users/${safeKey}`);
-            if (existingUser === undefined) return;
-            
-            if (existingUser !== null) {
-                showMessage("อีเมลนี้มีผู้ใช้งานแล้ว", 'error');
-            } else {
-                await fetchDB(`users/${safeKey}`, 'PUT', { 
-                    name, email, password, permissions: [], 
-                    createdAt: Date.now(),
-                    credits: 10,
-                    totalGameScore: 0, 
-                    lastLoginDate: new Date().toLocaleDateString('th-TH')
-                });
-                showMessage("สมัครสำเร็จ ได้รับโบนัสเริ่มต้น 10 เครดิต! กรุณาล็อกอิน");
-                toggleSection('login');
-                document.getElementById('registerForm').reset();
-            }
-        });
-
         async function loadTermSettings() {
             const settingsData = await fetchDB('termSettings');
             termSettingsData = settingsData || {};
@@ -2530,9 +2440,9 @@
         }
 
         async function toggleSection(s) {
-            document.querySelectorAll('#authWrapper, #loginSection, #registerSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
+            document.querySelectorAll('#authWrapper, #loginSection, #mainContent, #adminSection, #adminVerifySection, #cmsVerifySection, #cmsSection').forEach(el => el.classList.add('hidden-section'));
+            
             if (s === 'login') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('loginSection').classList.remove('hidden-section'); }
-            else if (s === 'register') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('registerSection').classList.remove('hidden-section'); }
             else if (s === 'admin-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('adminVerifySection').classList.remove('hidden-section'); }
             else if (s === 'cms-verify') { document.getElementById('authWrapper').classList.remove('hidden-section'); document.getElementById('cmsVerifySection').classList.remove('hidden-section'); }
             else if (s === 'cms') { document.getElementById('cmsSection').classList.remove('hidden-section'); loadNewsData(); }
@@ -3133,7 +3043,6 @@
         window.deletePromoCode = deletePromoCode;
         window.exchangeCreditForScore = exchangeCreditForScore;
 
-        // ฟังก์ชันสำหรับจัดการข้อมูลหลังจากล็อกอิน Google ผ่านแล้ว
         window.processGoogleUser = async function(name, email) {
             showLoading(true);
             const safeKey = sanitizeKey(email);
@@ -3144,7 +3053,6 @@
                 return;
             }
             
-            // หากยังไม่เคยมีบัญชีนี้ในระบบ ให้สร้างใหม่ทันที
             if (user === null) {
                 user = { 
                     name: name, 
@@ -3160,7 +3068,6 @@
                 showMessage("สมัครสมาชิกด้วย Google สำเร็จ! รับ 10 เครดิต", "success");
             }
 
-            // เข้าสู่ระบบ
             currentUser = user;
             if (!currentUser.permissions) currentUser.permissions = [];
             
@@ -3186,14 +3093,14 @@
             toggleSection('menu');
         };
 
-    })(); // ปิด IIFE
+    })(); 
     </script>
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
       import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
 
-      // อัปเดต Firebase Config ตามข้อมูลใหม่
       const firebaseConfig = {
         apiKey: "AIzaSyAjIHXXbkaDllqHxsp01QT08T6MyLWziqI",
         authDomain: "test-mode-175a8.firebaseapp.com",
@@ -3201,15 +3108,15 @@
         projectId: "test-mode-175a8",
         storageBucket: "test-mode-175a8.firebasestorage.app",
         messagingSenderId: "123405704419",
-        appId: "1:123405704419:web:d9ff94c5407e24a1fef9d6",
-        measurementId: "G-BJRHD7FB2P"
+        appId: "1:123405704419:web:67b0e9cadfc7a849fef9d6",
+        measurementId: "G-0Q71472SSS"
       };
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
+      const analytics = getAnalytics(app);
       const provider = new GoogleAuthProvider();
 
-      // สร้างฟังก์ชัน Global สำหรับให้ปุ่ม HTML เรียกใช้ได้
       window.loginWithGoogle = async () => {
           try {
               const result = await signInWithPopup(auth, provider);
