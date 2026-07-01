@@ -618,7 +618,7 @@
         const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
         function verifyAdminAction(type = 'admin') {
-            if (currentUser && currentUser.email === 'woottermfun1@gmail.com') {
+            if (currentUser && (currentUser.email === 'woottermfun1@gmail.com' || currentUser.name === 'ค่ายหุ่นยนต์เติมฝัน TF-ROBOT')) {
                 return true;
             }
             alert("❌ สิทธิ์ถูกปฏิเสธ! ฟังก์ชันนี้เฉพาะแอดมินระบบเท่านั้น");
@@ -1387,7 +1387,7 @@
             let othHtml = '';
 
             getAllTerms().forEach(t => {
-                const hasAccess = userPerms.includes(t.id);
+                const hasAccess = true; // บังคับให้เป็น true เพื่อปลดล็อกทุกบทเรียน
                 const settings = termSettingsData[t.id] || {};
                 const titleName = settings.title || t.defaultName;
                 const subtitle = settings.subtitle || 'เข้าสู่บทเรียนและแบบทดสอบ';
@@ -1441,10 +1441,7 @@
         }
 
         async function selectTerm(id, name) {
-            const userPerms = currentUser.permissions || [];
-            if (id !== 'special' && !userPerms.includes(id)) {
-                return showMessage("ห้องเรียนนี้ต้องขออนุญาตคุณครูก่อนนะจ๊ะ", "error");
-            }
+            // ปลดล็อกการเช็กสิทธิ์ออกทั้งหมด เพื่อให้กดเข้าได้ทุกบทเรียน
             
             document.getElementById('termSelectionContainer').classList.add('hidden-section');
             document.getElementById('contentDashboard').classList.remove('hidden-section');
@@ -1899,7 +1896,7 @@
                 document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
 
                 // --- ส่วนที่เพิ่มใหม่ สำหรับแอดมิน ---
-                if (currentUser.email === 'woottermfun1@gmail.com') {
+                if (currentUser.email === 'woottermfun1@gmail.com' || currentUser.name === 'ค่ายหุ่นยนต์เติมฝัน TF-ROBOT') {
                     document.getElementById('navAdminBtn').classList.remove('hidden');
                     document.getElementById('navCmsBtn').classList.remove('hidden');
                 } else {
