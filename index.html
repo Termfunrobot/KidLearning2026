@@ -502,19 +502,46 @@
                 <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userTableBody"></tbody></table></div>
             </div>
             
+            <!-- อัปเกรดหน้าจัดการบทเรียน ให้มีปุ่มแก้ไขและอัปโหลดรูป -->
             <div id="tabContentUnits" class="hidden-section p-6">
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="bg-slate-50 p-6 rounded-3xl border">
-                        <h3 class="font-bold mb-4">เพิ่มบทเรียน</h3>
+                        <h3 class="font-bold mb-4" id="unitFormTitle">เพิ่มบทเรียน</h3>
                         <div class="space-y-4">
+                            <input type="hidden" id="editUnitId" value="">
+                            
                             <input type="text" id="unitName" class="w-full p-4 rounded-xl border" placeholder="ชื่อบทเรียน">
                             <select id="unitTerm" class="w-full p-4 rounded-xl border"></select>
-                            <input type="url" id="unitLink" class="w-full p-4 rounded-xl border" placeholder="URL ลิงก์">
-                            <button onclick="saveUnitGS()" class="w-full primary-btn py-4 rounded-xl font-bold">บันทึก</button>
+                            <input type="url" id="unitLink" class="w-full p-4 rounded-xl border" placeholder="URL ลิงก์ (คลิกแล้วไปไหน)">
+                            
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">ภาพหน้าปกบทเรียน</label>
+                                <div class="flex flex-col gap-2 mt-1">
+                                    <input type="file" accept="image/*" onchange="handleUnitUpload(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border rounded-xl p-1 bg-gray-50">
+                                    <input type="url" id="unitImage" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none text-xs" placeholder="หรือวางลิงก์ภาพ (https://...) ที่นี่">
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="unit_preview" src="" alt="Preview" class="hidden h-28 w-full object-cover rounded-xl border-2 border-dashed border-gray-300 mx-auto">
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 pt-2">
+                                <button onclick="saveUnitGS()" id="btnSaveUnit" class="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold flex-1 transition shadow-md">บันทึก</button>
+                                <button onclick="resetUnitForm()" id="btnCancelUnit" class="hidden bg-gray-400 hover:bg-gray-500 text-white py-4 rounded-xl font-bold flex-1 transition shadow-md">ยกเลิก</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="md:col-span-2 overflow-x-auto border rounded-3xl">
-                        <table class="w-full text-left"><tbody id="unitTableBody"></tbody></table>
+                    <div class="md:col-span-2 overflow-x-auto border rounded-3xl bg-white shadow-sm">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-100 border-b">
+                                <tr>
+                                    <th class="p-4 font-bold text-slate-600">ชื่อและหน้าปก</th>
+                                    <th class="p-4 font-bold text-slate-600">ห้องเรียน</th>
+                                    <th class="p-4 font-bold text-center text-slate-600">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="unitTableBody" class="divide-y divide-gray-100"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -614,6 +641,7 @@
         let newsData = [];
         let termSettingsData = {}; 
         let customTermsData = [];  
+        let unitsDataGlobal = []; // เก็บข้อมูลบทเรียนสำหรับใช้ตอนกด Edit
         
         const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
@@ -1467,13 +1495,21 @@
             const filteredUnits = allUnits.filter(u => u.term === id);
 
             const grid = document.getElementById('dynamicUnitGrid');
-            grid.innerHTML = filteredUnits.length ? filteredUnits.map(u => `
-                <div onclick="window.open('${u.link}', '_blank')" class="bg-white p-8 rounded-3xl border-4 border-red-50 hover:border-red-400 hover:shadow-xl cursor-pointer text-center group transition">
-                    <div class="mb-4 text-indigo-400 group-hover:scale-110 transition duration-300"><i class="fas fa-play-circle text-5xl"></i></div>
-                    <h4 class="font-black text-gray-700 text-lg">${u.name}</h4>
+            grid.innerHTML = filteredUnits.length ? filteredUnits.map(u => {
+                
+                // ถ้าระบุรูปภาพไว้ ให้โชว์รูปภาพ ถ้าไม่มีให้โชว์ไอคอนเดิม
+                const imgDisplay = u.imageUrl 
+                    ? `<img src="${escapeHtml(u.imageUrl)}" class="w-full h-40 object-cover rounded-2xl mb-4 shadow-sm group-hover:scale-105 transition duration-300">`
+                    : `<div class="mb-4 text-indigo-400 group-hover:scale-110 transition duration-300"><i class="fas fa-play-circle text-5xl"></i></div>`;
+
+                return `
+                <div onclick="window.open('${escapeHtml(u.link)}', '_blank')" class="bg-white p-6 rounded-3xl border-4 border-red-50 hover:border-red-400 hover:shadow-xl cursor-pointer text-center group transition flex flex-col items-center justify-center">
+                    ${imgDisplay}
+                    <h4 class="font-black text-gray-700 text-lg line-clamp-2 w-full">${escapeHtml(u.name)}</h4>
                     <p class="text-xs text-gray-400 mt-2">คลิกเพื่อเริ่มบทเรียน</p>
                 </div>
-            `).join('') : '<p class="col-span-full text-center text-gray-400 py-10 font-bold">ยังไม่มีบทเรียนในห้องนี้</p>';
+                `;
+            }).join('') : '<p class="col-span-full text-center text-gray-400 py-10 font-bold">ยังไม่มีบทเรียนในห้องนี้</p>';
         }
 
         function backToTerms() {
@@ -1652,37 +1688,133 @@
             if (unitsData === undefined) return;
 
             const units = objToArray(unitsData);
+            unitsDataGlobal = units; // เซฟใส่ตัวแปร Global ไว้สำหรับให้ปุ่ม Edit เรียกใช้
             const all = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
             
             document.getElementById('unitTableBody').innerHTML = units.map(u => {
                 const termInfo = all.find(t=>t.id===u.term);
                 const termName = termSettingsData[u.term]?.title || termInfo?.defaultName || u.term;
+                
+                // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้ใช้รูปไอคอนตัวแทน
+                const imgHtml = u.imageUrl 
+                    ? `<img src="${escapeHtml(u.imageUrl)}" class="h-12 w-16 object-cover rounded-lg border shadow-sm">` 
+                    : `<div class="h-12 w-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 border"><i class="fas fa-image"></i></div>`;
+
                 return `
-                <tr class="border-b">
-                    <td class="p-4 font-bold text-slate-700">${u.name}</td>
+                <tr class="border-b hover:bg-slate-50 transition">
+                    <td class="p-4">
+                        <div class="flex items-center gap-3">
+                            ${imgHtml}
+                            <div class="font-bold text-slate-700 line-clamp-1">${u.name}</div>
+                        </div>
+                    </td>
                     <td class="p-4 text-xs font-bold text-red-600">${termName}</td>
-                    <td class="p-4 text-center"><button onclick="deleteUnitGS('${u.id}')" class="text-red-400"><i class="fas fa-trash"></i></button></td>
+                    <td class="p-4 text-center whitespace-nowrap">
+                        <button onclick="editUnitGS('${u.id}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 w-8 h-8 rounded-full transition mr-1" title="แก้ไข"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteUnitGS('${u.id}')" class="text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 w-8 h-8 rounded-full transition" title="ลบ"><i class="fas fa-trash"></i></button>
+                    </td>
                 </tr>`;
             }).join('');
         }
 
+        // --- ส่วนสำหรับ อัปโหลดรูปภาพ บทเรียน ---
+        function handleUnitUpload(event) {
+            if (!verifyAdminAction()) return;
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Img = e.target.result;
+                document.getElementById('unitImage').value = base64Img;
+                const previewImg = document.getElementById('unit_preview');
+                previewImg.src = base64Img;
+                previewImg.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- ส่วนสำหรับ ดึงข้อมูลบทเรียนมาใส่ในฟอร์มเพื่อ แก้ไข ---
+        function editUnitGS(id) {
+            if (!verifyAdminAction()) return;
+            const unit = unitsDataGlobal.find(u => u.id === id);
+            if (unit) {
+                document.getElementById('editUnitId').value = unit.id;
+                document.getElementById('unitName').value = unit.name || '';
+                document.getElementById('unitTerm').value = unit.term || '';
+                document.getElementById('unitLink').value = unit.link || '';
+                document.getElementById('unitImage').value = unit.imageUrl || '';
+                
+                const previewImg = document.getElementById('unit_preview');
+                if (unit.imageUrl) {
+                    previewImg.src = unit.imageUrl;
+                    previewImg.classList.remove('hidden');
+                } else {
+                    previewImg.src = '';
+                    previewImg.classList.add('hidden');
+                }
+
+                document.getElementById('unitFormTitle').innerText = "แก้ไขบทเรียน";
+                document.getElementById('btnSaveUnit').innerText = "บันทึกการแก้ไข";
+                document.getElementById('btnSaveUnit').classList.replace('bg-red-500', 'bg-blue-600');
+                document.getElementById('btnSaveUnit').classList.replace('hover:bg-red-600', 'hover:bg-blue-700');
+                document.getElementById('btnCancelUnit').classList.remove('hidden');
+                
+                // เลื่อนหน้าจอขึ้นไปที่ฟอร์ม
+                document.getElementById('unitFormTitle').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- ส่วนสำหรับ รีเซ็ตเคลียร์ข้อมูลฟอร์มบทเรียน ---
+        function resetUnitForm() {
+            document.getElementById('editUnitId').value = '';
+            document.getElementById('unitName').value = '';
+            document.getElementById('unitLink').value = '';
+            document.getElementById('unitImage').value = '';
+            
+            const previewImg = document.getElementById('unit_preview');
+            previewImg.src = '';
+            previewImg.classList.add('hidden');
+
+            document.getElementById('unitFormTitle').innerText = "เพิ่มบทเรียน";
+            document.getElementById('btnSaveUnit').innerText = "บันทึก";
+            document.getElementById('btnSaveUnit').classList.replace('bg-blue-600', 'bg-red-500');
+            document.getElementById('btnSaveUnit').classList.replace('hover:bg-blue-700', 'hover:bg-red-600');
+            document.getElementById('btnCancelUnit').classList.add('hidden');
+        }
+
+        // --- ส่วนบันทึกบทเรียน (รองรับทั้งเพิ่มใหม่และแก้ไข) ---
         async function saveUnitGS() {
             if (!verifyAdminAction()) return; 
 
+            const id = document.getElementById('editUnitId').value;
             const name = document.getElementById('unitName').value;
             const term = document.getElementById('unitTerm').value;
             const link = document.getElementById('unitLink').value;
-            if(!name || !link) return showMessage("กรอกข้อมูลให้ครบ", "error");
+            const imageUrl = document.getElementById('unitImage').value; // เพิ่มตัวแปรเก็บภาพหน้าปก
+
+            if(!name || !link) return showMessage("กรุณากรอกชื่อและลิงก์ให้ครบถ้วน", "error");
             
-            await fetchDB('units', 'POST', { name, term, link });
-            document.getElementById('unitName').value = ''; document.getElementById('unitLink').value = '';
+            const payload = { name, term, link, imageUrl };
+
+            if (id) {
+                // อัปเดตข้อมูลเก่า
+                await fetchDB(`units/${id}`, 'PATCH', payload);
+                showMessage("แก้ไขบทเรียนสำเร็จ", "success");
+            } else {
+                // สร้างบทเรียนใหม่
+                await fetchDB('units', 'POST', payload);
+                showMessage("เพิ่มบทเรียนสำเร็จ", "success");
+            }
+            
+            resetUnitForm();
             refreshAdminUnits();
         }
 
         async function deleteUnitGS(id) { 
             if (!verifyAdminAction()) return; 
 
-            if(confirm('ลบบทเรียนนี้?')) { 
+            if(confirm('ลบบทเรียนนี้ออกจากระบบอย่างถาวร?')) { 
                 await fetchDB(`units/${id}`, 'DELETE'); 
                 refreshAdminUnits(); 
             } 
@@ -1890,7 +2022,10 @@
         window.deleteNewsItem = deleteNewsItem;
         window.switchAdminTab = switchAdminTab;
         window.saveUnitGS = saveUnitGS;
+        window.editUnitGS = editUnitGS;
+        window.resetUnitForm = resetUnitForm;
         window.deleteUnitGS = deleteUnitGS;
+        window.handleUnitUpload = handleUnitUpload;
         window.saveBannerSetting = saveBannerSetting;
         window.createNewCustomTerm = createNewCustomTerm;
         window.deleteCustomTerm = deleteCustomTerm;
