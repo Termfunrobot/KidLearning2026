@@ -522,7 +522,7 @@
             <div id="tabContentBanners" class="hidden-section p-6">
                 <div class="mb-6">
                     <h3 class="text-xl font-bold text-gray-800">ตั้งค่าแบนเนอร์สำหรับแต่ละระดับชั้น</h3>
-                    <p class="text-gray-500 text-sm">ข้อความและรูปภาพเหล่านี้จะไปแสดงบนแบนเนอร์ขนาดใหญ่ในหน้าแรกของเด็กๆ</p>
+                    <p class="text-gray-500 text-sm">ข้อความและรูปภาพเหล่านี้จะไปแสดงบนแบนเนอร์ขนาดใหญ่ในหน้าแรกของเด็กๆ โดยสามารถเลือกอัปโหลดรูปภาพจากคอมพิวเตอร์หรือมือถือได้โดยตรง</p>
                 </div>
                 <div id="adminBannersList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 </div>
@@ -617,7 +617,7 @@
         
         const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
-        function verifyAdminAction(type = 'admin') {
+        function verifyAdminAction() {
             if (currentUser && (currentUser.email === 'woottermfun1@gmail.com' || currentUser.name === 'ค่ายหุ่นยนต์เติมฝัน TF-ROBOT')) {
                 return true;
             }
@@ -801,6 +801,7 @@
         }
 
         async function loadAdminStats() {
+            if (!verifyAdminAction()) return;
             const usersData = await fetchDB('users');
             if(!usersData) return;
             const users = objToArray(usersData);
@@ -904,6 +905,7 @@
         });
 
         async function loadAdminTopups() {
+            if (!verifyAdminAction()) return;
             const tbody = document.getElementById('adminTopupsTableBody');
             tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center"><i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i><br>กำลังโหลดข้อมูล...</td></tr>`;
 
@@ -995,6 +997,7 @@
         });
 
         async function loadAdminFeedbacks() {
+            if (!verifyAdminAction()) return;
             const container = document.getElementById('adminFeedbacksList');
             container.innerHTML = `<p class="text-gray-400 col-span-full text-center py-10"><i class="fas fa-spinner fa-spin text-2xl"></i><br>กำลังโหลด...</p>`;
             
@@ -1186,6 +1189,7 @@
         });
 
         function editNewsItem(id) {
+            if (!verifyAdminAction('cms')) return;
             const item = newsData.find(n => n.id === id);
             if(item) {
                 document.getElementById('editNewsId').value = item.id;
@@ -1289,6 +1293,7 @@
         }
 
         async function loadAdminPromoCodes() {
+            if (!verifyAdminAction()) return;
             const tbody = document.getElementById('adminPromoTableBody');
             tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center"><i class="fas fa-spinner fa-spin text-gray-400"></i> กำลังโหลด...</td></tr>`;
             
@@ -1509,6 +1514,7 @@
         }
 
         async function refreshAdminUsers() {
+            if (!verifyAdminAction()) return;
             const usersData = await fetchDB('users');
             if (usersData === undefined) return;
 
@@ -1546,8 +1552,8 @@
                                 <i class="fas fa-coins"></i> ${userCredit}
                             </div>
                             <div class="flex gap-1 mt-1">
-                                <button onclick="addCreditGS('${u.id}', '${u.name}')" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm transition" title="เพิ่มเครดิต"><i class="fas fa-plus"></i> เพิ่ม</button>
-                                <button onclick="reduceCreditGS('${u.id}', '${u.name}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm transition" title="ลดเครดิต"><i class="fas fa-minus"></i> ลด</button>
+                                <button onclick="addCreditGS('${u.id}')" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm transition" title="เพิ่มเครดิต"><i class="fas fa-plus"></i> เพิ่ม</button>
+                                <button onclick="reduceCreditGS('${u.id}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm transition" title="ลดเครดิต"><i class="fas fa-minus"></i> ลด</button>
                             </div>
                         </div>
                     </td>
@@ -1560,13 +1566,15 @@
             }).join('');
         }
 
-        async function addCreditGS(userKey, userName) {
+        async function addCreditGS(userKey) {
             if (!verifyAdminAction()) return; 
             const user = await fetchDB(`users/${userKey}`);
             if(!user) return showMessage("ไม่พบข้อมูลนักเรียนคนนี้", "error");
 
+            const userName = user.name || "ไม่ระบุชื่อ";
             const currentCredits = user.credits || 0;
             const amountStr = prompt(`ชื่อผู้ใช้: ${userName}\nยอดเครดิตปัจจุบัน: ${currentCredits} เครดิต\n\nต้องการ "เพิ่ม" เครดิตจำนวนเท่าไหร่?`);
+            
             if (!amountStr) return;
             const amount = parseInt(amountStr);
             if (isNaN(amount) || amount <= 0) return showMessage("กรุณากรอกตัวเลขที่ถูกต้อง", "error");
@@ -1579,20 +1587,22 @@
             }
         }
 
-        async function reduceCreditGS(userKey, userName) {
+        async function reduceCreditGS(userKey) {
             if (!verifyAdminAction()) return; 
             const user = await fetchDB(`users/${userKey}`);
             if(!user) return showMessage("ไม่พบข้อมูลนักเรียนคนนี้", "error");
 
+            const userName = user.name || "ไม่ระบุชื่อ";
             const currentCredits = user.credits || 0;
             const amountStr = prompt(`ชื่อผู้ใช้: ${userName}\nยอดเครดิตปัจจุบัน: ${currentCredits} เครดิต\n\nต้องการ "ลด" เครดิตจำนวนเท่าไหร่?`);
+            
             if (!amountStr) return;
             const amount = parseInt(amountStr);
             if (isNaN(amount) || amount <= 0) return showMessage("กรุณากรอกตัวเลขที่ถูกต้อง", "error");
 
             if(confirm(`ยืนยันการลด ${amount} เครดิต ของน้อง ${userName}?`)) {
                 let newCredits = currentCredits - amount;
-                if (newCredits < 0) newCredits = 0; 
+                if (newCredits < 0) newCredits = 0; // ป้องกันเครดิตติดลบ
 
                 await fetchDB(`users/${userKey}/credits`, 'PUT', newCredits);
                 showMessage(`ลดเครดิตของ ${userName} เรียบร้อยแล้ว`, "success");
@@ -1627,6 +1637,7 @@
         }
 
         function initAdminSelect() {
+            if (!verifyAdminAction()) return;
             const allOptions = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
             document.getElementById('unitTerm').innerHTML = allOptions.map(t => {
                 const customTitle = termSettingsData[t.id]?.title;
@@ -1636,6 +1647,7 @@
         }
 
         async function refreshAdminUnits() {
+            if (!verifyAdminAction()) return;
             const unitsData = await fetchDB('units');
             if (unitsData === undefined) return;
 
@@ -1676,7 +1688,28 @@
             } 
         }
 
+        function handleBannerUpload(event, termId) {
+            if (!verifyAdminAction()) return;
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Img = e.target.result;
+                const urlInput = document.getElementById(`banner_img_${termId}`);
+                const previewImg = document.getElementById(`banner_preview_${termId}`);
+                
+                if (urlInput) urlInput.value = base64Img;
+                if (previewImg) {
+                    previewImg.src = base64Img;
+                    previewImg.classList.remove('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
         function renderAdminBanners() {
+            if (!verifyAdminAction()) return;
             const container = document.getElementById('adminBannersList');
             
             let htmlContent = getAllTerms().map(t => {
@@ -1687,32 +1720,40 @@
                 const isCustom = t.id.startsWith('custom_');
 
                 return `
-                <div class="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden">
+                <div class="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden flex flex-col justify-between">
                     ${isCustom ? `
                         <button onclick="deleteCustomTerm('${t.id}')" class="absolute top-4 right-4 text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 w-8 h-8 rounded-full transition flex items-center justify-center" title="ลบห้องเรียนนี้">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     ` : ''}
-                    <div class="flex items-center gap-2 mb-4 pr-10">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-lg"><i class="fas ${t.icon}"></i></div>
-                        <h4 class="font-black text-lg text-gray-800 line-clamp-1">รหัส: ${t.id} <span class="text-xs text-gray-400 font-normal">(${t.defaultName})</span></h4>
+                    <div>
+                        <div class="flex items-center gap-2 mb-4 pr-10">
+                            <div class="w-10 h-10 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-lg"><i class="fas ${t.icon}"></i></div>
+                            <h4 class="font-black text-lg text-gray-800 line-clamp-1">รหัส: ${t.id} <span class="text-xs text-gray-400 font-normal">(${t.defaultName})</span></h4>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">ชื่อแสดงผล</label>
+                                <input type="text" id="banner_title_${t.id}" value="${currentTitle}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น อนุบาล 1">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">คำอธิบาย</label>
+                                <input type="text" id="banner_sub_${t.id}" value="${currentSub}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น เข้าสู่บทเรียนแสนสนุก">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-500">อัปโหลดภาพพื้นหลัง หรือใส่ลิงก์ภาพ (URL)</label>
+                                <div class="flex flex-col gap-2 mt-1">
+                                    <input type="file" accept="image/*" onchange="handleBannerUpload(event, '${t.id}')" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border rounded-xl p-1 bg-gray-50">
+                                    <input type="url" id="banner_img_${t.id}" value="${currentImg}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none text-xs" placeholder="หรือวางลิงก์ภาพ (https://...) ที่นี่">
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="banner_preview_${t.id}" src="${currentImg}" alt="Preview" class="${currentImg ? '' : 'hidden'} h-28 w-full object-cover rounded-xl border-2 border-dashed border-gray-300 mx-auto">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">ชื่อแสดงผล</label>
-                            <input type="text" id="banner_title_${t.id}" value="${currentTitle}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น อนุบาล 1">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">คำอธิบาย</label>
-                            <input type="text" id="banner_sub_${t.id}" value="${currentSub}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="เช่น เข้าสู่บทเรียนแสนสนุก">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500">ลิงก์ภาพพื้นหลัง (URL)</label>
-                            <input type="url" id="banner_img_${t.id}" value="${currentImg}" class="w-full p-3 rounded-xl border bg-gray-50 focus:bg-white outline-none" placeholder="ปล่อยว่างเพื่อใช้สีปกติ">
-                        </div>
-                        <button onclick="saveBannerSetting('${t.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition mt-2 shadow-md">บันทึกแบนเนอร์นี้</button>
-                    </div>
+                    <button onclick="saveBannerSetting('${t.id}')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition mt-4 shadow-md">บันทึกแบนเนอร์นี้</button>
                 </div>`;
             }).join('');
 
@@ -1827,6 +1868,7 @@
             initVisitorStats();
         });
 
+        // เฉพาะฟังก์ชันที่ผู้ใช้ทั่วไปจำเป็นต้องกดใช้เท่านั้น ที่ปล่อยไว้บน window (ซ่อนฟังก์ชันแอดมินจาก Global Scope)
         window.switchStudentTab = switchStudentTab;
         window.toggleSection = toggleSection;
         window.closeTopupModal = closeTopupModal;
@@ -1838,11 +1880,14 @@
         window.openPromoModal = openPromoModal;
         window.closePromoModal = closePromoModal;
         window.resetNewsForm = resetNewsForm;
-        window.editNewsItem = editNewsItem;
-        window.deleteNewsItem = deleteNewsItem;
         window.logout = logout;
         window.selectTerm = selectTerm;
         window.backToTerms = backToTerms;
+        window.exchangeCreditForScore = exchangeCreditForScore;
+
+        // ผูกฟังก์ชันเข้ากับหน้า UI โดยตรงสำหรับระบบแอดมิน เพื่อไม่ให้เรียกผ่าน Console (F12) ได้
+        window.editNewsItem = editNewsItem;
+        window.deleteNewsItem = deleteNewsItem;
         window.switchAdminTab = switchAdminTab;
         window.saveUnitGS = saveUnitGS;
         window.deleteUnitGS = deleteUnitGS;
@@ -1858,7 +1903,7 @@
         window.deleteUserGS = deleteUserGS;
         window.createPromoCodeGS = createPromoCodeGS;
         window.deletePromoCode = deletePromoCode;
-        window.exchangeCreditForScore = exchangeCreditForScore;
+        window.handleBannerUpload = handleBannerUpload;
 
         window.processGoogleUser = async function(name, email, uid) {
             try {
@@ -1904,7 +1949,6 @@
 
                 document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
 
-                // --- ส่วนที่เพิ่มใหม่ สำหรับแอดมิน ---
                 if (currentUser.email === 'woottermfun1@gmail.com' || currentUser.name === 'ค่ายหุ่นยนต์เติมฝัน TF-ROBOT') {
                     document.getElementById('navAdminBtn').classList.remove('hidden');
                     document.getElementById('navCmsBtn').classList.remove('hidden');
@@ -1912,7 +1956,6 @@
                     document.getElementById('navAdminBtn').classList.add('hidden');
                     document.getElementById('navCmsBtn').classList.add('hidden');
                 }
-                // --------------------------------
 
                 if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = currentUser.credits || 0;
                 if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = currentUser.credits || 0;
@@ -1924,7 +1967,6 @@
                 console.error("Login System Error:", error);
                 showMessage("เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่อีกครั้ง", "error");
             } finally {
-                // บังคับปิดหน้าโหลดไม่ว่าจะเกิดอะไรขึ้น
                 showLoading(false);
             }
         };
@@ -1958,12 +2000,9 @@
               const result = await signInWithPopup(auth, provider);
               const user = result.user;
               
-              // --- เพิ่มบรรทัดนี้ เพื่อเก็บ Token ของแอดมิน ทะลุ Security Rules ---
               window.firebaseIdToken = await user.getIdToken(); 
-              // ----------------------------------------
 
               if (window.processGoogleUser) {
-                  // ส่ง uid แนบไปเป็นตัวที่ 3 เพื่อป้องกันการปั้มยูสเซอร์เดิม
                   window.processGoogleUser(user.displayName, user.email, user.uid);
               }
           } catch (error) {
