@@ -105,23 +105,6 @@
         <p class="text-red-600 font-bold text-xl">กำลังประมวลผล...</p>
     </div>
 
-    <div id="promoModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[40px] p-8 max-w-md w-full shadow-2xl relative text-center border-8 border-purple-100">
-            <button onclick="closePromoModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-red-100 hover:text-red-500 transition shadow-sm"><i class="fas fa-times"></i></button>
-            <div class="w-20 h-20 bg-purple-100 rounded-full mx-auto flex items-center justify-center text-4xl text-purple-500 mb-4 shadow-inner">
-                <i class="fas fa-ticket-alt"></i>
-            </div>
-            <h2 class="text-2xl font-black text-gray-800 mb-2">แลกคูปองรางวัล</h2>
-            <p class="text-gray-500 text-sm mb-6">นำรหัสจากเว็บเกมส์อื่นมากรอกที่นี่เพื่อรับคะแนนสะสม</p>
-            <form id="promoForm" class="space-y-4 text-left">
-                <div>
-                    <input type="text" id="promoCodeInput" required class="w-full p-4 rounded-xl border-2 border-purple-200 bg-purple-50 focus:bg-white focus:border-purple-500 outline-none font-bold text-center text-xl uppercase tracking-widest" placeholder="พิมพ์รหัสที่นี่">
-                </div>
-                <button type="submit" class="w-full bg-purple-500 text-white font-bold py-4 rounded-xl hover:bg-purple-600 transition shadow-lg mt-2">ยืนยันการแลกคะแนน</button>
-            </form>
-        </div>
-    </div>
-
     <div id="topupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[40px] p-8 max-w-md w-full shadow-2xl relative text-center border-8 border-green-100">
             <button onclick="closeTopupModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-red-100 hover:text-red-500 transition shadow-sm"><i class="fas fa-times"></i></button>
@@ -242,7 +225,6 @@
                             <select id="newsLocation" required class="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 outline-none font-bold text-blue-700">
                                 <option value="login">แสดงที่: 📢 หน้าแรกล็อกอิน (ก่อนเข้าระบบ)</option>
                                 <option value="dashboard">แสดงที่: 🎓 หน้าห้องเรียน (ยินดีต้อนรับเข้าสู่บทเรียน)</option>
-                                <option value="topten">แสดงที่: 🏆 หน้า Top 10 (กิจกรรม/แลกคะแนน)</option>
                             </select>
                         </div>
 
@@ -303,10 +285,6 @@
                     <i class="fas fa-star text-indigo-500"></i><span id="userTotalScoreDisplay">0</span>
                 </button>
 
-                <button onclick="openPromoModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2 border-2 border-purple-400" title="แลกคูปองรับคะแนน">
-                    <i class="fas fa-ticket-alt"></i><span class="hidden sm:inline"> แลกคูปอง</span>
-                </button>
-
                 <button onclick="openTopupModal()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold shadow-md transition text-xs sm:text-sm flex items-center gap-2 border-2 border-green-400" title="แจ้งเติมเครดิต">
                     <i class="fas fa-wallet"></i><span class="hidden sm:inline"> เติมเครดิต</span>
                 </button>
@@ -351,9 +329,6 @@
                     </button>
                     <button onclick="switchStudentTab('oth')" id="tabOthBtn" class="px-5 py-2.5 rounded-full font-black transition-all bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center gap-2 text-sm sm:text-base">
                         <i class="fas fa-layer-group"></i> อื่นๆ
-                    </button>
-                    <button onclick="switchStudentTab('topten')" id="tabToptenBtn" class="px-5 py-2.5 rounded-full font-black transition-all bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center gap-2 text-sm sm:text-base">
-                        <i class="fas fa-trophy text-yellow-500"></i> Top 10
                     </button>
                 </div>
 
@@ -413,41 +388,6 @@
                     <div class="flex flex-col gap-6 mb-12 max-w-6xl mx-auto w-full" id="othCardsGrid"></div>
                 </div>
 
-                <div id="toptenTab" class="w-full hidden transition-opacity duration-300">
-                    <div class="mb-6 flex justify-between items-center border-b-2 border-indigo-100 pb-4">
-                        <h2 class="text-3xl font-black text-gray-800">🏆 10 อันดับนักเรียนคะแนนสูงสุด</h2>
-                    </div>
-
-                    <div class="max-w-4xl mx-auto bg-gradient-to-r from-red-400 to-red-600 rounded-3xl shadow-lg border-4 border-white p-6 mb-6 text-center text-white flex flex-col md:flex-row items-center justify-between">
-                        <div class="text-left mb-4 md:mb-0">
-                            <h3 class="text-2xl font-black mb-1"><i class="fas fa-exchange-alt"></i> แลกเครดิตเป็นคะแนน</h3>
-                            <p class="font-medium text-red-100">ใช้ 10 เครดิต เพื่อแลกรับ 10,000 คะแนน ทันที!</p>
-                        </div>
-                        <button onclick="exchangeCreditForScore()" class="bg-white text-red-600 px-6 py-3 rounded-full font-black text-lg shadow-md hover:scale-105 transition flex items-center gap-2 whitespace-nowrap">
-                            <i class="fas fa-coins"></i> แลกเลย!
-                        </button>
-                    </div>
-
-                    <div id="toptenNewsContainer" class="max-w-4xl mx-auto space-y-6 mb-6"></div>
-
-                    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-sm border p-6">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="bg-slate-50 text-slate-600 border-b">
-                                    <tr>
-                                        <th class="p-4 font-bold text-center w-20">อันดับ</th>
-                                        <th class="p-4 font-bold">ชื่อนักเรียน</th>
-                                        <th class="p-4 font-bold text-right">คะแนนรวม</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="topTenTableBody" class="divide-y divide-gray-100">
-                                    <tr><td colspan="3" class="p-8 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
             <div id="contentDashboard" class="hidden-section max-w-6xl mx-auto">
@@ -494,7 +434,6 @@
                 <button onclick="switchAdminTab('units')" id="tabUnitsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการบทเรียน</button>
                 <button onclick="switchAdminTab('banners')" id="tabBannersBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">จัดการแบนเนอร์ชั้นเรียน</button>
                 <button onclick="switchAdminTab('topups')" id="tabTopupsBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">💵 แจ้งเติมเครดิต</button>
-                <button onclick="switchAdminTab('promocodes')" id="tabPromocodesBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">🎟️ จัดการคูปองแลกแต้ม</button>
                 <button onclick="switchAdminTab('feedbacks')" id="tabFeedbacksBtn" class="font-bold px-4 py-2 rounded-lg text-gray-500 hover:bg-gray-200 transition">📩 ข้อความจากนักเรียน</button>
             </div>
             
@@ -502,7 +441,6 @@
                 <div class="overflow-x-auto"><table class="w-full text-left"><tbody id="userTableBody"></tbody></table></div>
             </div>
             
-            <!-- อัปเกรดหน้าจัดการบทเรียน ให้มีปุ่มแก้ไขและอัปโหลดรูป -->
             <div id="tabContentUnits" class="hidden-section p-6">
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="bg-slate-50 p-6 rounded-3xl border">
@@ -574,38 +512,6 @@
                 </div>
             </div>
 
-            <div id="tabContentPromocodes" class="hidden-section p-6 bg-gray-50 min-h-[500px]">
-                <h3 class="text-2xl font-black text-slate-800 mb-6 border-l-4 border-purple-500 pl-4">จัดการคูปองแลกแต้ม (Promo Codes)</h3>
-                <div class="bg-white p-6 rounded-3xl shadow-sm border mb-6 flex flex-col md:flex-row gap-4 items-end">
-                    <div class="flex-grow w-full">
-                        <label class="block text-sm font-bold text-gray-600 mb-1">ตั้งรหัสคูปอง (ถ้าเว้นว่าง ระบบจะสุ่มให้)</label>
-                        <input type="text" id="newPromoCode" class="w-full p-3 rounded-xl border uppercase focus:border-purple-400 outline-none" placeholder="เช่น VIP999, FREE100">
-                    </div>
-                    <div class="w-full md:w-32">
-                        <label class="block text-sm font-bold text-gray-600 mb-1">คะแนนที่จะได้</label>
-                        <input type="number" id="newPromoPoints" class="w-full p-3 rounded-xl border focus:border-purple-400 outline-none" value="100">
-                    </div>
-                    <button onclick="createPromoCodeGS()" class="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold shadow-md transition whitespace-nowrap">
-                        <i class="fas fa-plus-circle"></i> สร้างคูปอง
-                    </button>
-                </div>
-                <div class="overflow-x-auto bg-white rounded-3xl border shadow-sm">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-100 text-slate-600 text-sm border-b">
-                            <tr>
-                                <th class="p-5 font-bold">รหัสคูปอง</th>
-                                <th class="p-5 font-bold text-center">คะแนนรางวัล</th>
-                                <th class="p-5 font-bold text-center">สถานะ</th>
-                                <th class="p-5 font-bold text-center">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminPromoTableBody" class="divide-y divide-gray-100">
-                            <tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">รอโหลดข้อมูล...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
             <div id="tabContentFeedbacks" class="hidden-section p-6 bg-gray-50 min-h-[500px]">
                 <h3 class="text-2xl font-black text-slate-800 mb-6 border-l-4 border-blue-500 pl-4">กล่องข้อความ/ผลงาน จากนักเรียน</h3>
                 <div id="adminFeedbacksList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -641,7 +547,7 @@
         let newsData = [];
         let termSettingsData = {}; 
         let customTermsData = [];  
-        let unitsDataGlobal = []; // เก็บข้อมูลบทเรียนสำหรับใช้ตอนกด Edit
+        let unitsDataGlobal = []; 
         
         const getAllTerms = () => [...BASE_TERMS, ...customTermsData];
 
@@ -651,6 +557,11 @@
             }
             alert("❌ สิทธิ์ถูกปฏิเสธ! ฟังก์ชันนี้เฉพาะแอดมินระบบเท่านั้น");
             return false;
+        }
+
+        // เช็คสิทธิ์แบบไม่แจ้งเตือน
+        function verifyAdminAction_silent() {
+            return currentUser && (currentUser.email === 'woottermfun1@gmail.com' || currentUser.name === 'ค่ายหุ่นยนต์เติมฝัน TF-ROBOT');
         }
 
         let loadingCount = 0;
@@ -756,6 +667,33 @@
             setInterval(sendHeartbeat, 15000);
         }
 
+        // ดึงข้อมูลพื้นฐานแค่ครั้งแรกที่โหลด ป้องกันคอขวด
+        async function loadInitialStats() {
+            try {
+                const usersRes = await fetch(`${FIREBASE_DB_URL}/users.json`);
+                const usersData = await usersRes.json() || {};
+                const users = objToArray(usersData);
+                const validUsers = users.filter(u => u.email && u.email.includes('@'));
+                
+                if (document.getElementById('statTotalMembers')) document.getElementById('statTotalMembers').innerText = validUsers.length.toLocaleString();
+
+                if (verifyAdminAction_silent()) {
+                    const topupsRes = await fetch(`${FIREBASE_DB_URL}/topups.json`);
+                    const topupsData = await topupsRes.json() || {};
+                    const topups = objToArray(topupsData);
+                    const pendingTopupsCount = topups.filter(t => t.status === 'pending').length;
+
+                    const topupContainer = document.getElementById('statPendingTopupsContainer');
+                    const topupDivider = document.getElementById('topupDivider');
+                    if (topupContainer && topupDivider && pendingTopupsCount > 0) {
+                        document.getElementById('statPendingTopups').innerText = pendingTopupsCount.toLocaleString();
+                        topupContainer.classList.remove('hidden');
+                        topupDivider.classList.remove('hidden');
+                    }
+                }
+            } catch(e) {}
+        }
+
         async function sendHeartbeat() {
             const now = Date.now();
             try {
@@ -778,53 +716,9 @@
                 }
                 currentOnlineCount = count;
 
-                const usersRes = await fetch(`${FIREBASE_DB_URL}/users.json`);
-                const usersData = await usersRes.json() || {};
-                const lastLoginRes = await fetch(`${FIREBASE_DB_URL}/stats/lastAdminLogin.json`);
-                const lastAdminLogin = await lastLoginRes.json() || 0;
-
-                const users = objToArray(usersData);
-                const validUsers = users.filter(u => u.email && u.email.includes('@'));
-                
-                let totalMembers = validUsers.length;
-                let newMembers = 0;
-                validUsers.forEach(u => {
-                    if (u.createdAt && u.createdAt > lastAdminLogin) {
-                        newMembers++;
-                    }
-                });
-
-                const topupsRes = await fetch(`${FIREBASE_DB_URL}/topups.json`);
-                const topupsData = await topupsRes.json() || {};
-                const topups = objToArray(topupsData);
-                const pendingTopupsCount = topups.filter(t => t.status === 'pending').length;
-
                 if (document.getElementById('statTotalVal')) document.getElementById('statTotalVal').innerText = currentTotalVisitors.toLocaleString();
                 if (document.getElementById('statOnlineVal')) document.getElementById('statOnlineVal').innerText = currentOnlineCount.toLocaleString();
-                if (document.getElementById('statTotalMembers')) document.getElementById('statTotalMembers').innerText = totalMembers.toLocaleString();
-                
-                const newMemberSpan = document.getElementById('statNewMembers');
-                if (newMemberSpan) {
-                    if(newMembers > 0) {
-                        newMemberSpan.innerText = `+${newMembers.toLocaleString()} ใหม่`;
-                        newMemberSpan.classList.remove('hidden');
-                    } else {
-                        newMemberSpan.classList.add('hidden');
-                    }
-                }
 
-                const topupContainer = document.getElementById('statPendingTopupsContainer');
-                const topupDivider = document.getElementById('topupDivider');
-                if (topupContainer && topupDivider) {
-                    if (pendingTopupsCount > 0) {
-                        document.getElementById('statPendingTopups').innerText = pendingTopupsCount.toLocaleString();
-                        topupContainer.classList.remove('hidden');
-                        topupDivider.classList.remove('hidden');
-                    } else {
-                        topupContainer.classList.add('hidden');
-                        topupDivider.classList.add('hidden');
-                    }
-                }
             } catch(e) {}
         }
 
@@ -851,48 +745,6 @@
 
             await fetchDB('stats/lastAdminLogin', 'PUT', Date.now());
         }
-
-        function openPromoModal() {
-            document.getElementById('promoForm').reset();
-            document.getElementById('promoModal').classList.remove('hidden');
-        }
-
-        function closePromoModal() {
-            document.getElementById('promoModal').classList.add('hidden');
-        }
-
-        document.getElementById('promoForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const codeInput = document.getElementById('promoCodeInput').value.trim().toUpperCase();
-            if(!codeInput) return;
-
-            showLoading(true);
-            const data = await fetchDB(`promoCodes/${codeInput}`);
-            
-            if(!data) {
-                showLoading(false);
-                showMessage('รหัสคูปองไม่ถูกต้อง หรือไม่มีในระบบ', 'error');
-                return;
-            }
-
-            if(data.isUsed) {
-                showLoading(false);
-                showMessage('รหัสคูปองนี้ถูกใช้งานไปแล้ว', 'error');
-                return;
-            }
-
-            await fetchDB(`promoCodes/${codeInput}`, 'PATCH', { 
-                isUsed: true, 
-                usedBy: currentUser.email, 
-                usedAt: Date.now() 
-            });
-
-            updateTotalGameScore(data.points);
-            showLoading(false);
-            showMessage(`แลกคูปองสำเร็จ! ได้รับเพิ่ม ${data.points.toLocaleString()} คะแนน`, 'success');
-            closePromoModal();
-            loadTopTenLeaderboard(); 
-        });
 
         function openCreditModal() { document.getElementById('creditModal').classList.remove('hidden'); }
         function closeCreditModal() { document.getElementById('creditModal').classList.add('hidden'); }
@@ -1137,17 +989,6 @@
             container.innerHTML = filteredData.map(createNewsCardHTML).join('');
         };
 
-        const renderToptenFeed = () => {
-            const container = document.getElementById('toptenNewsContainer');
-            if (!container) return;
-            const filteredData = newsData.filter(n => n.location === 'topten').sort((a, b) => b.timestamp - a.timestamp);
-            if (filteredData.length === 0) {
-                container.innerHTML = ``; 
-                return;
-            }
-            container.innerHTML = filteredData.map(createNewsCardHTML).join('');
-        };
-
         const renderAdminNews = () => {
             const container = document.getElementById('adminNewsContainer');
             if (newsData.length === 0) {
@@ -1161,8 +1002,8 @@
                 <div class="bg-white p-4 rounded-2xl border flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex-grow overflow-hidden">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="px-2 py-1 text-[10px] font-bold rounded ${news.location === 'dashboard' ? 'bg-indigo-100 text-indigo-700' : (news.location === 'topten' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600')}">
-                                ${news.location === 'dashboard' ? '🎓 หน้าห้องเรียน' : (news.location === 'topten' ? '🏆 หน้า Top 10' : '📢 หน้าแรกล็อกอิน')}
+                            <span class="px-2 py-1 text-[10px] font-bold rounded ${news.location === 'dashboard' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}">
+                                ${news.location === 'dashboard' ? '🎓 หน้าห้องเรียน' : '📢 หน้าแรกล็อกอิน'}
                             </span>
                         </div>
                         <p class="font-bold text-gray-800 line-clamp-2">${news.text}</p>
@@ -1186,7 +1027,6 @@
             }
             renderPublicFeed();
             renderDashboardFeed();
-            renderToptenFeed();
             renderAdminNews();
         }
 
@@ -1260,102 +1100,6 @@
             customTermsData = objToArray(customData) || [];
         }
 
-        async function loadTopTenLeaderboard() {
-            const tbody = document.getElementById('topTenTableBody');
-            tbody.innerHTML = `<tr><td colspan="3" class="p-8 text-center"><i class="fas fa-spinner fa-spin text-gray-400 text-2xl"></i><br>กำลังโหลดข้อมูล...</td></tr>`;
-            
-            const usersData = await fetchDB('users');
-            if(!usersData) {
-                tbody.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-gray-400">ยังไม่มีข้อมูล</td></tr>`;
-                return;
-            }
-
-            let users = objToArray(usersData).filter(u => u.name && (u.totalGameScore || 0) > 0);
-            users.sort((a,b) => (b.totalGameScore || 0) - (a.totalGameScore || 0));
-            const top10 = users.slice(0, 10);
-
-            if(top10.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-gray-400 font-medium">ยังไม่มีใครทำคะแนนสะสมได้เลย เริ่มเล่นเกมกันเถอะ!</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = top10.map((u, index) => {
-                let rankTrophy = index + 1;
-                if(index === 0) rankTrophy = '<span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs shadow-sm font-black">🥇 1</span>';
-                else if(index === 1) rankTrophy = '<span class="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-xs shadow-sm font-black">🥈 2</span>';
-                else if(index === 2) rankTrophy = '<span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs shadow-sm font-black">🥉 3</span>';
-
-                return `
-                <tr class="hover:bg-slate-50 transition border-b border-gray-100 last:border-0">
-                    <td class="p-4 font-black text-center text-gray-500">${rankTrophy}</td>
-                    <td class="p-4 font-bold text-gray-800 text-lg">${u.name}</td>
-                    <td class="p-4 font-black text-indigo-600 text-right text-xl">${(u.totalGameScore || 0).toLocaleString()} <span class="text-xs text-gray-400 font-normal">แต้ม</span></td>
-                </tr>`;
-            }).join('');
-        }
-
-        async function createPromoCodeGS() {
-            if (!verifyAdminAction()) return;
-            let code = document.getElementById('newPromoCode').value.trim().toUpperCase();
-            const points = parseInt(document.getElementById('newPromoPoints').value);
-            
-            if(isNaN(points) || points <= 0) return showMessage('กรุณาใส่คะแนนให้ถูกต้อง', 'error');
-            
-            if(!code) {
-                code = 'GIFT-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            }
-
-            const existing = await fetchDB(`promoCodes/${code}`);
-            if(existing) return showMessage('รหัสนี้มีในระบบแล้ว กรุณาตั้งใหม่', 'error');
-
-            await fetchDB(`promoCodes/${code}`, 'PUT', {
-                code: code,
-                points: points,
-                isUsed: false,
-                createdAt: Date.now()
-            });
-
-            showMessage(`สร้างคูปอง ${code} สำเร็จ!`, 'success');
-            document.getElementById('newPromoCode').value = '';
-            loadAdminPromoCodes();
-        }
-
-        async function loadAdminPromoCodes() {
-            if (!verifyAdminAction()) return;
-            const tbody = document.getElementById('adminPromoTableBody');
-            tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center"><i class="fas fa-spinner fa-spin text-gray-400"></i> กำลังโหลด...</td></tr>`;
-            
-            const data = await fetchDB('promoCodes');
-            if(!data) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400">ยังไม่มีคูปองในระบบ</td></tr>`;
-                return;
-            }
-            
-            const codes = objToArray(data).sort((a,b) => b.createdAt - a.createdAt);
-            tbody.innerHTML = codes.map(c => `
-                <tr class="hover:bg-slate-50 transition border-b border-gray-100">
-                    <td class="p-5 font-bold text-purple-600 tracking-widest text-lg">${c.code}</td>
-                    <td class="p-5 text-center font-black text-lg">${c.points}</td>
-                    <td class="p-5 text-center">
-                        ${c.isUsed 
-                            ? `<span class="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs font-bold shadow-sm">ใช้แล้วโดย: ${c.usedBy}</span>` 
-                            : `<span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm animate-pulse">ยังไม่ถูกใช้</span>`}
-                    </td>
-                    <td class="p-5 text-center">
-                        <button onclick="deletePromoCode('${c.code}')" class="text-red-300 hover:text-red-500 hover:bg-red-50 w-8 h-8 rounded-full transition" title="ลบคูปอง"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function deletePromoCode(code) {
-            if (!verifyAdminAction()) return;
-            if(confirm(`คุณต้องการลบคูปอง ${code} ออกจากระบบใช่หรือไม่?`)) {
-                await fetchDB(`promoCodes/${code}`, 'DELETE');
-                loadAdminPromoCodes();
-            }
-        }
-
         function switchStudentTab(tab) {
             document.getElementById('kdgTab').classList.toggle('hidden', tab !== 'kdg');
             document.getElementById('priTab').classList.toggle('hidden', tab !== 'pri');
@@ -1363,12 +1107,11 @@
             document.getElementById('actTab').classList.toggle('hidden', tab !== 'act');
             document.getElementById('newsTab').classList.toggle('hidden', tab !== 'news');
             document.getElementById('othTab').classList.toggle('hidden', tab !== 'oth');
-            document.getElementById('toptenTab').classList.toggle('hidden', tab !== 'topten'); 
 
             const activeClasses = ['bg-red-500', 'text-white', 'shadow-md'];
             const inactiveClasses = ['bg-gray-100', 'text-gray-500', 'hover:bg-gray-200'];
 
-            const tabs = ['kdg', 'pri', 'sec', 'act', 'news', 'oth', 'topten'];
+            const tabs = ['kdg', 'pri', 'sec', 'act', 'news', 'oth'];
             tabs.forEach(t => {
                 const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1) + 'Btn');
                 if (btn) {
@@ -1381,10 +1124,6 @@
                     }
                 }
             });
-
-            if(tab === 'topten') {
-                loadTopTenLeaderboard();
-            }
         }
 
         async function toggleSection(s) {
@@ -1413,7 +1152,6 @@
                 refreshAdminUsers(); 
                 initAdminSelect(); 
                 renderAdminBanners();
-                loadAdminPromoCodes(); 
             }
         }
 
@@ -1422,7 +1160,6 @@
             const priGrid = document.getElementById('priCardsGrid');
             const secGrid = document.getElementById('secCardsGrid');
             const othGrid = document.getElementById('othCardsGrid');
-            const userPerms = currentUser.permissions || [];
             
             let kdgHtml = '';
             let priHtml = '';
@@ -1497,7 +1234,6 @@
             const grid = document.getElementById('dynamicUnitGrid');
             grid.innerHTML = filteredUnits.length ? filteredUnits.map(u => {
                 
-                // ถ้าระบุรูปภาพไว้ ให้โชว์รูปภาพ ถ้าไม่มีให้โชว์ไอคอนเดิม
                 const imgDisplay = u.imageUrl 
                     ? `<img src="${escapeHtml(u.imageUrl)}" class="w-full h-40 object-cover rounded-2xl mb-4 shadow-sm group-hover:scale-105 transition duration-300">`
                     : `<div class="mb-4 text-indigo-400 group-hover:scale-110 transition duration-300"><i class="fas fa-play-circle text-5xl"></i></div>`;
@@ -1523,7 +1259,6 @@
             document.getElementById('tabContentBanners').classList.toggle('hidden-section', tab !== 'banners');
             document.getElementById('tabContentFeedbacks').classList.toggle('hidden-section', tab !== 'feedbacks');
             document.getElementById('tabContentTopups').classList.toggle('hidden-section', tab !== 'topups');
-            document.getElementById('tabContentPromocodes').classList.toggle('hidden-section', tab !== 'promocodes');
             
             const activeClass = ['text-indigo-600', 'bg-indigo-50'];
             const inactiveClass = ['text-gray-500', 'hover:bg-gray-200'];
@@ -1542,11 +1277,9 @@
             setBtnStyle('tabBannersBtn', tab === 'banners');
             setBtnStyle('tabFeedbacksBtn', tab === 'feedbacks');
             setBtnStyle('tabTopupsBtn', tab === 'topups');
-            setBtnStyle('tabPromocodesBtn', tab === 'promocodes');
 
             if(tab === 'feedbacks') loadAdminFeedbacks();
             if(tab === 'topups') loadAdminTopups();
-            if(tab === 'promocodes') loadAdminPromoCodes();
         }
 
         async function refreshAdminUsers() {
@@ -1688,14 +1421,13 @@
             if (unitsData === undefined) return;
 
             const units = objToArray(unitsData);
-            unitsDataGlobal = units; // เซฟใส่ตัวแปร Global ไว้สำหรับให้ปุ่ม Edit เรียกใช้
+            unitsDataGlobal = units; 
             const all = [...getAllTerms(), {id: 'special', defaultName: 'ทดลองเรียนฟรี'}];
             
             document.getElementById('unitTableBody').innerHTML = units.map(u => {
                 const termInfo = all.find(t=>t.id===u.term);
                 const termName = termSettingsData[u.term]?.title || termInfo?.defaultName || u.term;
                 
-                // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้ใช้รูปไอคอนตัวแทน
                 const imgHtml = u.imageUrl 
                     ? `<img src="${escapeHtml(u.imageUrl)}" class="h-12 w-16 object-cover rounded-lg border shadow-sm">` 
                     : `<div class="h-12 w-16 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 border"><i class="fas fa-image"></i></div>`;
@@ -1717,7 +1449,6 @@
             }).join('');
         }
 
-        // --- ส่วนสำหรับ อัปโหลดรูปภาพ บทเรียน ---
         function handleUnitUpload(event) {
             if (!verifyAdminAction()) return;
             const file = event.target.files[0];
@@ -1734,7 +1465,6 @@
             reader.readAsDataURL(file);
         }
 
-        // --- ส่วนสำหรับ ดึงข้อมูลบทเรียนมาใส่ในฟอร์มเพื่อ แก้ไข ---
         function editUnitGS(id) {
             if (!verifyAdminAction()) return;
             const unit = unitsDataGlobal.find(u => u.id === id);
@@ -1760,12 +1490,10 @@
                 document.getElementById('btnSaveUnit').classList.replace('hover:bg-red-600', 'hover:bg-blue-700');
                 document.getElementById('btnCancelUnit').classList.remove('hidden');
                 
-                // เลื่อนหน้าจอขึ้นไปที่ฟอร์ม
                 document.getElementById('unitFormTitle').scrollIntoView({ behavior: 'smooth' });
             }
         }
 
-        // --- ส่วนสำหรับ รีเซ็ตเคลียร์ข้อมูลฟอร์มบทเรียน ---
         function resetUnitForm() {
             document.getElementById('editUnitId').value = '';
             document.getElementById('unitName').value = '';
@@ -1783,7 +1511,6 @@
             document.getElementById('btnCancelUnit').classList.add('hidden');
         }
 
-        // --- ส่วนบันทึกบทเรียน (รองรับทั้งเพิ่มใหม่และแก้ไข) ---
         async function saveUnitGS() {
             if (!verifyAdminAction()) return; 
 
@@ -1791,18 +1518,16 @@
             const name = document.getElementById('unitName').value;
             const term = document.getElementById('unitTerm').value;
             const link = document.getElementById('unitLink').value;
-            const imageUrl = document.getElementById('unitImage').value; // เพิ่มตัวแปรเก็บภาพหน้าปก
+            const imageUrl = document.getElementById('unitImage').value;
 
             if(!name || !link) return showMessage("กรุณากรอกชื่อและลิงก์ให้ครบถ้วน", "error");
             
             const payload = { name, term, link, imageUrl };
 
             if (id) {
-                // อัปเดตข้อมูลเก่า
                 await fetchDB(`units/${id}`, 'PATCH', payload);
                 showMessage("แก้ไขบทเรียนสำเร็จ", "success");
             } else {
-                // สร้างบทเรียนใหม่
                 await fetchDB('units', 'POST', payload);
                 showMessage("เพิ่มบทเรียนสำเร็จ", "success");
             }
@@ -1963,34 +1688,6 @@
             }
         }
 
-        async function exchangeCreditForScore() {
-            if (!currentUser) return;
-            
-            if ((currentUser.credits || 0) < 10) {
-                showMessage("เครดิตไม่พอจ้า หนูต้องมีอย่างน้อย 10 เครดิตนะ", "error");
-                return;
-            }
-
-            if (confirm("ต้องการใช้ 10 เครดิต แลกรับ 10,000 คะแนน ใช่หรือไม่?")) {
-                showLoading(true);
-                const safeKey = sanitizeKey(currentUser.email, currentUser.uid);
-                
-                let newCredits = currentUser.credits - 10;
-                await fetchDB(`users/${safeKey}/credits`, 'PUT', newCredits);
-                currentUser.credits = newCredits; 
-                
-                if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = newCredits;
-                if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = newCredits;
-
-                updateTotalGameScore(10000);
-                
-                showLoading(false);
-                showMessage("แลกคะแนนสำเร็จ! ได้รับ 10,000 คะแนนแล้วจ้า", "success");
-                
-                loadTopTenLeaderboard();
-            }
-        }
-
         function logout() {
             location.reload();
         }
@@ -1998,9 +1695,9 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadNewsData();
             initVisitorStats();
+            loadInitialStats(); // เรียกดึงค่าตัวเลขหนักๆ แค่ครั้งแรกตอนโหลด
         });
 
-        // เฉพาะฟังก์ชันที่ผู้ใช้ทั่วไปจำเป็นต้องกดใช้เท่านั้น ที่ปล่อยไว้บน window (ซ่อนฟังก์ชันแอดมินจาก Global Scope)
         window.switchStudentTab = switchStudentTab;
         window.toggleSection = toggleSection;
         window.closeTopupModal = closeTopupModal;
@@ -2009,15 +1706,11 @@
         window.openCreditModal = openCreditModal;
         window.closeFeedbackModal = closeFeedbackModal;
         window.openFeedbackModal = openFeedbackModal;
-        window.openPromoModal = openPromoModal;
-        window.closePromoModal = closePromoModal;
         window.resetNewsForm = resetNewsForm;
         window.logout = logout;
         window.selectTerm = selectTerm;
         window.backToTerms = backToTerms;
-        window.exchangeCreditForScore = exchangeCreditForScore;
 
-        // ผูกฟังก์ชันเข้ากับหน้า UI โดยตรงสำหรับระบบแอดมิน เพื่อไม่ให้เรียกผ่าน Console (F12) ได้
         window.editNewsItem = editNewsItem;
         window.deleteNewsItem = deleteNewsItem;
         window.switchAdminTab = switchAdminTab;
@@ -2036,8 +1729,6 @@
         window.addCreditGS = addCreditGS;
         window.reduceCreditGS = reduceCreditGS;
         window.deleteUserGS = deleteUserGS;
-        window.createPromoCodeGS = createPromoCodeGS;
-        window.deletePromoCode = deletePromoCode;
         window.handleBannerUpload = handleBannerUpload;
 
         window.processGoogleUser = async function(name, email, uid) {
