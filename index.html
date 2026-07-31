@@ -64,8 +64,10 @@
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
 
-        .loader { border-top-color: #ef4444; animation: spinner 0.8s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* SMR Loading Custom Animations */
+        @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        .animate-spin-reverse { animation: spin-reverse 1.5s linear infinite; }
+        .smr-glow { text-shadow: 0 0 15px rgba(255, 255, 255, 0.9), 0 0 30px rgba(239, 68, 68, 0.8), 0 0 45px rgba(59, 130, 246, 0.8); }
         
         .feed-scroll::-webkit-scrollbar { width: 6px; }
         .feed-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
@@ -100,9 +102,17 @@
         </div>
     </div>
 
-    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-md z-[9999] hidden flex flex-col items-center justify-center">
-        <div class="loader ease-linear rounded-full border-4 border-gray-200 h-16 w-16 mb-4"></div>
-        <p class="text-red-600 font-bold text-xl">กำลังประมวลผล...</p>
+    <!-- SMR Loading Graphic -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/95 backdrop-blur-lg z-[9999] hidden flex flex-col items-center justify-center">
+        <div class="relative flex items-center justify-center w-40 h-40 mb-8">
+            <!-- Outer Ring -->
+            <div class="absolute inset-0 border-4 border-transparent border-t-red-500 border-b-red-500 rounded-full animate-spin shadow-[0_0_15px_rgba(239,68,68,0.5)]"></div>
+            <!-- Inner Ring -->
+            <div class="absolute inset-3 border-4 border-transparent border-l-blue-400 border-r-blue-400 rounded-full animate-spin-reverse shadow-[0_0_15px_rgba(96,165,250,0.5)]"></div>
+            <!-- SMR Text -->
+            <div class="text-white font-black text-5xl tracking-widest z-10 smr-glow animate-pulse">SMR</div>
+        </div>
+        <p class="text-blue-300 font-bold text-xl tracking-widest animate-pulse mt-2">กำลังประมวลผลข้อมูล...</p>
     </div>
 
     <div id="topupModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9900] hidden flex items-center justify-center p-4">
