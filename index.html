@@ -78,15 +78,15 @@
 
     <div id="messageBox"></div>
 
-    <div class="fixed bottom-4 left-4 bg-slate-800/80 backdrop-blur-md text-white px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-[100] visitor-stats-display flex flex-wrap items-center gap-2 sm:gap-3 border border-white/20">
+    <!-- แถบสถิติทั้งหมด ซ่อนไว้เป็นค่าเริ่มต้น (hidden) จะแสดงเมื่อแอดมินล็อกอิน -->
+    <div id="adminStatsBar" class="hidden fixed bottom-4 left-4 bg-slate-800/80 backdrop-blur-md text-white px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-[0_10px_30px_rgba(0,0,0,0.3)] z-[100] visitor-stats-display flex-wrap items-center gap-2 sm:gap-3 border border-white/20">
         <div class="flex items-center gap-2" title="ผู้เข้าชมสะสม"><i class="fas fa-users text-blue-400"></i> เข้าชม: <span id="statTotalVal">...</span></div>
         <div class="text-slate-500">|</div>
         <div class="flex items-center gap-2" title="กำลังออนไลน์"><i class="fas fa-circle text-green-400 animate-pulse"></i> ออนไลน์: <span id="statOnlineVal">...</span></div>
         <div class="text-slate-500">|</div>
         <div class="flex items-center gap-2" title="สมาชิกทั้งหมด"><i class="fas fa-user-graduate text-purple-400"></i> สมาชิก: <span id="statTotalMembers">...</span></div>
-        <div class="flex items-center gap-1" title="สมาชิกใหม่"><span id="statNewMembers" class="text-pink-400 bg-pink-900/50 px-2 py-0.5 rounded-md hidden">...</span></div>
         <div class="text-slate-500 hidden" id="topupDivider">|</div>
-        <div class="flex items-center gap-2 hidden cursor-pointer hover:text-yellow-300 transition" title="แจ้งเติมเครดิตค้างตรวจสอบ" id="statPendingTopupsContainer" onclick="toggleSection('admin')">
+        <div class="hidden items-center gap-2 cursor-pointer hover:text-yellow-300 transition" title="แจ้งเติมเครดิตค้างตรวจสอบ" id="statPendingTopupsContainer" onclick="toggleSection('admin')">
             <i class="fas fa-file-invoice-dollar text-yellow-400"></i> แจ้งโอน: <span id="statPendingTopups" class="text-yellow-400 bg-yellow-900/50 px-2 py-0.5 rounded-md">0</span>
         </div>
     </div>
@@ -154,7 +154,7 @@
                 <span id="creditModalAmount" class="text-6xl font-black text-yellow-600 relative z-10">0</span>
                 <span class="text-lg text-yellow-500 font-bold ml-1 relative z-10">เครดิต</span>
             </div>
-            <p class="text-xs text-gray-400 mt-4 px-4 leading-relaxed">* โบนัสฟรี! เครดิตจะได้รับ <span class="text-green-500 font-bold">+10 แต้ม</span> อัตโนมัติในวันถัดไปหากคุณมีเครดิตน้อยกว่า 10</p>
+            <p class="text-xs text-gray-400 mt-4 px-4 leading-relaxed">* โบนัสฟรี! ระบบจะเติมเครดิตให้เต็ม <span class="text-green-500 font-bold">50 แต้ม</span> อัตโนมัติในวันถัดไปหากหนูมีเครดิตน้อยกว่า 10</p>
         </div>
     </div>
 
@@ -204,6 +204,13 @@
                         เข้าสู่ระบบด้วย Google
                     </button>
                     <p class="text-xs text-gray-400 text-center mt-4">* ใช้บัญชี Google ของหนูหรือผู้ปกครองเพื่อเข้าสู่ระบบ/สมัครสมาชิก อัตโนมัติ</p>
+                    
+                    <!-- ปุ่มแอดมินสำหรับล็อคอินด้วยรหัสผ่าน (ซ่อนเนียนๆ ด้านล่าง) -->
+                    <div class="mt-6 text-center">
+                        <button onclick="adminSecretLogin()" class="text-[11px] text-gray-400 hover:text-gray-600 font-bold transition decoration-transparent hover:underline flex items-center justify-center gap-1 mx-auto">
+                            <i class="fas fa-shield-alt"></i> สำหรับผู้ดูแลระบบ
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -569,7 +576,6 @@
             return false;
         }
 
-        // เช็คสิทธิ์แบบไม่แจ้งเตือน
         function verifyAdminAction_silent() {
             return currentUser && (currentUser.email === 'woottermfun1@gmail.com' || currentUser.name === 'ค่ายหุ่นยนต์เติมฝัน TF-ROBOT');
         }
@@ -652,6 +658,7 @@
         let currentTotalVisitors = 0; 
         let currentOnlineCount = 0;
 
+        // ระบบจับสถิติการใช้งาน ทำงานอยู่เบื้องหลังเสมอ แต่จะถูกซ่อนจากผู้ใช้ปกติ
         async function initVisitorStats() {
             try {
                 let totalRes = await fetch(`${FIREBASE_DB_URL}/stats/totalVisitorsNew.json`);
@@ -677,31 +684,8 @@
             setInterval(sendHeartbeat, 15000);
         }
 
-        // ดึงข้อมูลพื้นฐานแค่ครั้งแรกที่โหลด ป้องกันคอขวด
         async function loadInitialStats() {
-            try {
-                const usersRes = await fetch(`${FIREBASE_DB_URL}/users.json`);
-                const usersData = await usersRes.json() || {};
-                const users = objToArray(usersData);
-                const validUsers = users.filter(u => u.email && u.email.includes('@'));
-                
-                if (document.getElementById('statTotalMembers')) document.getElementById('statTotalMembers').innerText = validUsers.length.toLocaleString();
-
-                if (verifyAdminAction_silent()) {
-                    const topupsRes = await fetch(`${FIREBASE_DB_URL}/topups.json`);
-                    const topupsData = await topupsRes.json() || {};
-                    const topups = objToArray(topupsData);
-                    const pendingTopupsCount = topups.filter(t => t.status === 'pending').length;
-
-                    const topupContainer = document.getElementById('statPendingTopupsContainer');
-                    const topupDivider = document.getElementById('topupDivider');
-                    if (topupContainer && topupDivider && pendingTopupsCount > 0) {
-                        document.getElementById('statPendingTopups').innerText = pendingTopupsCount.toLocaleString();
-                        topupContainer.classList.remove('hidden');
-                        topupDivider.classList.remove('hidden');
-                    }
-                }
-            } catch(e) {}
+            // โหลดสถิติถูกย้ายไปที่กระบวนการล็อกอินของแอดมิน (processGoogleUser) เพื่อแสดงผลตามจริงเฉพาะแอดมิน
         }
 
         async function sendHeartbeat() {
@@ -738,7 +722,8 @@
             if(!usersData) return;
             const users = objToArray(usersData);
             
-            const validUsers = users.filter(u => u.email && u.email.includes('@'));
+            // ไม่กรองอีเมล ให้นับผู้ใช้ทุกคนในระบบแทน
+            const validUsers = users;
             
             const lastLoginData = await fetchDB('stats/lastAdminLogin');
             const lastAdminLogin = lastLoginData || 0;
@@ -1702,10 +1687,27 @@
             location.reload();
         }
 
+        // ----------------------------------------------------
+        // ฟังก์ชันใหม่สำหรับการ Login ผ่านรหัสผ่านของแอดมิน
+        // ----------------------------------------------------
+        window.adminSecretLogin = function() {
+            const code = prompt("กรุณากรอกรหัสผ่านผู้ดูแลระบบ:");
+            
+            // รหัสผ่านตั้งต้นคือ admin999 (คุณสามารถเปลี่ยนตรงนี้ได้)
+            if (code === "admin999") { 
+                if (window.processGoogleUser) {
+                    // ดึงให้ใช้ฟังก์ชันประมวลผลล็อกอินแอดมินโดยตรง ไม่ต้องผ่าน Google Auth
+                    window.processGoogleUser("ค่ายหุ่นยนต์เติมฝัน TF-ROBOT", "woottermfun1@gmail.com", "admin_bypass_001");
+                }
+            } else if (code) {
+                alert("รหัสผ่านไม่ถูกต้อง!");
+            }
+        };
+
         window.addEventListener('DOMContentLoaded', () => {
             loadNewsData();
             initVisitorStats();
-            loadInitialStats(); // เรียกดึงค่าตัวเลขหนักๆ แค่ครั้งแรกตอนโหลด
+            loadInitialStats(); 
         });
 
         window.switchStudentTab = switchStudentTab;
@@ -1760,12 +1762,12 @@
                         password: "google_auth", 
                         permissions: [], 
                         createdAt: Date.now(),
-                        credits: 10,
+                        credits: 50,
                         totalGameScore: 0,
                         lastLoginDate: new Date().toLocaleDateString('th-TH')
                     };
                     await fetchDB(`users/${safeKey}`, 'PUT', user);
-                    showMessage("สมัครสมาชิกด้วย Google สำเร็จ! รับ 10 เครดิต", "success");
+                    showMessage("สมัครสมาชิกด้วยบัญชีนี้สำเร็จ! รับ 50 เครดิต", "success");
                 }
 
                 currentUser = user;
@@ -1773,10 +1775,13 @@
                 
                 const todayStr = new Date().toLocaleDateString('th-TH');
                 let credits = currentUser.credits || 0;
+                
+                // ตรวจสอบการเข้าใช้งานวันใหม่
                 if (currentUser.lastLoginDate !== todayStr) {
                     if (credits < 10) {
-                        credits += 10;
-                        showMessage("🎁 รับโบนัสล็อกอินรายวัน +10 เครดิต!", 'success');
+                        credits += 50;
+                        if (credits > 50) credits = 50; // ป้องกันไม่ให้เกิน 50
+                        showMessage("🎁 รับโบนัสล็อกอินรายวัน! เครดิตถูกปรับเป็น 50", 'success');
                     }
                     currentUser.credits = credits;
                     currentUser.lastLoginDate = todayStr;
@@ -1785,13 +1790,47 @@
 
                 document.getElementById('userNameDisplay').innerText = `สวัสดีจ้า, ${currentUser.name}`;
 
+                // --- ส่วนตรวจสอบสิทธิ์แอดมิน เพื่อเปิดการแสดงผลจำนวนสมาชิกและสถิติ ---
                 if (currentUser.email === 'woottermfun1@gmail.com' || currentUser.name === 'ค่ายหุ่นยนต์เติมฝัน TF-ROBOT') {
                     document.getElementById('navAdminBtn').classList.remove('hidden');
                     document.getElementById('navCmsBtn').classList.remove('hidden');
+
+                    // 1. เปิดแสดงแถบสถิติทั้งหมด (เข้าชม, ออนไลน์, สมาชิก)
+                    const statsBar = document.getElementById('adminStatsBar');
+                    if (statsBar) {
+                        statsBar.classList.remove('hidden');
+                        statsBar.classList.add('flex');
+                    }
+
+                    // 2. โหลดจำนวนสมาชิกทั้งหมดตามจริง
+                    const usersData = await fetchDB('users');
+                    if (usersData) {
+                        const users = objToArray(usersData);
+                        if (document.getElementById('statTotalMembers')) {
+                            // นับผู้ใช้งานทุกคนตามจริงในฐานข้อมูล
+                            document.getElementById('statTotalMembers').innerText = users.length.toLocaleString();
+                        }
+                    }
+
+                    // 3. โหลดการแจ้งเตือนเติมเงินค้างตรวจสอบ
+                    const topupsData = await fetchDB('topups');
+                    if (topupsData) {
+                        const topups = objToArray(topupsData);
+                        const pendingTopupsCount = topups.filter(t => t.status === 'pending').length;
+                        const topupContainer = document.getElementById('statPendingTopupsContainer');
+                        const topupDivider = document.getElementById('topupDivider');
+                        if (topupContainer && topupDivider && pendingTopupsCount > 0) {
+                            document.getElementById('statPendingTopups').innerText = pendingTopupsCount.toLocaleString();
+                            topupContainer.classList.remove('hidden');
+                            topupContainer.classList.add('flex');
+                            topupDivider.classList.remove('hidden');
+                        }
+                    }
                 } else {
                     document.getElementById('navAdminBtn').classList.add('hidden');
                     document.getElementById('navCmsBtn').classList.add('hidden');
                 }
+                // -----------------------------------------------------------------------------
 
                 if(document.getElementById('userCreditsDisplay')) document.getElementById('userCreditsDisplay').innerText = currentUser.credits || 0;
                 if(document.getElementById('creditModalAmount')) document.getElementById('creditModalAmount').innerText = currentUser.credits || 0;
